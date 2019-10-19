@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -43,13 +44,22 @@ namespace faceitwpf
         {
             API api = API.GetInstance();
             var player = api.CurrentPlayer;
+            var tasks = new List<Task<API.Stats>>();
             _page = GetNext ? _page + 1 : _page - 1;
             try
             {
                 API.MatchHistory matchHistory = await api.AsyncGetHistory(player.PlayerID, _page);
+                if (matchHistory.Match.Length == 0)
+                    throw new Exception("Page is empty");
                 for (int i = 0; i < matchHistory.Match.Length; i++)
                 {
-                    matchHistory.Match[i].Stats = await api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname);
+                    tasks.Add(api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname));
+                }
+                var Stats = await Task.WhenAll(tasks);
+                
+                for (int i = 0; i < matchHistory.Match.Length; i++)
+                {
+                    matchHistory.Match[i].Stats = Stats[i];
                     matchHistory.Match[i].Date = DateTimeOffset.FromUnixTimeSeconds(matchHistory.Match[i]._Date).ToLocalTime();
                 }
                 this.matchgrid.ItemsSource = matchHistory.Match;

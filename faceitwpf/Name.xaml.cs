@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -28,14 +30,21 @@ namespace faceitwpf
                     API api = API.GetInstance();
                     API.Player player = await api.AsyncGetPlayerInfo(nameTextBox.Text);
                     api.CurrentPlayer = player;
+                    var tasks = new List<Task<API.Stats>>();
                     API.MatchHistory matchHistory = await api.AsyncGetHistory(player.PlayerID);
                     for (int i = 0; i < matchHistory.Match.Length; i++)
                     {
-                        matchHistory.Match[i].Stats = await api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname);
+                        tasks.Add(api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname));
+                    }
+                    var Stats = await Task.WhenAll(tasks);
+
+                    for (int i = 0; i < matchHistory.Match.Length; i++)
+                    {
+                        matchHistory.Match[i].Stats = Stats[i];
                         matchHistory.Match[i].Date = DateTimeOffset.FromUnixTimeSeconds(matchHistory.Match[i]._Date).ToLocalTime();
                     }
-
                     datapage.matchgrid.ItemsSource = matchHistory.Match;
+
                     datapage.NickLabel.Content = player.Nickname;
                     datapage.LevelLabel.Content = player.Level + " Level " + player.Elo + " Elo";
 
