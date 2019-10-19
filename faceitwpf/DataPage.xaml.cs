@@ -42,6 +42,10 @@ namespace faceitwpf
 
         private async Task GetPage(bool GetNext = true)
         {
+            //
+            System.Diagnostics.Stopwatch timer2 = new System.Diagnostics.Stopwatch();
+            timer2.Start();
+            //
             API api = API.GetInstance();
             var player = api.CurrentPlayer;
             var tasks = new List<Task<API.Stats>>();
@@ -55,14 +59,24 @@ namespace faceitwpf
                 {
                     tasks.Add(api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname));
                 }
+                //
+                System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+                timer.Start();
                 var Stats = await Task.WhenAll(tasks);
-                
+                timer.Stop();
+                System.Diagnostics.Trace.WriteLine($"Загрузка страницы: {timer.Elapsed.TotalSeconds}");
+                //
                 for (int i = 0; i < matchHistory.Match.Length; i++)
                 {
                     matchHistory.Match[i].Stats = Stats[i];
                     matchHistory.Match[i].Date = DateTimeOffset.FromUnixTimeSeconds(matchHistory.Match[i]._Date).ToLocalTime();
                 }
                 this.matchgrid.ItemsSource = matchHistory.Match;
+
+                //
+                timer2.Stop();
+                System.Diagnostics.Trace.WriteLine($"Полная загрузка страницы: {timer2.Elapsed.TotalSeconds}");
+                //
             }
             catch (Exception ex)
             {

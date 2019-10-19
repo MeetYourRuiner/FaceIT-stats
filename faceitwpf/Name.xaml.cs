@@ -17,7 +17,11 @@ namespace faceitwpf
         {
             InitializeComponent();
         }
-        private async void Label_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Label_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            HandleClickOrEnter();
+        }
+        private async void HandleClickOrEnter()
         {
             if (nameTextBox.Text.Length > 0 && nameTextBox.Text.Length < 30)
             {
@@ -36,8 +40,13 @@ namespace faceitwpf
                     {
                         tasks.Add(api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname));
                     }
+                    //
+                    System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+                    timer.Start();
                     var Stats = await Task.WhenAll(tasks);
-
+                    timer.Stop();
+                    System.Diagnostics.Trace.WriteLine($"Загрузка страницы: {timer.Elapsed.TotalSeconds}");
+                    //
                     for (int i = 0; i < matchHistory.Match.Length; i++)
                     {
                         matchHistory.Match[i].Stats = Stats[i];
@@ -65,6 +74,8 @@ namespace faceitwpf
                     nameTextBox.IsEnabled = true;
                     Cursor = Cursors.Arrow;
                     nameTextBox.Text = ex.Message;
+                    await nameTextBox.Dispatcher.BeginInvoke(new Action(() => nameTextBox.SelectAll()));
+                    nameTextBox.Focus();
                 }
             }
         }
@@ -77,6 +88,20 @@ namespace faceitwpf
         private void btn_MouseLeave(object sender, MouseEventArgs e)
         {
             btn.Background = new SolidColorBrush(Color.FromRgb(255, 85, 0));
+        }
+
+        private void nameTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                HandleClickOrEnter();
+            }
+        }
+
+        private void nameTextBox_GotFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var textbox = (TextBox)sender;
+            textbox.Dispatcher.BeginInvoke(new Action(() => textbox.SelectAll()));
         }
     }
 }

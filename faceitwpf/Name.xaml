@@ -8,7 +8,7 @@
       d:DesignHeight="550" d:DesignWidth="900" 
       Title="Name">
 
-    <Grid Background="#FF141616">
+    <Grid Background="#FF141616" FocusManager.FocusedElement="{Binding ElementName=nameTextBox}">
         <Grid.RowDefinitions>
             <RowDefinition Height="49*"/>
             <RowDefinition Height="7*"/>
@@ -23,7 +23,7 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="nameTextBox" MaxLength="30" FontSize="20" Background="#FF2B2B2B" BorderThickness="0" Foreground="#FFEBEFF3" HorizontalAlignment="Left" VerticalAlignment="Center" Width="420" Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="1" Height="35" Padding="0,3"/>
+        <TextBox x:Name="nameTextBox" MaxLength="30" FontSize="20" Background="#FF2B2B2B" BorderThickness="0" Foreground="#FFEBEFF3" HorizontalAlignment="Left" VerticalAlignment="Center" Width="371" Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="1" Height="35" Padding="0,3" KeyDown="nameTextBox_KeyDown" GotFocus="nameTextBox_GotFocus"/>
         <Rectangle HorizontalAlignment="Center" Height="94" Margin="50,64,50,62" Width="100" VerticalAlignment="Center" Grid.Row="4" Grid.Column="2">
             <Rectangle.Fill>
                 <ImageBrush ImageSource="icon-pheasant-preview-2-268x151.png" Stretch="None"/>
