@@ -23,7 +23,6 @@ namespace faceitwpf
         public MainWindow()
         {
             InitializeComponent();
-            API.APIClient();
         }       
     }
 }

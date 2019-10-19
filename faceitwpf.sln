@@ -9,12 +9,15 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Цифорки|Any CPU = Цифорки|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{99350A36-B935-45BB-80F3-265C6924DC02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{99350A36-B935-45BB-80F3-265C6924DC02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99350A36-B935-45BB-80F3-265C6924DC02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99350A36-B935-45BB-80F3-265C6924DC02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99350A36-B935-45BB-80F3-265C6924DC02}.Цифорки|Any CPU.ActiveCfg = Цифорки|Any CPU
+		{99350A36-B935-45BB-80F3-265C6924DC02}.Цифорки|Any CPU.Build.0 = Цифорки|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

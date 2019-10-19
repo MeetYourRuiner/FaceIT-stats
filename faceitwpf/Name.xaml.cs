@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace faceitwpf
 {
@@ -24,18 +15,47 @@ namespace faceitwpf
         {
             InitializeComponent();
         }
-        private void Label_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private async void Label_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (text1.Text.Length > 0 && text1.Text.Length < 30)
+            if (nameTextBox.Text.Length > 0 && nameTextBox.Text.Length < 30)
             {
+                btn.IsEnabled = false;
+                nameTextBox.IsEnabled = false;
+                Cursor = Cursors.Wait;
                 try
                 {
-                    DataPage datapage = new DataPage(text1.Text);
-                    this.NavigationService.Navigate(datapage);
+                    DataPage datapage = new DataPage();                   
+                    API api = API.GetInstance();
+                    API.Player player = await api.AsyncGetPlayerInfo(nameTextBox.Text);
+                    api.CurrentPlayer = player;
+                    API.MatchHistory matchHistory = await api.AsyncGetHistory(player.PlayerID);
+                    for (int i = 0; i < matchHistory.Match.Length; i++)
+                    {
+                        matchHistory.Match[i].Stats = await api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname);
+                        matchHistory.Match[i].Date = DateTimeOffset.FromUnixTimeSeconds(matchHistory.Match[i]._Date).ToLocalTime();
+                    }
+
+                    datapage.matchgrid.ItemsSource = matchHistory.Match;
+                    datapage.NickLabel.Content = player.Nickname;
+                    datapage.LevelLabel.Content = player.Level + " Level " + player.Elo + " Elo";
+
+                    try 
+                    { 
+                        datapage.avatar.Source = new BitmapImage(new Uri(player.Avatar)); 
+                    }
+                    catch (System.UriFormatException)
+                    {
+                        datapage.avatar.Source = new BitmapImage(new Uri("/faceitwpf;component/icon-pheasant-preview-2-268x151.png", UriKind.Relative));
+                        datapage.avatar.Stretch = Stretch.Uniform;
+                    }                    
+                    NavigationService.Navigate(datapage);
                 }
-                catch(ArgumentException ex)
+                catch(Exception ex)
                 {
-                    text1.Text = "Wrong nickname";
+                    btn.IsEnabled = true;
+                    nameTextBox.IsEnabled = true;
+                    Cursor = Cursors.Arrow;
+                    nameTextBox.Text = ex.Message;
                 }
             }
         }

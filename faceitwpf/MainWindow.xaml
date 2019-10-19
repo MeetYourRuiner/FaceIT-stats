@@ -5,5 +5,5 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:faceitwpf"
         mc:Ignorable="d"
-        Title="Цифорки" Height="550" Width="600" Background="#FF141616" ResizeMode="CanMinimize" Source="Name.xaml" ShowsNavigationUI="False">
-</NavigationWindow>
+        Title="Цифорки" Height="550" Width="900" Background="#FF141616" Source="Name.xaml" ShowsNavigationUI="False"
+                  WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"/>

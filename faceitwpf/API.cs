@@ -3,102 +3,143 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-using System.Windows.Controls;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace faceitwpf
 {
+    enum GetInfo
+    {
+        Player,
+        MatchHistory,
+        MatchStats
+    }
+
     class API
-    {       
-        static HttpClient client = new HttpClient();
-        public static void APIClient()
+    {
+        private static API _instance;
+        private static HttpClient _client = new HttpClient();
+        public Player CurrentPlayer { get; set; }
+        public API()
         {
+            _client = new HttpClient();
             string apikey = "a847d087-70da-4dd0-992d-cc000f257839";
-            client.BaseAddress = new Uri("https://api.faceit.com/auth/v1/");
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apikey);
+            _client.BaseAddress = new Uri("https://api.faceit.com/auth/v1/");
+            _client.DefaultRequestHeaders.Accept.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apikey);
         }
 
-        public string GetInfo(int i, string id = "0")
-        {           
-            switch (i)
-            {
-                case 1:                   
-                    var response = client.GetAsync($"https://open.faceit.com/data/v4/players?nickname={id}&game=csgo").Result;
-                    if (response.StatusCode != HttpStatusCode.OK) throw new System.ArgumentException();
-                    return response.Content.ReadAsStringAsync().Result;
-                case 2:
-                    response = client.GetAsync($"https://open.faceit.com/data/v4/players/{id}/history?game=csgo&offset=0&limit=10").Result;
-                    if (response.StatusCode != HttpStatusCode.OK) throw new System.ArgumentException();
-                    return response.Content.ReadAsStringAsync().Result;
-                case 3:
-                    response = client.GetAsync($"https://open.faceit.com/data/v4/matches/{id}/stats").Result;
-                    if (response.StatusCode != HttpStatusCode.OK) throw new System.ArgumentException();
-                    return response.Content.ReadAsStringAsync().Result;
-                default:
-                    return "Error";
-            }           
-        }
-        public Player GetPlayerInfo(string name)
+        public static API GetInstance()
         {
-            string PInfo = GetInfo(1, name);
-            Player player = new Player
+            if (_instance == null)
+                _instance = new API();
+            return _instance;
+        }
+
+        public async Task<JObject> AsyncGetInfo(GetInfo getInfo, string id = "0", int page = 1)
+        {
+            switch (getInfo)
             {
-                Nickname = name,
-                PId = Regex.Match(PInfo, @"(?<=player_id"".{2}).+?(?="")").Value,
-                Matches = Regex.Matches(GetInfo(2, Regex.Match(PInfo, @"(?<=player_id"".{2}).+?(?="")").Value), @"(?<=match_id"".{2}).+?(?="")"),
-                Avatar = Regex.Match(PInfo, @"(?<=avatar"".{2}).+?(?="")").Value,
-                Level = Regex.Match(PInfo, @"(?<=skill_level"".{1}).+?(?=,)").Value,
-                Elo = Regex.Match(PInfo, @"(?<=faceit_elo"".{1}).+?(?=,)").Value,
-            };
+                case GetInfo.Player:
+                    var response = await _client.GetAsync($"https://open.faceit.com/data/v4/players?nickname={id}&game=csgo");
+                    if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Wrong nickname");
+                    return JObject.Parse(response.Content.ReadAsStringAsync().Result);
+                case GetInfo.MatchHistory:
+                    response = await _client.GetAsync($"https://open.faceit.com/data/v4/players/{id}/history?game=csgo&offset={10*(page-1)}&limit=10");
+                    if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Failed to get match history");
+                    return JObject.Parse(response.Content.ReadAsStringAsync().Result);
+                case GetInfo.MatchStats:
+                    response = await _client.GetAsync($"https://open.faceit.com/data/v4/matches/{id}/stats");
+                    if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Failed to get match info");
+                    return JObject.Parse(response.Content.ReadAsStringAsync().Result);
+                default:
+                    return null;
+            }
+        }
+
+        public async Task<Player> AsyncGetPlayerInfo(string name)
+        {
+            Player player = (await AsyncGetInfo(GetInfo.Player, name)).ToObject<Player>();
             return player;
         }
-        public Stats[] GetMatchHistory(Player player)
+        public async Task<MatchHistory> AsyncGetHistory(string id, int page = 1)
         {
-            int i = 0;
-            Stats[] stats = new Stats[player.Matches.Count];
-            var dreg = new Regex($@"(?<={Regex.Escape(player.PId)}.+Deaths""..).+?(?="")");
-            var kreg = new Regex($@"(?<={Regex.Escape(player.PId)}.+Kills""..).+?(?="")");
+            var data = await AsyncGetInfo(GetInfo.MatchHistory, id, page);
+            var matchHistory = data.ToObject<MatchHistory>();
+            return matchHistory;
+        }
+
+        public async Task<Stats> AsyncGetStats(string matchid, string name)
+        {
+            string path = $"$..players[?(@.nickname == '{name}')].player_stats";
+            Stats Stats = new Stats();
+            var data = await AsyncGetInfo(GetInfo.MatchStats, matchid);
+            Stats = data.ToObject<Stats>();
             try
-            { 
-            string matchhistory;
-            foreach (Match match in player.Matches)
             {
-                matchhistory = GetInfo(3, match.Value);
-                if (matchhistory == "Error") { i++; continue; }
-                stats[i] = new Stats
-                {
-                    Score = (Regex.Match(matchhistory, @"(?<=Score"".{2}).+?(?="")").Value),
-                    Kills = int.Parse(kreg.Match(matchhistory).Value),
-                    Map = (Regex.Match(matchhistory, @"(?<=Map"".{2}).+?(?="")").Value),
-                    Deaths = int.Parse(dreg.Match(matchhistory).Value)                   
-                };
-                stats[i].KDRatio = Math.Round((double) stats[i].Kills / stats[i++].Deaths, 2);
+                Dictionary<string, double> temp = data.SelectToken(path).ToObject<Dictionary<string, double>>();
+                Stats.Kills = (int)temp["Kills"];
+                Stats.Deaths = (int)temp["Deaths"];
+                Stats.KDRatio = temp["K/D Ratio"];
+                Stats.KRRatio = temp["K/R Ratio"];
+                Stats.Result = (temp["Result"] == 1 ? 'W' : 'L');
             }
-            }
-            catch (ArgumentException e)
+            catch(NullReferenceException)
             {
-                throw new System.ArgumentException();
+                Stats.Kills = 0;
+                Stats.Deaths = 0;
+                Stats.KDRatio = 0;
+                Stats.KRRatio = 0;
+                Stats.Result = 'E';
             }
-            return stats;
+            return Stats;
         }
-        public class Stats
-        {
-            public string Map { get; set; }
-            public string Score { get; set; }          
-            public int Kills { get; set; }
-            public int Deaths { get; set; }    
-            public double KDRatio { get; set; }
-        }
+
+        [JsonConverter(typeof(JsonPathConverter))]
         public class Player
-        {
+        {   
+            [JsonProperty("nickname")]
             public string Nickname { get; set; }
-            public string PId { get; set; }
-            public MatchCollection Matches { get; set; }
+            [JsonProperty("player_id")]
+            public string PlayerID { get; set; }
+            [JsonProperty("avatar")]
             public string Avatar { get; set; }
-            public string Level { get; set; }
-            public string Elo { get; set; }
+            [JsonProperty("games.csgo.skill_level")]
+            public int Level { get; set; }
+            [JsonProperty("games.csgo.faceit_elo")]
+            public int Elo { get; set; }         
         }
-    }
+
+        public class MatchHistory
+        {
+            [JsonProperty("items")]
+            public Match[] Match { get; set; }
+        }
+
+        [JsonConverter(typeof(JsonPathConverter))]
+        public partial class Match
+        {
+            [JsonProperty("match_id")]
+            public string Id { get; set; }           
+            [JsonProperty("started_at")]
+            public int _Date { get; set; }
+            public DateTimeOffset Date { get; set; }
+            public Stats Stats { get; set; }
+        }
+        [JsonConverter(typeof(JsonPathConverter))]
+        public partial class Stats
+        {
+            [JsonProperty("rounds[0].round_stats.Map")]
+            public string Map { get; set; }
+            [JsonProperty("rounds[0].round_stats.Score")]
+            public string Score { get; set; }
+            public char Result { get; set; }
+            public int Kills { get; set; }
+            public int Deaths { get; set; }
+            public double KDRatio { get; set; }
+            public double KRRatio { get; set; }
+        }
+     }
 }
