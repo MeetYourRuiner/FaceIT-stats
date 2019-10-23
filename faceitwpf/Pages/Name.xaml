@@ -42,6 +42,6 @@
             </Rectangle.Fill>
         </Rectangle>
         <Label x:Name="btn" Content="SEARCH" Width="300" MouseLeftButtonDown="Label_MouseLeftButtonDown" Height="30" Grid.Row="3" Grid.Column="2"/>
-        <Label x:Name="UpdateLabel" Content="Update" Grid.Column="4" HorizontalAlignment="Left" Margin="139,20,0,0" VerticalAlignment="Top" Height="30" Width="103" MouseLeftButtonDown="UpdateLabel_MouseLeftButtonDown"/>
+        <Label x:Name="UpdateLabel" Content="Update" Grid.Column="4" HorizontalAlignment="Left" Margin="139,20,0,0" VerticalAlignment="Top" Height="30" Width="103" MouseLeftButtonDown="UpdateLabel_MouseLeftButtonDown" Visibility="Hidden"/>
     </Grid>
 </Page>

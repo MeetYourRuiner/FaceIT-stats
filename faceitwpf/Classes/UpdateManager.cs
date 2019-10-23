@@ -21,21 +21,24 @@ namespace faceitwpf.Classes
             Trace.WriteLine(((HttpWebResponse)response).StatusDescription);
             using (Stream dataStream = response.GetResponseStream())
             {
-                StreamReader reader = new StreamReader(dataStream);
-                string responseFromServer = reader.ReadToEnd();
-                deserializedResponse = JObject.Parse(responseFromServer);
+                using (StreamReader reader = new StreamReader(dataStream))
+                {
+                    string responseFromServer = reader.ReadToEnd();
+                    deserializedResponse = JObject.Parse(responseFromServer);
+                }
             }
             response.Close();
-            var latestVersion = ((string)deserializedResponse["tag_name"]).Substring(1); // 1.0.0.0
-            if (latestVersion != GetCurrentVersion())
+            var latestVersion = ((string)deserializedResponse["tag_name"]).Substring(1).Split('.'); // 1.0.0.0
+            var currentVestion = GetCurrentVersion();
+            for (int i = 0; i < 4; i++)
             {
-                updateLink = (string)deserializedResponse["assets"][0]["browser_download_url"];
-                return true;
+                if (int.Parse(latestVersion[i]) > int.Parse(currentVestion[i]))
+                {
+                    updateLink = (string)deserializedResponse["assets"][0]["browser_download_url"];
+                    return true;
+                }
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         public static async Task Update()
@@ -44,13 +47,15 @@ namespace faceitwpf.Classes
             string oldfilename = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
             using (WebClient wc = new WebClient())
                 await wc.DownloadFileTaskAsync(new System.Uri(updateLink), newfilename);
-            Process process = new Process();
-            process.StartInfo = new ProcessStartInfo()
+            Process process = new Process()
             {
-                FileName = "cmd.exe",
-                WindowStyle = ProcessWindowStyle.Normal,
-                UseShellExecute = false,
-                RedirectStandardInput = true
+                StartInfo = new ProcessStartInfo()
+                {
+                    FileName = "cmd.exe",
+                    WindowStyle = ProcessWindowStyle.Normal,
+                    UseShellExecute = false,
+                    RedirectStandardInput = true
+                }
             };
             process.Start();
             process.StandardInput.WriteLine($"RENAME {oldfilename} old.exe");
@@ -59,14 +64,15 @@ namespace faceitwpf.Classes
             process.StandardInput.Flush();
             process.StandardInput.Close();
             process.WaitForExit();
+            process.Close();
             System.Windows.Application.Current.Shutdown();
         }
 
-        private static string GetCurrentVersion()
+        private static string[] GetCurrentVersion()
         {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
-            return fvi.FileVersion;
+            return fvi.FileVersion.Split('.');
         }
     }
 }
