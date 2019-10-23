@@ -52,7 +52,7 @@ namespace faceitwpf.Classes
                 StartInfo = new ProcessStartInfo()
                 {
                     FileName = "cmd.exe",
-                    WindowStyle = ProcessWindowStyle.Normal,
+                    WindowStyle = ProcessWindowStyle.Hidden,
                     UseShellExecute = false,
                     RedirectStandardInput = true
                 }
