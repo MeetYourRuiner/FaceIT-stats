@@ -17,7 +17,8 @@ namespace faceitwpf
         public Name()
         {
             InitializeComponent();
-            if (UpdateManager.CheckForUpdate()) ;
+            if (UpdateManager.CheckForUpdate())
+                this.UpdateLabel.Visibility = System.Windows.Visibility.Visible;
         }
         private void Label_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -82,14 +83,16 @@ namespace faceitwpf
             }
         }
 
-        private void btn_MouseEnter(object sender, MouseEventArgs e)
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
-            btn.Background = new SolidColorBrush(Color.FromRgb(255, 125, 0));
+            var button = (Label)sender;
+            button.Background = new SolidColorBrush(Color.FromRgb(255, 125, 0));
         }
 
-        private void btn_MouseLeave(object sender, MouseEventArgs e)
+        private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
-            btn.Background = new SolidColorBrush(Color.FromRgb(255, 85, 0));
+            var button = (Label)sender;
+            button.Background = new SolidColorBrush(Color.FromRgb(255, 85, 0));
         }
 
         private void nameTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -109,6 +112,24 @@ namespace faceitwpf
         private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             nameTextBox.Focus();
+        }
+
+        private async void UpdateLabel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                this.IsEnabled = false;
+                await UpdateManager.Update();
+            }
+            catch
+            {
+                this.IsEnabled = true;
+                nameTextBox.Text = "Update failed";
+            }
+            finally
+            {
+                this.IsEnabled = true;
+            }
         }
     }
 }

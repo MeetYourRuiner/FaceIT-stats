@@ -7,7 +7,19 @@
       mc:Ignorable="d" 
       d:DesignHeight="550" d:DesignWidth="900" 
       Title="Name" Loaded="Page_Loaded">
-
+    <Page.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Background" Value="#FFFF5500"/>
+            <Setter Property="Foreground" Value="#FFEBEFF3"/>
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <EventSetter Event="MouseEnter" Handler="Button_MouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="Button_MouseLeave"/>
+        </Style>
+    </Page.Resources>
     <Grid Background="#FF141616" FocusManager.FocusedElement="{Binding ElementName=nameTextBox}">
         <Grid.RowDefinitions>
             <RowDefinition Height="49*"/>
@@ -29,6 +41,7 @@
                 <ImageBrush ImageSource="/faceitwpf;component/Resources/icon-pheasant-preview-2-268x151.png" Stretch="None"/>
             </Rectangle.Fill>
         </Rectangle>
-        <Label x:Name="btn" Content="SEARCH" Background="#FFFF5500" Foreground="#FFEBEFF3" FontSize="14" BorderThickness="0" HorizontalAlignment="Center" Width="300" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MouseLeftButtonDown="Label_MouseLeftButtonDown" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" VerticalAlignment="Center" Height="30" Grid.Row="3" Grid.Column="2"/>
+        <Label x:Name="btn" Content="SEARCH" Width="300" MouseLeftButtonDown="Label_MouseLeftButtonDown" Height="30" Grid.Row="3" Grid.Column="2"/>
+        <Label x:Name="UpdateLabel" Content="Update" Grid.Column="4" HorizontalAlignment="Left" Margin="139,20,0,0" VerticalAlignment="Top" Height="30" Width="103" MouseLeftButtonDown="UpdateLabel_MouseLeftButtonDown"/>
     </Grid>
 </Page>
