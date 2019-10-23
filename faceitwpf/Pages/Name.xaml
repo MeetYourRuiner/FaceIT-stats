@@ -15,7 +15,7 @@
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
             <EventSetter Event="MouseEnter" Handler="Button_MouseEnter"/>
             <EventSetter Event="MouseLeave" Handler="Button_MouseLeave"/>
         </Style>

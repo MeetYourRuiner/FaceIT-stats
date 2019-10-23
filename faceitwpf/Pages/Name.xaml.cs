@@ -17,9 +17,16 @@ namespace faceitwpf
         public Name()
         {
             InitializeComponent();
-            if (UpdateManager.CheckForUpdate())
+            CheckUpdates();
+        }
+
+        private async void CheckUpdates()
+        {
+            bool isOutdated = await UpdateManager.CheckForUpdate();
+            if (isOutdated)
                 this.UpdateLabel.Visibility = System.Windows.Visibility.Visible;
         }
+
         private void Label_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             HandleClickOrEnter();

@@ -12,11 +12,11 @@ namespace faceitwpf.Classes
     {
         private static string URL = "https://api.github.com/repos/MeetYourRuiner/FaceIT-stats/releases/latest";
         private static string updateLink;
-        public static bool CheckForUpdate()
+        public static async Task<bool> CheckForUpdate()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
             request.UserAgent = "request";
-            WebResponse response = request.GetResponse();
+            WebResponse response = await request.GetResponseAsync();
             JObject deserializedResponse;
             Trace.WriteLine(((HttpWebResponse)response).StatusDescription);
             using (Stream dataStream = response.GetResponseStream())
