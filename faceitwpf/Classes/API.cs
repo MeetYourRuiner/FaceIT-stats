@@ -75,10 +75,10 @@ namespace faceitwpf
         {
             string path = $"$..players[?(@.nickname == '{name}')].player_stats";
             Stats Stats = new Stats();
-            var data = await AsyncGetInfo(GetInfo.MatchStats, matchid);
-            Stats = data.ToObject<Stats>();
             try
             {
+                var data = await AsyncGetInfo(GetInfo.MatchStats, matchid);
+                Stats = data.ToObject<Stats>();
                 Dictionary<string, double> temp = data.SelectToken(path).ToObject<Dictionary<string, double>>();
                 Stats.Kills = (int)temp["Kills"];
                 Stats.Deaths = (int)temp["Deaths"];
@@ -86,8 +86,10 @@ namespace faceitwpf
                 Stats.KRRatio = temp["K/R Ratio"];
                 Stats.Result = (temp["Result"] == 1 ? 'W' : 'L');
             }
-            catch(NullReferenceException)
+            catch(Exception e)
             {
+                if (e.Message == "Failed to get match info")
+                    Stats.Map = "de_notfound";
                 Stats.Kills = 0;
                 Stats.Deaths = 0;
                 Stats.KDRatio = 0;

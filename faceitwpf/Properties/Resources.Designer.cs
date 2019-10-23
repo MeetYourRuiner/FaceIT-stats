@@ -59,5 +59,15 @@ namespace faceitwpf.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
+        /// </summary>
+        internal static System.Drawing.Icon Faceit_Logo_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("Faceit_Logo_64x64", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

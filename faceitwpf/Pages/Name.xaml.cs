@@ -1,4 +1,5 @@
-﻿using System;
+﻿using faceitwpf.Classes;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ namespace faceitwpf
         public Name()
         {
             InitializeComponent();
+            if (UpdateManager.CheckForUpdate()) ;
         }
         private void Label_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -102,6 +104,11 @@ namespace faceitwpf
         {
             var textbox = (TextBox)sender;
             textbox.Dispatcher.BeginInvoke(new Action(() => textbox.SelectAll()));
+        }
+
+        private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            nameTextBox.Focus();
         }
     }
 }
