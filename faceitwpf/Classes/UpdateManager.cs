@@ -29,10 +29,10 @@ namespace faceitwpf.Classes
             }
             response.Close();
             var latestVersion = ((string)deserializedResponse["tag_name"]).Substring(1).Split('.'); // 1.0.0.0
-            var currentVestion = GetCurrentVersion();
+            var currentVersion = GetCurrentVersion();
             for (int i = 0; i < 4; i++)
             {
-                if (int.Parse(latestVersion[i]) > int.Parse(currentVestion[i]))
+                if (int.Parse(latestVersion[i]) > int.Parse(currentVersion[i]))
                 {
                     updateLink = (string)deserializedResponse["assets"][0]["browser_download_url"];
                     return true;
