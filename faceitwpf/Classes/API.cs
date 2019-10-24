@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 
 namespace faceitwpf
 {
@@ -47,7 +47,7 @@ namespace faceitwpf
                     if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Wrong nickname");
                     return JObject.Parse(response.Content.ReadAsStringAsync().Result);
                 case GetInfo.MatchHistory:
-                    response = await _client.GetAsync($"https://open.faceit.com/data/v4/players/{id}/history?game=csgo&offset={10*(page-1)}&limit=10");
+                    response = await _client.GetAsync($"https://open.faceit.com/data/v4/players/{id}/history?game=csgo&offset={10 * (page - 1)}&limit=10");
                     if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Failed to get match history");
                     return JObject.Parse(response.Content.ReadAsStringAsync().Result);
                 case GetInfo.MatchStats:
@@ -86,7 +86,7 @@ namespace faceitwpf
                 Stats.KRRatio = temp["K/R Ratio"];
                 Stats.Result = (temp["Result"] == 1 ? 'W' : 'L');
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (e.Message == "Failed to get match info")
                     Stats.Map = "de_notfound";
@@ -101,7 +101,7 @@ namespace faceitwpf
 
         [JsonConverter(typeof(JsonPathConverter))]
         public class Player
-        {   
+        {
             [JsonProperty("nickname")]
             public string Nickname { get; set; }
             [JsonProperty("player_id")]
@@ -111,7 +111,7 @@ namespace faceitwpf
             [JsonProperty("games.csgo.skill_level")]
             public int Level { get; set; }
             [JsonProperty("games.csgo.faceit_elo")]
-            public int Elo { get; set; }         
+            public int Elo { get; set; }
         }
 
         public class MatchHistory
@@ -124,7 +124,7 @@ namespace faceitwpf
         public partial class Match
         {
             [JsonProperty("match_id")]
-            public string Id { get; set; }           
+            public string Id { get; set; }
             [JsonProperty("started_at")]
             public int _Date { get; set; }
             public DateTimeOffset Date { get; set; }
@@ -143,5 +143,5 @@ namespace faceitwpf
             public double KDRatio { get; set; }
             public double KRRatio { get; set; }
         }
-     }
+    }
 }

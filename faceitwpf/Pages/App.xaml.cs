@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
 
 namespace faceitwpf
@@ -18,7 +12,7 @@ namespace faceitwpf
         {
             if (e.Args.Contains("-updated"))
             {
-                System.Diagnostics.Process.Start("CMD.exe", "/C DEL old.exe");
+                System.Diagnostics.Process.Start("CMD.exe", "/C DEL old");
             }
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();

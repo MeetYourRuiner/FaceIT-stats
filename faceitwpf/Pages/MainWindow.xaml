@@ -6,4 +6,4 @@
         xmlns:local="clr-namespace:faceitwpf"
         mc:Ignorable="d"
         Title="Цифорки" Height="550" Width="900" Background="#FF141616" Source="Name.xaml" ShowsNavigationUI="False"
-                  WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"/>
+                  WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Loaded="NavigationWindow_Loaded"/>

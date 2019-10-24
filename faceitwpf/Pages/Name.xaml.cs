@@ -22,9 +22,12 @@ namespace faceitwpf
 
         private async void CheckUpdates()
         {
-            bool isOutdated = await UpdateManager.CheckForUpdate();
-            if (isOutdated)
-                this.UpdateLabel.Visibility = System.Windows.Visibility.Visible;
+            string latestVersion = await UpdateManager.CheckForUpdate();
+            if (latestVersion != null)
+            {
+                this.UpdateLabel.Content = "Update to\n" + latestVersion;
+                this.UpdateLabel.Visibility = System.Windows.Visibility.Visible; 
+            }
         }
 
         private void Label_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -40,7 +43,7 @@ namespace faceitwpf
                 Cursor = Cursors.Wait;
                 try
                 {
-                    DataPage datapage = new DataPage();                   
+                    DataPage datapage = new DataPage();
                     API api = API.GetInstance();
                     API.Player player = await api.AsyncGetPlayerInfo(nameTextBox.Text);
                     api.CurrentPlayer = player;
@@ -67,18 +70,18 @@ namespace faceitwpf
                     datapage.NickLabel.Content = player.Nickname;
                     datapage.LevelLabel.Content = player.Level + " Level " + player.Elo + " Elo";
 
-                    try 
-                    { 
-                        datapage.avatar.Source = new BitmapImage(new Uri(player.Avatar)); 
+                    try
+                    {
+                        datapage.avatar.Source = new BitmapImage(new Uri(player.Avatar));
                     }
                     catch (System.UriFormatException)
                     {
                         datapage.avatar.Source = new BitmapImage(new Uri("/faceitwpf;component/icon-pheasant-preview-2-268x151.png", UriKind.Relative));
                         datapage.avatar.Stretch = Stretch.Uniform;
-                    }                    
+                    }
                     NavigationService.Navigate(datapage);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     btn.IsEnabled = true;
                     nameTextBox.IsEnabled = true;
@@ -128,10 +131,10 @@ namespace faceitwpf
                 this.IsEnabled = false;
                 await UpdateManager.Update();
             }
-            catch
+            catch(Exception ex)
             {
                 this.IsEnabled = true;
-                nameTextBox.Text = "Update failed";
+                nameTextBox.Text = ex.Message;
             }
             finally
             {
