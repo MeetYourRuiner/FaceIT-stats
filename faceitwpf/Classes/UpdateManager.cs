@@ -62,7 +62,7 @@ namespace faceitwpf.Classes
             process.Start();
             using (StreamWriter streamWriter = new StreamWriter(process.StandardInput.BaseStream, Encoding.GetEncoding(866)))
             {
-                streamWriter.WriteLine($"RENAME \"{oldfilename}\" \"old\"");
+                streamWriter.WriteLine($"RENAME \"{oldfilename}\" \"old.exe\"");
                 streamWriter.WriteLine($"RENAME \"{newfilename}\" \"{oldfilename}\"");
                 streamWriter.WriteLine($"\"{oldfilename}\" -updated");
             }

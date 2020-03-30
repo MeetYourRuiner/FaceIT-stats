@@ -19,13 +19,12 @@ namespace faceitwpf
     class API
     {
         private static API _instance;
-        private static HttpClient _client = new HttpClient();
+        private HttpClient _client;
         public Player CurrentPlayer { get; set; }
         public API()
         {
             _client = new HttpClient();
-            string apikey = "a847d087-70da-4dd0-992d-cc000f257839";
-            _client.BaseAddress = new Uri("https://api.faceit.com/auth/v1/");
+            string apikey = Properties.Settings.Default.API_Key;
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apikey);
@@ -38,7 +37,7 @@ namespace faceitwpf
             return _instance;
         }
 
-        public async Task<JObject> AsyncGetInfo(GetInfo getInfo, string id = "0", int page = 1)
+        public async Task<JObject> AsyncGetInfo(GetInfo getInfo, string id, int page = 1)
         {
             switch (getInfo)
             {

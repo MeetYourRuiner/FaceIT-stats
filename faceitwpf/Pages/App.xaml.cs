@@ -12,7 +12,7 @@ namespace faceitwpf
         {
             if (e.Args.Contains("-updated"))
             {
-                System.Diagnostics.Process.Start("CMD.exe", "/C DEL old");
+                System.Diagnostics.Process.Start("CMD.exe", "/C DEL old.exe");
             }
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();

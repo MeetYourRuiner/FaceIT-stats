@@ -15,11 +15,28 @@ namespace faceitwpf
     /// </summary>
     public partial class DataPage : Page
     {
-        private int _page = 1;
+        private int page;
 
+        public int Page
+        {
+            get => page;
+            set
+            {
+                page = value;
+                if (page == 1)
+                {
+                    Previous.IsEnabled = false;
+                }
+                else
+                {
+                    Previous.IsEnabled = true;
+                }
+            }
+        }
         public DataPage()
         {
             InitializeComponent();
+            Page = 1;
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)
@@ -34,7 +51,7 @@ namespace faceitwpf
             button.Background = new SolidColorBrush(Color.FromRgb(255, 85, 0));
         }
 
-        private void Label_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Back_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             API.GetInstance().CurrentPlayer = null;
             NavigationService.GoBack();
@@ -42,41 +59,29 @@ namespace faceitwpf
 
         private async Task GetPage(bool GetNext = true)
         {
-            //
-            System.Diagnostics.Stopwatch timer2 = new System.Diagnostics.Stopwatch();
-            timer2.Start();
-            //
             API api = API.GetInstance();
             var player = api.CurrentPlayer;
             var tasks = new List<Task<API.Stats>>();
-            _page = GetNext ? _page + 1 : _page - 1;
+            Page = GetNext ? Page + 1 : Page - 1;
             try
             {
-                API.MatchHistory matchHistory = await api.AsyncGetHistory(player.PlayerID, _page);
+                API.MatchHistory matchHistory = await api.AsyncGetHistory(player.PlayerID, Page);
                 if (matchHistory.Match.Length == 0)
-                    throw new Exception("Page is empty");
+                {
+                    Page--;
+                    throw new Exception("Page is empty"); 
+                }
                 for (int i = 0; i < matchHistory.Match.Length; i++)
                 {
                     tasks.Add(api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname));
                 }
-                //
-                System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
-                timer.Start();
                 var Stats = await Task.WhenAll(tasks);
-                timer.Stop();
-                System.Diagnostics.Trace.WriteLine($"Загрузка страницы: {timer.Elapsed.TotalSeconds}");
-                //
                 for (int i = 0; i < matchHistory.Match.Length; i++)
                 {
                     matchHistory.Match[i].Stats = Stats[i];
                     matchHistory.Match[i].Date = DateTimeOffset.FromUnixTimeSeconds(matchHistory.Match[i]._Date).ToLocalTime();
                 }
                 this.matchgrid.ItemsSource = matchHistory.Match;
-
-                //
-                timer2.Stop();
-                System.Diagnostics.Trace.WriteLine($"Полная загрузка страницы: {timer2.Elapsed.TotalSeconds}");
-                //
             }
             catch (Exception ex)
             {
@@ -106,7 +111,7 @@ namespace faceitwpf
 
         private async void Previous_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (_page == 1)
+            if (Page == 1)
                 return;
             var backup = matchgrid.ItemsSource;
             this.matchgrid.IsEnabled = false;

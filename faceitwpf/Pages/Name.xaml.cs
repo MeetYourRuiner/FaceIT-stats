@@ -34,6 +34,16 @@ namespace faceitwpf
         {
             HandleClickOrEnter();
         }
+
+        private void nameTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                HandleClickOrEnter();
+            }
+        }
+
+        // Нажатие Enter или "Search" ведёт к открытию DataPage 
         private async void HandleClickOrEnter()
         {
             if (nameTextBox.Text.Length > 0 && nameTextBox.Text.Length < 30)
@@ -53,13 +63,13 @@ namespace faceitwpf
                     {
                         tasks.Add(api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname));
                     }
-                    //
-                    System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
-                    timer.Start();
-                    var Stats = await Task.WhenAll(tasks);
-                    timer.Stop();
-                    System.Diagnostics.Trace.WriteLine($"Загрузка страницы: {timer.Elapsed.TotalSeconds}");
-                    //
+                        //
+                        System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+                        timer.Start();
+                        var Stats = await Task.WhenAll(tasks);
+                        timer.Stop();
+                        System.Diagnostics.Trace.WriteLine($"Загрузка страницы: {timer.Elapsed.TotalSeconds}");
+                        //
                     for (int i = 0; i < matchHistory.Match.Length; i++)
                     {
                         matchHistory.Match[i].Stats = Stats[i];
@@ -103,14 +113,6 @@ namespace faceitwpf
         {
             var button = (Label)sender;
             button.Background = new SolidColorBrush(Color.FromRgb(255, 85, 0));
-        }
-
-        private void nameTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                HandleClickOrEnter();
-            }
         }
 
         private void nameTextBox_GotFocus(object sender, System.Windows.RoutedEventArgs e)
