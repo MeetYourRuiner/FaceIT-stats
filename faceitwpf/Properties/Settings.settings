@@ -1,9 +1,0 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="faceitwpf.Properties" GeneratedClassName="Settings">
-  <Profiles />
-  <Settings>
-    <Setting Name="API_Key" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">a847d087-70da-4dd0-992d-cc000f257839</Value>
-    </Setting>
-  </Settings>
-</SettingsFile>
