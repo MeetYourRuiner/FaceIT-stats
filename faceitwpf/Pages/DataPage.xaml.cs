@@ -6,7 +6,9 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using faceitwpf.Models;
 
 namespace faceitwpf
 {
@@ -33,47 +35,66 @@ namespace faceitwpf
                 }
             }
         }
+
+        private enum NavigateTo
+        {
+            First,
+            Next,
+            Previous
+        }
         public DataPage()
         {
             InitializeComponent();
-            Page = 1;
         }
 
-        private void Button_MouseEnter(object sender, MouseEventArgs e)
-        {
-            var button = (Label)sender;
-            button.Background = new SolidColorBrush(Color.FromRgb(255, 125, 0));
-        }
-
-        private void Button_MouseLeave(object sender, MouseEventArgs e)
-        {
-            var button = (Label)sender;
-            button.Background = new SolidColorBrush(Color.FromRgb(255, 85, 0));
-        }
-
-        private void Back_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            API.GetInstance().CurrentPlayer = null;
-            NavigationService.GoBack();
-        }
-
-        private async Task GetPage(bool GetNext = true)
+        public async Task Initialize()
         {
             API api = API.GetInstance();
-            var player = api.CurrentPlayer;
-            var tasks = new List<Task<API.Stats>>();
-            Page = GetNext ? Page + 1 : Page - 1;
+            Player player = api.CurrentPlayer;
+            NickLabel.Content = player.Nickname;
+            LevelLabel.Content = player.Level + " Level " + player.Elo + " Elo";
+            await AsyncLoadPage(NavigateTo.First);
             try
             {
-                API.MatchHistory matchHistory = await api.AsyncGetHistory(player.PlayerID, Page);
+                avatar.Source = new BitmapImage(new Uri(player.Avatar));
+            }
+            catch (System.UriFormatException)
+            {
+                avatar.Source = new BitmapImage(new Uri("/faceitwpf;component/icon-pheasant-preview-2-268x151.png", UriKind.Relative));
+                avatar.Stretch = Stretch.Uniform;
+            }
+        }
+
+        private async Task AsyncLoadPage(NavigateTo navigateTo)
+        {
+            API api = API.GetInstance();
+            Player player = api.CurrentPlayer;
+            var tasks = new List<Task<Stats>>();
+            switch (navigateTo)
+            {
+                case NavigateTo.Next:
+                    Page++;
+                    break;
+                case NavigateTo.Previous:
+                    Page--;
+                    break;
+                case NavigateTo.First:
+                    Page = 1;
+                    break;
+                default:
+                    break;
+            }
+            try
+            {
+                MatchHistory matchHistory = await api.GetInfoAsync<MatchHistory>(player.PlayerID, Page);
                 if (matchHistory.Match.Length == 0)
                 {
                     Page--;
                     throw new Exception("Page is empty"); 
                 }
-                for (int i = 0; i < matchHistory.Match.Length; i++)
+                foreach (Match match in matchHistory.Match)
                 {
-                    tasks.Add(api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname));
+                    tasks.Add(api.GetInfoAsync<Stats>(match.Id));
                 }
                 var Stats = await Task.WhenAll(tasks);
                 for (int i = 0; i < matchHistory.Match.Length; i++)
@@ -85,18 +106,19 @@ namespace faceitwpf
             }
             catch (Exception ex)
             {
-                throw ex;
+                if (navigateTo != NavigateTo.First)
+                    throw ex;
             }
         }
 
         private async void Next_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var backup = matchgrid.ItemsSource;
-            this.matchgrid.IsEnabled = false;
+            matchgrid.IsEnabled = false;
             Cursor = Cursors.Wait;
             try
             {
-                await GetPage();
+                await AsyncLoadPage(NavigateTo.Next);
             }
             catch
             {
@@ -118,7 +140,7 @@ namespace faceitwpf
             Cursor = Cursors.Wait;
             try
             {
-                await GetPage(GetNext: false);
+                await AsyncLoadPage(NavigateTo.Previous);
             }
             catch
             {
@@ -129,6 +151,24 @@ namespace faceitwpf
                 matchgrid.IsEnabled = true;
                 Cursor = Cursors.Arrow;
             }
+        }
+
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
+        {
+            var button = (Label)sender;
+            button.Background = new SolidColorBrush(Color.FromRgb(255, 125, 0));
+        }
+
+        private void Button_MouseLeave(object sender, MouseEventArgs e)
+        {
+            var button = (Label)sender;
+            button.Background = new SolidColorBrush(Color.FromRgb(255, 85, 0));
+        }
+
+        private void Back_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            API.GetInstance().CurrentPlayer = null;
+            NavigationService.GoBack();
         }
     }
     public class KDRConverter : IValueConverter

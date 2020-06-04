@@ -1,11 +1,9 @@
 ﻿using faceitwpf.Classes;
+using faceitwpf.Models;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace faceitwpf
 {
@@ -26,7 +24,7 @@ namespace faceitwpf
             if (latestVersion != null)
             {
                 this.UpdateLabel.Content = "Update to\n" + latestVersion;
-                this.UpdateLabel.Visibility = System.Windows.Visibility.Visible; 
+                this.UpdateLabel.Visibility = System.Windows.Visibility.Visible;
             }
         }
 
@@ -53,42 +51,11 @@ namespace faceitwpf
                 Cursor = Cursors.Wait;
                 try
                 {
-                    DataPage datapage = new DataPage();
                     API api = API.GetInstance();
-                    API.Player player = await api.AsyncGetPlayerInfo(nameTextBox.Text);
+                    Player player = await api.GetInfoAsync<Player>(nameTextBox.Text);
                     api.CurrentPlayer = player;
-                    var tasks = new List<Task<API.Stats>>();
-                    API.MatchHistory matchHistory = await api.AsyncGetHistory(player.PlayerID);
-                    for (int i = 0; i < matchHistory.Match.Length; i++)
-                    {
-                        tasks.Add(api.AsyncGetStats(matchHistory.Match[i].Id, player.Nickname));
-                    }
-                        //
-                        System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
-                        timer.Start();
-                        var Stats = await Task.WhenAll(tasks);
-                        timer.Stop();
-                        System.Diagnostics.Trace.WriteLine($"Загрузка страницы: {timer.Elapsed.TotalSeconds}");
-                        //
-                    for (int i = 0; i < matchHistory.Match.Length; i++)
-                    {
-                        matchHistory.Match[i].Stats = Stats[i];
-                        matchHistory.Match[i].Date = DateTimeOffset.FromUnixTimeSeconds(matchHistory.Match[i]._Date).ToLocalTime();
-                    }
-                    datapage.matchgrid.ItemsSource = matchHistory.Match;
-
-                    datapage.NickLabel.Content = player.Nickname;
-                    datapage.LevelLabel.Content = player.Level + " Level " + player.Elo + " Elo";
-
-                    try
-                    {
-                        datapage.avatar.Source = new BitmapImage(new Uri(player.Avatar));
-                    }
-                    catch (System.UriFormatException)
-                    {
-                        datapage.avatar.Source = new BitmapImage(new Uri("/faceitwpf;component/icon-pheasant-preview-2-268x151.png", UriKind.Relative));
-                        datapage.avatar.Stretch = Stretch.Uniform;
-                    }
+                    DataPage datapage = new DataPage();
+                    await datapage.Initialize();
                     NavigationService.Navigate(datapage);
                 }
                 catch (Exception ex)
@@ -133,7 +100,7 @@ namespace faceitwpf
                 this.IsEnabled = false;
                 await UpdateManager.Update();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.IsEnabled = true;
                 nameTextBox.Text = ex.Message;

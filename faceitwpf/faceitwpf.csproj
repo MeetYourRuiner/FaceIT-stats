@@ -105,6 +105,9 @@
     </Page>
     <Compile Include="Classes\API.cs" />
     <Compile Include="Classes\UpdateManager.cs" />
+    <Compile Include="Models\Stats.cs" />
+    <Compile Include="Models\Match.cs" />
+    <Compile Include="Models\Player.cs" />
     <Compile Include="Pages\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
