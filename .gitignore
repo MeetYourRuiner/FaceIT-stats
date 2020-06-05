@@ -261,4 +261,6 @@ __pycache__/
 *.pyc
 
 #api keys
-*.settings
+faceitwpf/Properties/Settings.Designer.cs
+faceitwpf/Properties/Settings.settings
+faceitwpf/App.config

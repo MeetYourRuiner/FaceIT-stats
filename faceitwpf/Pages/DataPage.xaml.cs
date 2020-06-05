@@ -17,24 +17,10 @@ namespace faceitwpf
     /// </summary>
     public partial class DataPage : Page
     {
-        private int page;
+        private List<Match> matches;
 
-        public int Page
-        {
-            get => page;
-            set
-            {
-                page = value;
-                if (page == 1)
-                {
-                    Previous.IsEnabled = false;
-                }
-                else
-                {
-                    Previous.IsEnabled = true;
-                }
-            }
-        }
+        public int Page { get; set; }
+        private readonly int MatchesOnPage = 9;
 
         private enum NavigateTo
         {
@@ -53,23 +39,36 @@ namespace faceitwpf
             Player player = api.CurrentPlayer;
             NickLabel.Content = player.Nickname;
             LevelLabel.Content = player.Level + " Level " + player.Elo + " Elo";
-            await AsyncLoadPage(NavigateTo.First);
+            await LoadMatchesAsync();
+            LoadPage(NavigateTo.First);
             try
             {
                 avatar.Source = new BitmapImage(new Uri(player.Avatar));
             }
-            catch (System.UriFormatException)
+            catch (UriFormatException)
             {
                 avatar.Source = new BitmapImage(new Uri("/faceitwpf;component/icon-pheasant-preview-2-268x151.png", UriKind.Relative));
                 avatar.Stretch = Stretch.Uniform;
             }
         }
 
-        private async Task AsyncLoadPage(NavigateTo navigateTo)
+        private async Task LoadMatchesAsync()
         {
             API api = API.GetInstance();
             Player player = api.CurrentPlayer;
-            var tasks = new List<Task<Stats>>();
+            try
+            {
+                var history = await api.GetInfoAsync<MatchHistory>(player.PlayerID);
+                matches = history.Matches;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private void LoadPage(NavigateTo navigateTo)
+        {
             switch (navigateTo)
             {
                 case NavigateTo.Next:
@@ -79,30 +78,29 @@ namespace faceitwpf
                     Page--;
                     break;
                 case NavigateTo.First:
-                    Page = 1;
+                    Page = 0;
                     break;
                 default:
                     break;
             }
+            if (Page == 0)
+                Previous.IsEnabled = false;
+            else
+                Previous.IsEnabled = true;
             try
             {
-                MatchHistory matchHistory = await api.GetInfoAsync<MatchHistory>(player.PlayerID, Page);
-                if (matchHistory.Match.Length == 0)
-                {
-                    Page--;
-                    throw new Exception("Page is empty"); 
+                if (matches.Count == 0)
+                { 
+                    Previous.IsEnabled = false;
+                    Next.IsEnabled = false;
                 }
-                foreach (Match match in matchHistory.Match)
-                {
-                    tasks.Add(api.GetInfoAsync<Stats>(match.Id));
-                }
-                var Stats = await Task.WhenAll(tasks);
-                for (int i = 0; i < matchHistory.Match.Length; i++)
-                {
-                    matchHistory.Match[i].Stats = Stats[i];
-                    matchHistory.Match[i].Date = DateTimeOffset.FromUnixTimeSeconds(matchHistory.Match[i]._Date).ToLocalTime();
-                }
-                this.matchgrid.ItemsSource = matchHistory.Match;
+                var checkCount = matches.Count - Page * MatchesOnPage;
+                if (checkCount < MatchesOnPage && checkCount > 0)
+                    matchgrid.ItemsSource = matches.GetRange(Page * MatchesOnPage, checkCount);
+                else if (checkCount > 0)
+                    matchgrid.ItemsSource = matches.GetRange(Page * MatchesOnPage, MatchesOnPage);
+                else
+                    LoadPage(NavigateTo.Previous);
             }
             catch (Exception ex)
             {
@@ -111,58 +109,30 @@ namespace faceitwpf
             }
         }
 
-        private async void Next_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Next_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var backup = matchgrid.ItemsSource;
-            matchgrid.IsEnabled = false;
-            Cursor = Cursors.Wait;
             try
             {
-                await AsyncLoadPage(NavigateTo.Next);
+                LoadPage(NavigateTo.Next);
             }
             catch
             {
-                this.matchgrid.ItemsSource = backup;
-            }
-            finally
-            {
-                matchgrid.IsEnabled = true;
-                Cursor = Cursors.Arrow;
+                throw;
             }
         }
 
-        private async void Previous_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Previous_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (Page == 1)
+            if (Page == 0)
                 return;
-            var backup = matchgrid.ItemsSource;
-            this.matchgrid.IsEnabled = false;
-            Cursor = Cursors.Wait;
             try
             {
-                await AsyncLoadPage(NavigateTo.Previous);
+                LoadPage(NavigateTo.Previous);
             }
             catch
             {
-                this.matchgrid.ItemsSource = backup;
+                throw;
             }
-            finally
-            {
-                matchgrid.IsEnabled = true;
-                Cursor = Cursors.Arrow;
-            }
-        }
-
-        private void Button_MouseEnter(object sender, MouseEventArgs e)
-        {
-            var button = (Label)sender;
-            button.Background = new SolidColorBrush(Color.FromRgb(255, 125, 0));
-        }
-
-        private void Button_MouseLeave(object sender, MouseEventArgs e)
-        {
-            var button = (Label)sender;
-            button.Background = new SolidColorBrush(Color.FromRgb(255, 85, 0));
         }
 
         private void Back_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -151,6 +151,8 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\Play-Bold.ttf" />
+    <Resource Include="Resources\Play-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

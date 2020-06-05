@@ -31,45 +31,30 @@ namespace faceitwpf
             return _instance;
         }
 
-        public async Task<T> GetInfoAsync<T>(string id, int page = 1) where T: class
+        public async Task<T> GetInfoAsync<T>(string id) where T: class
         {
             var typeName = typeof(T).Name;
+            HttpResponseMessage response;
             switch (typeName)
             {
                 case "Player":
-                    var response = await _client.GetAsync($"https://open.faceit.com/data/v4/players?nickname={id}&game=csgo");
+                    response = await _client.GetAsync($"https://open.faceit.com/data/v4/players?nickname={id}&game=csgo");
                     if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Wrong nickname");
                     return JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<T>();
                 case "MatchHistory":
-                    response = await _client.GetAsync($"https://open.faceit.com/data/v4/players/{id}/history?game=csgo&offset={10 * (page - 1)}&limit=10");
+                    var tempClient = new HttpClient();
+                    _client.DefaultRequestHeaders.Accept.Clear();
+                    _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    response = await tempClient.GetAsync($"https://api.faceit.com/stats/v1/stats/time/users/{id}/games/csgo?&size=100"); // первая - 0
                     if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Failed to get match history");
-                    return JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<T>();
-                case "Stats":
-                    response = await _client.GetAsync($"https://open.faceit.com/data/v4/matches/{id}/stats");
-                    if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Failed to get match info");
-                    var jObject = JObject.Parse(response.Content.ReadAsStringAsync().Result);
-                    Stats stats = jObject.ToObject<Stats>();
-                    try
+                    var json = await response.Content.ReadAsStringAsync();
+                    var matchList = JsonConvert.DeserializeObject<List<Match>>(json);
+                    for (int i = 0; i < matchList.Count - 1; i++)
                     {
-                        string path = $"$..players[?(@.nickname == '{CurrentPlayer.Nickname}')].player_stats";
-                        Dictionary<string, double> temp = jObject.SelectToken(path).ToObject<Dictionary<string, double>>();
-                        stats.Kills = (int)temp["Kills"];
-                        stats.Deaths = (int)temp["Deaths"];
-                        stats.KDRatio = temp["K/D Ratio"];
-                        stats.KRRatio = temp["K/R Ratio"];
-                        stats.Result = (temp["Result"] == 1 ? 'W' : 'L');
+                        if (matchList[i].ELO != 0 && matchList[i + 1].ELO != 0)
+                            matchList[i].ChangeELO = matchList[i].ELO - matchList[i + 1].ELO;
                     }
-                    catch (Exception e)
-                    {
-                        if (e.Message == "Failed to get match info")
-                            stats.Map = "de_notfound";
-                        stats.Kills = 0;
-                        stats.Deaths = 0;
-                        stats.KDRatio = 0;
-                        stats.KRRatio = 0;
-                        stats.Result = 'E';
-                    }
-                    return stats as T;
+                    return new MatchHistory(matchList) as T;
                 default:
                     return null;
             }

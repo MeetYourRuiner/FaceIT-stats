@@ -8,30 +8,52 @@
       xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
       xmlns:local="clr-namespace:faceitwpf"
       mc:Ignorable="d" 
-      d:DesignHeight="550" d:DesignWidth="900"     
+      d:DesignHeight="750" d:DesignWidth="900"     
       Title="DataPage">
     <Page.Resources>
         <local:KDRConverter x:Key="KRDC"/>
         <sys:Double x:Key="KRMin">0.74</sys:Double>
         <sys:Double x:Key="KDMin">1</sys:Double>
-        <Style TargetType="DataGridCell">
+        <Style x:Key="InfoLabel" TargetType="Label">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Background" Value="#FF0A0C0C"/>
+            <Setter Property="Foreground" Value="#FFF5F8FA"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="Width" Value="Auto"/>
+        </Style>
+        <Style x:Key="DGCellStyle"
+            TargetType="{x:Type DataGridCell}">
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="#232828"/>
                     <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
             </Style.Triggers>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="10,0,0,0" />
         </Style>
     </Page.Resources>
     <Grid Margin="0,10,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="0*"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition Height="14*"/>
             <RowDefinition Height="100*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="355*"/>
-            <RowDefinition Height="Auto" MinHeight="13"/>
-            <RowDefinition Height="32*"/>
+            <RowDefinition Height="20*"/>
+            <RowDefinition Height="543*"/>
+            <RowDefinition Height="Auto" MinHeight="10"/>
+            <RowDefinition Height="33"/>
             <RowDefinition Height="20*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -40,56 +62,104 @@
             <ColumnDefinition Width="592*"/>
             <ColumnDefinition Width="17*"/>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="matchgrid" HorizontalAlignment="Left" Height="355" Width="865" Foreground="#FFF5F8FA" GridLinesVisibility="Horizontal" HeadersVisibility="Column" 
-                  CanUserResizeRows="False" CanUserResizeColumns="False" FontSize="20" RowBackground="#FF0A0C0C" 
-                  BorderThickness="0" VerticalAlignment="Top" Background="{x:Null}" Grid.Row="4" 
-                  Grid.Column="1" HorizontalGridLinesBrush="#FF141616" IsReadOnly="True" Grid.ColumnSpan="2" 
-                  AutoGenerateColumns="False" SelectionUnit="Cell" SelectionMode="Single">
+        <DataGrid x:Name="matchgrid" 
+                  Grid.Row="4" Grid.ColumnSpan="4" 
+                  Foreground="#FFF5F8FA" 
+                  RowBackground="#FF141417" 
+                  GridLinesVisibility="Horizontal" 
+                  HeadersVisibility="Column" 
+                  CanUserResizeRows="False" 
+                  CanUserResizeColumns="False" 
+                  AutoGenerateColumns="False"
+                  FontSize="18" 
+                  BorderThickness="0" 
+                  Background="{x:Null}" 
+                  HorizontalGridLinesBrush="#FF141616" 
+                  IsReadOnly="True" 
+                  SelectionUnit="FullRow" SelectionMode="Single" 
+                  CanUserSortColumns="False" CanUserReorderColumns="False"
+                  RowHeight="50"
+                  CellStyle="{StaticResource DGCellStyle}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled"
+        >
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="FontSize" Value="20" />
-                    <Setter Property="Background" Value="#FF141417" />
+                    <Setter Property="Background" Value="#FF0A0C0C" />
+                    <Setter Property="Padding" Value="10,10,0,10"/>
                 </Style>
             </DataGrid.ColumnHeaderStyle>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Margin" Value="0,0,0,2" />
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Map" Binding="{Binding Path=Stats.Map}" Width="1.25*"/>
-                <DataGridTextColumn Header=" " Binding="{Binding Path=Stats.Result}" Width="0.25*">
+                <DataGridTextColumn 
+                    Header="Date" 
+                    Binding="{Binding Path=Date, StringFormat='{}{0:dd MMM - HH:mm}'}"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                    Width="*"
+                />
+                <DataGridTextColumn 
+                    Header="Map" 
+                    Binding="{Binding Path=Map}" 
+                    Width="*"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header=" " 
+                    Binding="{Binding Path=ResultELO}" 
+                    Width="0.42*"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                >
                     <DataGridTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource DGCellStyle}">
                             <Setter Property="Foreground" Value="Red"/>
                             <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="#232828"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                </Trigger>
-                                <DataTrigger Binding="{Binding Stats.Result}" Value='W'>
+                                <DataTrigger Binding="{Binding Result}" Value='W'>
                                     <Setter Property="Foreground" Value="Green"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Score" Binding="{Binding Path=Stats.Score}" Width="*"/>
-                <DataGridTextColumn Header="K" Binding="{Binding Path=Stats.Kills}" Width="*"/>
-                <DataGridTextColumn Header="D" Binding="{Binding Path=Stats.Deaths}" Width="*"/>
-                <DataGridTextColumn Header="KR" Binding="{Binding Path=Stats.KRRatio}" Width="*">
+                <DataGridTextColumn 
+                    Header="Score" 
+                    Binding="{Binding Path=Score}" 
+                    Width="0.5*"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header="K" 
+                    Binding="{Binding Path=Kills}" 
+                    Width="0.4*"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header="D" 
+                    Binding="{Binding Path=Deaths}" 
+                    Width="0.4*"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header="KR" 
+                    Binding="{Binding Path=KRRatio}" 
+                    Width="0.5*"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                >
                     <DataGridTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource DGCellStyle}">
                             <Setter Property="Foreground" Value="Red"/>
                             <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="#232828"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                </Trigger>
-                                <DataTrigger Binding="{Binding Path = Stats.KRRatio, Converter={StaticResource KRDC}, ConverterParameter={StaticResource KRMin}}">
+                                <DataTrigger Binding="{Binding Path = KRRatio, Converter={StaticResource KRDC}, ConverterParameter={StaticResource KRMin}}">
                                     <DataTrigger.Value>3</DataTrigger.Value>
                                     <Setter Property="Foreground" Value="RoyalBlue"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path = Stats.KRRatio, Converter={StaticResource KRDC}, ConverterParameter={StaticResource KRMin}}">
+                                <DataTrigger Binding="{Binding Path = KRRatio, Converter={StaticResource KRDC}, ConverterParameter={StaticResource KRMin}}">
                                     <DataTrigger.Value>2</DataTrigger.Value>
                                     <Setter Property="Foreground" Value="Green"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path = Stats.KRRatio, Converter={StaticResource KRDC}, ConverterParameter={StaticResource KRMin}}">
+                                <DataTrigger Binding="{Binding Path = KRRatio, Converter={StaticResource KRDC}, ConverterParameter={StaticResource KRMin}}">
                                     <DataTrigger.Value>1</DataTrigger.Value>
                                     <Setter Property="Foreground" Value="Yellow"/>
                                 </DataTrigger>
@@ -97,16 +167,17 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="KDR" Binding="{Binding Path=Stats.KDRatio}" Width="*">
+                <DataGridTextColumn 
+                    Header="KDR" 
+                    Binding="{Binding Path=KDRatio}" 
+                    Width="0.5*"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                >
                     <DataGridTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource DGCellStyle}">
                             <Setter Property="Foreground" Value="Green"/>
                             <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="#232828"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                </Trigger>
-                                <DataTrigger Binding="{Binding Path = Stats.KDRatio, Converter={StaticResource KRDC}, ConverterParameter={StaticResource KDMin}}">
+                                <DataTrigger Binding="{Binding Path = KDRatio, Converter={StaticResource KRDC}, ConverterParameter={StaticResource KDMin}}">
                                     <DataTrigger.Value>true</DataTrigger.Value>
                                     <Setter Property="Foreground" Value="Red"/>
                                 </DataTrigger>
@@ -114,23 +185,55 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat='{}{0:dd MMM - HH:mm}'}" Width="1.25*"/>
+                <DataGridTextColumn 
+                    Header="ELO" 
+                    Binding="{Binding Path=ELO}" 
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                    Width="0.4*"
+                />
             </DataGrid.Columns>
         </DataGrid>
-        <Label x:Name="Back" Content="BACK" Background="#FFFF5500" Foreground="#FFEBEFF3" FontSize="16" BorderThickness="0" 
-               HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MouseLeftButtonDown="Back_MouseLeftButtonDown" 
-               MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Grid.Row="6" HorizontalAlignment="Center" 
-               VerticalAlignment="Center" Width="273" Grid.Column="1" Height="32"/>
-        <Image x:Name="avatar" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="101" Grid.Row="2" Grid.Column="1" Stretch="Fill"/>
-        <Label x:Name="NickLabel" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="106,4,0,0" Grid.Row="2" VerticalAlignment="Top" Background="#FF0A0C0C" Foreground="#FFF5F8FA" FontSize="16"/>
-        <Label x:Name="LevelLabel" Grid.Column="1" HorizontalAlignment="Left" Margin="106,40,0,0" Grid.Row="2" VerticalAlignment="Top" Background="#FF0A0C0C" Foreground="#FFF5F8FA" FontSize="16"/>
-        <Label x:Name="Next" Content="NEXT" Background="#FFFF5500" Foreground="#FFEBEFF3" FontSize="16" BorderThickness="0" 
-            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MouseLeftButtonDown="Next_MouseLeftButtonDown" 
-            MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Grid.Row="6" HorizontalAlignment="Center" 
-            VerticalAlignment="Center" Width="200" Grid.Column="2" Height="32" Margin="379,0,11,0"/>
-        <Label x:Name="Previous" Content="PREVIOUS" Background="#FFFF5500" Foreground="#FFEBEFF3" FontSize="16" BorderThickness="0" 
-            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MouseLeftButtonDown="Previous_MouseLeftButtonDown" 
-            MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Grid.Row="6" HorizontalAlignment="Center" 
-            VerticalAlignment="Center" Width="200" Grid.Column="2" Height="32" Margin="129,0,263,0"/>
+        <Label x:Name="Back" 
+               Content="BACK"
+               Style="{StaticResource ButtonStyle}"
+               MouseLeftButtonDown="Back_MouseLeftButtonDown" 
+               Grid.Row="6" 
+               Width="273" 
+               Grid.Column="1" Margin="0,1,0,0"
+        />
+        <Image x:Name="avatar" 
+               HorizontalAlignment="Left" 
+               Width="101" Grid.Row="2" 
+               Grid.Column="1" 
+               Stretch="Fill" Margin="0,0,0,1"
+        />
+        <Label x:Name="NickLabel"
+               Grid.Column="1" 
+               Margin="106,4,0,0" 
+               Grid.Row="2" 
+               Style="{StaticResource InfoLabel}" 
+        />
+        <Label x:Name="LevelLabel" 
+               Grid.Column="1" 
+               Margin="106,40,0,0" 
+               Grid.Row="2" 
+               Style="{StaticResource InfoLabel}"
+        />
+        <Label x:Name="Next" 
+               Content="NEXT" 
+               Style="{StaticResource ButtonStyle}"
+               MouseLeftButtonDown="Next_MouseLeftButtonDown" 
+               Grid.Row="6" 
+               Grid.Column="2" 
+               Margin="392,1,0,0"
+        />
+        <Label x:Name="Previous" 
+               Content="PREVIOUS"
+               Style="{StaticResource ButtonStyle}"
+               MouseLeftButtonDown="Previous_MouseLeftButtonDown" 
+               Grid.Row="6" 
+               Grid.Column="2" 
+               Margin="149,1,243,0"
+        />
     </Grid>
 </Page>

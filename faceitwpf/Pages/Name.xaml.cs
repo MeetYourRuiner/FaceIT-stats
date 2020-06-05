@@ -15,7 +15,6 @@ namespace faceitwpf
         public Name()
         {
             InitializeComponent();
-            CheckUpdates();
         }
 
         private async void CheckUpdates()
@@ -91,6 +90,7 @@ namespace faceitwpf
         private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             nameTextBox.Focus();
+            CheckUpdates();
         }
 
         private async void UpdateLabel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

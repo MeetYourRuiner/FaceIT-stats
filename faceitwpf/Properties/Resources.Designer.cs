@@ -69,5 +69,25 @@ namespace faceitwpf.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] Play_Bold {
+            get {
+                object obj = ResourceManager.GetObject("Play_Bold", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] Play_Regular {
+            get {
+                object obj = ResourceManager.GetObject("Play_Regular", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

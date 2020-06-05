@@ -14,7 +14,7 @@ namespace faceitwpf
             object targetObj = Activator.CreateInstance(objectType);
 
             foreach (System.Reflection.PropertyInfo prop in objectType.GetProperties()
-                                                    .Where(p => p.CanRead && p.CanWrite))
+                                                    .Where(p => p.CanWrite))
             {
                 JsonPropertyAttribute att = prop.GetCustomAttributes(true)
                                                 .OfType<JsonPropertyAttribute>()
