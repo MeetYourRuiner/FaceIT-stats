@@ -22,7 +22,7 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="13*"/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="nameTextBox" MaxLength="30" FontSize="25" Background="#FF2B2B2B" BorderThickness="0" Foreground="#FFEBEFF3" Grid.ColumnSpan="3" Padding="0,3" KeyDown="nameTextBox_KeyDown" GotFocus="nameTextBox_GotFocus" Grid.Column="1" Grid.Row="1"/>
+        <TextBox x:Name="nameTextBox" MaxLength="30" FontSize="26" Background="#FF2B2B2B" BorderThickness="0" Foreground="#FFEBEFF3" Grid.ColumnSpan="3" Padding="0,3" KeyDown="nameTextBox_KeyDown" GotFocus="nameTextBox_GotFocus" Grid.Column="1" Grid.Row="1"/>
         <Rectangle HorizontalAlignment="Center" Height="94" Margin="100,108,100,105" Width="100" VerticalAlignment="Center" Grid.Row="4" Grid.Column="2">
             <Rectangle.Fill>
                 <ImageBrush ImageSource="/faceitwpf;component/Resources/icon-pheasant-preview-2-268x151.png" Stretch="None"/>
