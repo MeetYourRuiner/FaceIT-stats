@@ -15,6 +15,7 @@ namespace faceitwpf
         public Name()
         {
             InitializeComponent();
+            nameTextBox.Text = Properties.Settings.Default.LastNickname;
         }
 
         private async void CheckUpdates()
@@ -56,6 +57,8 @@ namespace faceitwpf
                     DataPage datapage = new DataPage();
                     await datapage.Initialize();
                     NavigationService.Navigate(datapage);
+                    Properties.Settings.Default.LastNickname = nameTextBox.Text;
+                    Properties.Settings.Default.Save();
                 }
                 catch (Exception ex)
                 {
