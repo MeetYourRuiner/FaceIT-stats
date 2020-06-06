@@ -1,7 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using faceitwpf.Properties;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Documents;
+using System.Windows.Media.Imaging;
 
 namespace faceitwpf.Models
 {
@@ -38,12 +41,16 @@ namespace faceitwpf.Models
 
         [JsonProperty("i6")]
         public int Kills { get; set; }
+
         [JsonProperty("i8")]
         public int Deaths { get; set; }
+
         [JsonProperty("c2")]
         public double KDRatio { get; set; }
+
         [JsonProperty("c3")]
         public double KRRatio { get; set; }
+
         [JsonProperty("elo")]
         public int ELO { get; set; }
         public int ChangeELO { get; set; } = 0;
@@ -52,5 +59,15 @@ namespace faceitwpf.Models
                 return $"{Result}({sign}{ChangeELO})"; 
             }
         }
+
+        public int AvgLevel { get; set; }
+        public string LevelImage { get => $"/faceitwpf;component/Resources/lvl{AvgLevel}.png"; }
+    }
+
+    public class MatchLvl
+    {
+        public string Id { get; set; }
+
+        public int[] Levels { get; set; }
     }
 }

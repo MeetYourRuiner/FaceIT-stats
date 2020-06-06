@@ -168,4 +168,20 @@ namespace faceitwpf
             throw new NotImplementedException();
         }
     }
+
+    public class ZeroConverter : IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((int)value == 0)
+                return null;
+            else
+                return value;
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

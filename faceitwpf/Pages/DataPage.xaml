@@ -12,6 +12,7 @@
       Title="DataPage">
     <Page.Resources>
         <local:KDRConverter x:Key="KRDC"/>
+        <local:ZeroConverter x:Key="ZC"/>
         <sys:Double x:Key="KRMin">0.74</sys:Double>
         <sys:Double x:Key="KDMin">1</sys:Double>
         <Style x:Key="InfoLabel" TargetType="Label">
@@ -44,6 +45,10 @@
         </Style>
         <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
             <Setter Property="Margin" Value="10,0,0,0" />
+        </Style>
+        <Style TargetType="ToolTip" BasedOn="{StaticResource {x:Type ToolTip}}">
+            <Setter Property="Foreground" Value="#FFF5F8FA" />
+            <Setter Property="Background" Value="#FF0A0C0C"/>
         </Style>
     </Page.Resources>
     <Grid Background="#FF141616">
@@ -109,7 +114,14 @@
                     Binding="{Binding Score}" 
                     Width="75"
                     ElementStyle="{StaticResource ColumnElementStyle}"
-                />
+                >
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
+                            <Setter Property="ToolTip" Value="{Binding ELO}" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                
                 <DataGridTextColumn 
                     Header=" " 
                     Binding="{Binding ResultELO}" 
@@ -118,7 +130,8 @@
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
                             <Setter Property="Foreground" Value="Red"/>
-                            <Style.Triggers>
+                            <Setter Property="ToolTip" Value="{Binding ELO}" />
+                                <Style.Triggers>
                                 <DataTrigger Binding="{Binding Result}" Value='W'>
                                     <Setter Property="Foreground" Value="Green"/>
                                 </DataTrigger>
@@ -167,7 +180,7 @@
                 <DataGridTextColumn 
                     Header="KDR" 
                     Binding="{Binding KDRatio}" 
-                    Width="*"
+                    Width="0.6*"
                     ElementStyle="{StaticResource ColumnElementStyle}"
                 >
                     <DataGridTextColumn.CellStyle>
@@ -182,12 +195,21 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn 
+                <DataGridTemplateColumn 
+                    Width="80"
+                >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding LevelImage}" Height="32" Width="32"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--<DataGridTextColumn 
                     Header="ELO" 
-                    Binding="{Binding ELO}" 
+                    Binding="{Binding ELO, Converter={StaticResource ZC}}" 
                     ElementStyle="{StaticResource ColumnElementStyle}"
                     Width="*"
-                />
+                />-->
                 <DataGridTextColumn 
                     Header="Date" 
                     Binding="{Binding Date, StringFormat=\{0:d MMM HH:mm\}}"
