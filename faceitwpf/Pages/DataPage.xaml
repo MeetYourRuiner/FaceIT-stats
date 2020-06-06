@@ -40,6 +40,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         </Style>
         <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
             <Setter Property="Margin" Value="10,0,0,0" />
@@ -80,7 +81,9 @@
                   SelectionUnit="FullRow" SelectionMode="Single" 
                   CanUserSortColumns="False" CanUserReorderColumns="False"
                   RowHeight="50"
-                  CellStyle="{StaticResource DGCellStyle}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled"
+                  CellStyle="{StaticResource DGCellStyle}" 
+                  HorizontalScrollBarVisibility="Disabled" 
+                  VerticalScrollBarVisibility="Disabled"
         >
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">

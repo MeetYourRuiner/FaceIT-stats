@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,11 +30,15 @@ namespace faceitwpf.Classes
             }
             response.Close();
             var latestVersion = ((string)deserializedResponse["tag_name"]).Substring(1);
+            var currentVersion = GetCurrentVersion();
+            if (latestVersion == currentVersion)
+                return null;
+
             var latestVersionNums = latestVersion.Split('.'); // 1.0.0.0
-            var currentVersion = GetCurrentVersion().Split('.');
+            var currentVersionNums = GetCurrentVersion().Split('.');
             for (int i = 0; i < 4; i++)
             {
-                if (int.Parse(latestVersionNums[i]) < int.Parse(currentVersion[i]))
+                if (int.Parse(latestVersionNums[i]) < int.Parse(currentVersionNums[i]))
                 {
                     return null;
                 }
