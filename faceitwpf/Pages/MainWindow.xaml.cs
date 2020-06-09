@@ -1,6 +1,5 @@
 ﻿using faceitwpf.Classes;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Navigation;
 
 namespace faceitwpf

@@ -8,7 +8,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
 
 namespace faceitwpf
 {
@@ -33,7 +32,7 @@ namespace faceitwpf
             return _instance;
         }
 
-        public async Task<T> GetInfoAsync<T>(string id) where T: class
+        public async Task<T> GetInfoAsync<T>(string id) where T : class
         {
             var typeName = typeof(T).Name;
             string json;
@@ -70,13 +69,14 @@ namespace faceitwpf
                     if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Failed");
                     json = await response.Content.ReadAsStringAsync();
                     JObject jObject = JObject.Parse(json);
-                    var array = jObject["items"].Select(t => 
-                        new MatchLvl { 
-                            Id = t["match_id"].Value<string>(), 
+                    var array = jObject["items"].Select(t =>
+                        new MatchLvl
+                        {
+                            Id = t["match_id"].Value<string>(),
                             Levels = t
                                 .SelectTokens("$..skill_level")
                                 .Values<int>()
-                                .ToArray() 
+                                .ToArray()
                         });
                     return array.ToArray() as T;
                 default:

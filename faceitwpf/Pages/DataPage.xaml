@@ -6,6 +6,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactions"
       xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+      xmlns:chart = "clr-namespace:faceitwpf.Controls" 
       xmlns:local="clr-namespace:faceitwpf"
       mc:Ignorable="d" 
       d:DesignHeight="750" d:DesignWidth="900"     
@@ -69,6 +70,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Rectangle x:Name="CoverImage" Grid.ColumnSpan="4" Grid.RowSpan="4" Stroke="Black" StrokeThickness="0"/>
+        <chart:EloChart x:Name="EloChart" Grid.Row="4" Grid.ColumnSpan="4" Visibility="Hidden"/>
         <DataGrid x:Name="matchgrid" 
                   Grid.Row="4" Grid.ColumnSpan="4" 
                   Foreground="#FFF5F8FA" 
@@ -121,7 +123,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                
+
                 <DataGridTextColumn 
                     Header=" " 
                     Binding="{Binding ResultELO}" 
@@ -131,7 +133,7 @@
                         <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
                             <Setter Property="Foreground" Value="Red"/>
                             <Setter Property="ToolTip" Value="{Binding ELO}" />
-                                <Style.Triggers>
+                            <Style.Triggers>
                                 <DataTrigger Binding="{Binding Result}" Value='W'>
                                     <Setter Property="Foreground" Value="Green"/>
                                 </DataTrigger>
@@ -204,12 +206,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <!--<DataGridTextColumn 
-                    Header="ELO" 
-                    Binding="{Binding ELO, Converter={StaticResource ZC}}" 
-                    ElementStyle="{StaticResource ColumnElementStyle}"
-                    Width="*"
-                />-->
                 <DataGridTextColumn 
                     Header="Date" 
                     Binding="{Binding Date, StringFormat=\{0:d MMM HH:mm\}}"
@@ -243,12 +239,6 @@
                Grid.Row="2" 
                Style="{StaticResource InfoLabel}" Content="Nickname" BorderThickness="0,0,0,1" BorderBrush="#FFFF5500" 
         />
-        <Label x:Name="LevelLabel" 
-               Grid.Column="1" 
-               Margin="138,37,0,0" 
-               Grid.Row="2" 
-               Style="{StaticResource InfoLabel}" Content="10 Level 2056 Elo" BorderBrush="#FFFF5500" BorderThickness="0,0,0,1"
-        />
         <Label x:Name="Next" 
                Content="NEXT" 
                Style="{StaticResource ButtonStyle}"
@@ -264,6 +254,28 @@
                Grid.Row="6" 
                Grid.Column="2" 
                Margin="140,0,240,0"
+        />
+        <StackPanel Grid.Column="1" HorizontalAlignment="Left" Height="46" Margin="138,37,0,0" Grid.Row="2" VerticalAlignment="Top"
+                    Width="Auto">
+            <Label x:Name="LevelLabel" 
+               Style="{StaticResource InfoLabel}" Content="10 Level 2056 Elo" BorderBrush="#FFFF5500" BorderThickness="0,0,0,1" HorizontalAlignment="Stretch"
+        />
+            <Label x:Name="EloLeftLabel" 
+               Style="{StaticResource InfoLabel}" Content="-56/+56"
+               HorizontalContentAlignment="Center"
+               FontSize="10"
+               Height="Auto"
+               Padding="0" HorizontalAlignment="Stretch"
+        />
+        </StackPanel>
+        <Label x:Name="ChartBtn" 
+            Content="Chart"
+            Style="{StaticResource ButtonStyle}"
+            MouseLeftButtonDown="ChartBtn_MouseLeftButtonDown" 
+            Grid.Row="2" 
+            Width="132" 
+            Grid.Column="1" VerticalAlignment="Center"
+        Margin="138,100,10,0"
         />
     </Grid>
 </Page>

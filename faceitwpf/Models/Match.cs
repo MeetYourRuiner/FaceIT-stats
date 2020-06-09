@@ -1,10 +1,6 @@
-﻿using faceitwpf.Properties;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Documents;
-using System.Windows.Media.Imaging;
 
 namespace faceitwpf.Models
 {
@@ -54,9 +50,12 @@ namespace faceitwpf.Models
         [JsonProperty("elo")]
         public int ELO { get; set; }
         public int ChangeELO { get; set; } = 0;
-        public string ResultELO { get {
+        public string ResultELO
+        {
+            get
+            {
                 var sign = ChangeELO >= 0 ? "+" : string.Empty;
-                return $"{Result}({sign}{ChangeELO})"; 
+                return $"{Result}({sign}{ChangeELO})";
             }
         }
 

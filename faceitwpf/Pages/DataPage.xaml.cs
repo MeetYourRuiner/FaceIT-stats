@@ -1,4 +1,5 @@
-﻿using System;
+﻿using faceitwpf.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -8,8 +9,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using faceitwpf.Models;
-
 namespace faceitwpf
 {
     /// <summary>
@@ -18,6 +17,10 @@ namespace faceitwpf
     public partial class DataPage : Page
     {
         private List<Match> matches;
+        private int[] Levels =
+        {
+            0, 0, 801, 951, 1101, 1251, 1401, 1551, 1701, 1851, 2001
+        };
 
         public int Page { get; set; }
         private readonly int MatchesOnPage = 9;
@@ -39,6 +42,9 @@ namespace faceitwpf
             Player player = api.CurrentPlayer;
             NickLabel.Content = player.Nickname;
             LevelLabel.Content = player.Level + " Level " + player.Elo + " Elo";
+            var toDemote = player.Level == 1 ? "∞" : (player.Elo - Levels[player.Level] - 1).ToString();
+            var toPromote = player.Level == 10 ? "∞" : (Levels[player.Level + 1] - player.Elo).ToString();
+            EloLeftLabel.Content = $"-{toDemote}/+{toPromote}";
             await LoadMatchesAsync();
             LoadPage(NavigateTo.First);
             try
@@ -56,7 +62,7 @@ namespace faceitwpf
                 CoverImage.Stretch = Stretch.Fill;
             }
             catch (UriFormatException)
-            {}
+            { }
         }
 
         private async Task LoadMatchesAsync()
@@ -67,6 +73,8 @@ namespace faceitwpf
             {
                 var history = await api.GetInfoAsync<MatchHistory>(player.PlayerID);
                 matches = history.Matches;
+                if (matches.Count > 0)
+                    EloChart.SetSource(matches.ToArray());
             }
             catch (Exception ex)
             {
@@ -97,7 +105,7 @@ namespace faceitwpf
             try
             {
                 if (matches.Count == 0)
-                { 
+                {
                     Previous.IsEnabled = false;
                     Next.IsEnabled = false;
                 }
@@ -146,6 +154,22 @@ namespace faceitwpf
         {
             API.GetInstance().CurrentPlayer = null;
             NavigationService.GoBack();
+        }
+
+        private void ChartBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (EloChart.Visibility == System.Windows.Visibility.Hidden)
+            {
+                EloChart.Visibility = System.Windows.Visibility.Visible;
+                matchgrid.Visibility = System.Windows.Visibility.Hidden;
+                ChartBtn.Content = "Table";
+            }
+            else
+            {
+                EloChart.Visibility = System.Windows.Visibility.Hidden;
+                matchgrid.Visibility =  System.Windows.Visibility.Visible;
+                ChartBtn.Content = "Chart";
+            }
         }
     }
     public class KDRConverter : IValueConverter
