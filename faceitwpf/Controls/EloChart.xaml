@@ -13,26 +13,35 @@
             <ColumnDefinition Width="38*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <lvc:CartesianChart 
+        <lvc:CartesianChart x:Name="chart" 
             DisableAnimations="True"
             Series="{Binding MatchSeries}"
-            LegendLocation="None" 
-            Grid.Column="1"
+            LegendLocation="None"
+            Grid.ColumnSpan="3"
+            Hoverable="False"
             >
             <lvc:CartesianChart.Resources>
                 <Style TargetType="lvc:LineSeries">
                     <Setter Property="Fill" Value="Transparent"/>
                     <Setter Property="Stroke" Value="#FFFF5500"/>
-                    <Setter Property="PointGeometrySize" Value="10"/>
+                    <Setter Property="PointGeometrySize" Value="6.5"/>
                     <Setter Property="PointForeground" Value="#FFEBEFF3"/>
+                    <Setter Property="StrokeThickness" Value="3"/>
                 </Style>
             </lvc:CartesianChart.Resources>
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="ELO" LabelFormatter="{Binding Formatter}"></lvc:Axis>
+                <lvc:Axis Title="ELO" LabelFormatter="{Binding Formatter}">
+                    <lvc:Axis.Separator>
+                        <lvc:Separator Step="50" StrokeThickness="1" StrokeDashArray="5">
+                            <lvc:Separator.Stroke>
+                                <SolidColorBrush Color="#404F56" />
+                            </lvc:Separator.Stroke>
+                        </lvc:Separator>
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
             </lvc:CartesianChart.AxisY>
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis MinValue="{Binding From}" MaxValue="{Binding To}" 
-                          ShowLabels="False"
+                <lvc:Axis ShowLabels="False"
                           Separator="{x:Static lvc:DefaultAxes.CleanSeparator}">
                 </lvc:Axis>
             </lvc:CartesianChart.AxisX>
@@ -40,7 +49,5 @@
                 <local:ChartToolTip/>
             </lvc:CartesianChart.DataTooltip>
         </lvc:CartesianChart>
-        <Button x:Name="Next" Content="&gt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="512" Grid.Column="2" Click="NextOnClick" Background="#7FDDDDDD"/>
-        <Button x:Name="Previous" Content="&lt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="512" Click="PrevOnClick" Background="#7FDDDDDD"/>
     </Grid>
 </UserControl>

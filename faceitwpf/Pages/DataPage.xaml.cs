@@ -42,11 +42,13 @@ namespace faceitwpf
             Player player = api.CurrentPlayer;
             NickLabel.Content = player.Nickname;
             LevelLabel.Content = player.Level + " Level " + player.Elo + " Elo";
-            var toDemote = player.Level == 1 ? "∞" : (player.Elo - Levels[player.Level] - 1).ToString();
+            var toDemote = player.Level == 1 ? "∞" : (player.Elo - Levels[player.Level] + 1).ToString();
             var toPromote = player.Level == 10 ? "∞" : (Levels[player.Level + 1] - player.Elo).ToString();
             EloLeftLabel.Content = $"-{toDemote}/+{toPromote}";
             await LoadMatchesAsync();
             LoadPage(NavigateTo.First);
+            if (matches.Count == 0)
+                ChartBtn.IsEnabled = false;
             try
             {
                 avatar.Source = new BitmapImage(new Uri(player.Avatar));
@@ -162,12 +164,16 @@ namespace faceitwpf
             {
                 EloChart.Visibility = System.Windows.Visibility.Visible;
                 matchgrid.Visibility = System.Windows.Visibility.Hidden;
+                Next.Visibility = System.Windows.Visibility.Hidden;
+                Previous.Visibility = System.Windows.Visibility.Hidden;
                 ChartBtn.Content = "Table";
             }
             else
             {
                 EloChart.Visibility = System.Windows.Visibility.Hidden;
                 matchgrid.Visibility =  System.Windows.Visibility.Visible;
+                Next.Visibility = System.Windows.Visibility.Visible;
+                Previous.Visibility = System.Windows.Visibility.Visible;
                 ChartBtn.Content = "Chart";
             }
         }

@@ -9,15 +9,21 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" 
              d:DataContext="{d:DesignInstance local:ChartToolTip}"
-             Background="#E4555555" Padding="5" BorderThickness="2" BorderBrush="#555555">
+             Background="#E4555555" Padding="5" BorderThickness="1" BorderBrush="#FFFF5500">
     <ItemsControl ItemsSource="{Binding Data.Points}" Grid.IsSharedSizeScope="True">
         <ItemsControl.ItemTemplate>
             <DataTemplate DataType="{x:Type wpf:DataPointViewModel}">
                 <StackPanel>
-                    <TextBlock Text="{Binding ChartPoint.Instance.(models:Match.ELO), StringFormat=ELO: {0}}" 
-                               VerticalAlignment="Center" Foreground="White" Height="16"/>
-                    <TextBlock Text="{Binding ChartPoint.Instance.(models:Match.ChangeELO), StringFormat={}{0:+#;-#;''}}" 
-                               VerticalAlignment="Center" Foreground="White" Height="16"/>
+                    <TextBlock VerticalAlignment="Center" Foreground="White" Height="16" FontSize="13">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} ({1:+#;-#;'-'})">
+                                <Binding Path="ChartPoint.Instance.(models:Match.ELO)"/>
+                                <Binding Path="ChartPoint.Instance.(models:Match.ChangeELO)"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Text="{Binding ChartPoint.Instance.(models:Match.Date), StringFormat={}{0:d MMMM yyyy, HH:mm}}" 
+                               VerticalAlignment="Center" Foreground="White" Height="16" FontSize="13"/>
                 </StackPanel>
             </DataTemplate>
         </ItemsControl.ItemTemplate>
