@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace faceitwpf.Controls
 {
@@ -26,9 +27,12 @@ namespace faceitwpf.Controls
 
         public void SetSource(Match[] matches)
         {
+            var WinBrush = new SolidColorBrush(Colors.Green);
+            var LossBrush = new SolidColorBrush(Colors.Red);
             var mapper = Mappers.Xy<Match>() //in this case value is of type <ObservablePoint>
                 .X((value, index) => index) //use the X property as X
-                .Y((value, index) => value.ELO); //use the Y property as Y
+                .Y((value, index) => value.ELO) //use the Y property as Y
+                .Fill(value => value.Result == 'W' ? WinBrush : LossBrush);
             var values = matches.Reverse().Where(m => m.ELO != 0).AsChartValues();
             MatchSeries = new SeriesCollection(mapper)
             {
@@ -38,7 +42,6 @@ namespace faceitwpf.Controls
                     Values = values
                 }
             };
-            var s = chart.Series;
             DataContext = this;
             Formatter = value => value.ELO.ToString();
         }

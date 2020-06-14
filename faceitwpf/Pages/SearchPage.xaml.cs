@@ -10,9 +10,9 @@ namespace faceitwpf
     /// <summary>
     /// Логика взаимодействия для Name.xaml
     /// </summary>
-    public partial class Name : Page
+    public partial class SearchPage : Page
     {
-        public Name()
+        public SearchPage()
         {
             InitializeComponent();
             nameTextBox.Text = Properties.Settings.Default.LastNickname;

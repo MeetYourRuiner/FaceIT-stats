@@ -13,20 +13,19 @@
             <ColumnDefinition Width="38*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <lvc:CartesianChart x:Name="chart" 
+        <lvc:CartesianChart
             DisableAnimations="True"
             Series="{Binding MatchSeries}"
-            LegendLocation="None"
             Grid.ColumnSpan="3"
             Hoverable="False"
             >
             <lvc:CartesianChart.Resources>
                 <Style TargetType="lvc:LineSeries">
                     <Setter Property="Fill" Value="Transparent"/>
-                    <Setter Property="Stroke" Value="#FFFF5500"/>
-                    <Setter Property="PointGeometrySize" Value="6.5"/>
+                    <Setter Property="Stroke" Value="White"/>
+                    <Setter Property="PointGeometrySize" Value="10"/>
                     <Setter Property="PointForeground" Value="#FFEBEFF3"/>
-                    <Setter Property="StrokeThickness" Value="3"/>
+                    <Setter Property="StrokeThickness" Value="1"/>
                 </Style>
             </lvc:CartesianChart.Resources>
             <lvc:CartesianChart.AxisY>
@@ -38,6 +37,18 @@
                             </lvc:Separator.Stroke>
                         </lvc:Separator>
                     </lvc:Axis.Separator>
+                    <lvc:Axis.Sections>
+                        <lvc:AxisSection Value="2000" StrokeThickness="1"/>
+                        <lvc:AxisSection Value="1850" StrokeThickness="1"/>
+                        <lvc:AxisSection Value="1700" StrokeThickness="1"/>
+                        <lvc:AxisSection Value="1550" StrokeThickness="1"/>
+                        <lvc:AxisSection Value="1400" StrokeThickness="1"/>
+                        <lvc:AxisSection Value="1250" StrokeThickness="1"/>
+                        <lvc:AxisSection Value="1100" StrokeThickness="1"/>
+                        <lvc:AxisSection Value="950" StrokeThickness="1"/>
+                        <lvc:AxisSection Value="800" StrokeThickness="1"/>
+                        <lvc:AxisSection Value="0" StrokeThickness="1"/>
+                    </lvc:Axis.Sections>
                 </lvc:Axis>
             </lvc:CartesianChart.AxisY>
             <lvc:CartesianChart.AxisX>

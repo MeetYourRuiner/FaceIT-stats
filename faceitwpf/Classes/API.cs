@@ -54,7 +54,15 @@ namespace faceitwpf
 
                     json = await response.Content.ReadAsStringAsync();
                     var matchList = JsonConvert.DeserializeObject<List<Match>>(json);
-                    var matchLevels = await GetInfoAsync<MatchLvl[]>(id);
+                    MatchLvl[] matchLevels;
+                    try
+                    {
+                        matchLevels = await GetInfoAsync<MatchLvl[]>(id);
+                    }
+                    catch
+                    {
+                        matchLevels = new MatchLvl[0];
+                    }
                     for (int i = 0; i < matchList.Count - 1; i++)
                     {
                         if (matchList[i].ELO != 0 && matchList[i + 1].ELO != 0)
@@ -69,11 +77,11 @@ namespace faceitwpf
                     if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Failed");
                     json = await response.Content.ReadAsStringAsync();
                     JObject jObject = JObject.Parse(json);
-                    var array = jObject["items"].Select(t =>
+                    var array = jObject["items"].Select(m =>
                         new MatchLvl
                         {
-                            Id = t["match_id"].Value<string>(),
-                            Levels = t
+                            Id = m["match_id"].Value<string>(),
+                            Levels = m
                                 .SelectTokens("$..skill_level")
                                 .Values<int>()
                                 .ToArray()

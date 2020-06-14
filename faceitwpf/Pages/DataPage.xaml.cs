@@ -31,6 +31,7 @@ namespace faceitwpf
             Next,
             Previous
         }
+
         public DataPage()
         {
             InitializeComponent();
@@ -47,8 +48,6 @@ namespace faceitwpf
             EloLeftLabel.Content = $"-{toDemote}/+{toPromote}";
             await LoadMatchesAsync();
             LoadPage(NavigateTo.First);
-            if (matches.Count == 0)
-                ChartBtn.IsEnabled = false;
             try
             {
                 avatar.Source = new BitmapImage(new Uri(player.Avatar));
@@ -110,6 +109,7 @@ namespace faceitwpf
                 {
                     Previous.IsEnabled = false;
                     Next.IsEnabled = false;
+                    ChartBtn.IsEnabled = false;
                 }
                 var checkCount = matches.Count - Page * MatchesOnPage;
                 if (checkCount < MatchesOnPage && checkCount > 0)
