@@ -47,6 +47,9 @@ namespace faceitwpf.Models
         [JsonProperty("c3")]
         public double KRRatio { get; set; }
 
+        [JsonProperty("c4")]
+        public double HSPercentage { get; set; }
+
         [JsonProperty("elo")]
         public int ELO { get; set; }
         public int ChangeELO { get; set; } = 0;

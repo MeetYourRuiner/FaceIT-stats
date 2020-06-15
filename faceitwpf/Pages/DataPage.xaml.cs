@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -41,12 +43,42 @@ namespace faceitwpf
         {
             API api = API.GetInstance();
             Player player = api.CurrentPlayer;
+
             NickLabel.Content = player.Nickname;
+
             LevelLabel.Content = player.Level + " Level " + player.Elo + " Elo";
+
             var toDemote = player.Level == 1 ? "∞" : (player.Elo - Levels[player.Level] + 1).ToString();
             var toPromote = player.Level == 10 ? "∞" : (Levels[player.Level + 1] - player.Elo).ToString();
             EloLeftLabel.Content = $"-{toDemote}/+{toPromote}";
+
             await LoadMatchesAsync();
+
+            if (matches.Count > 0)
+            {
+                var lastMatchesCount = matches.Count > 20 ? 20 : matches.Count;
+                var lastMatches = matches.GetRange(0, lastMatchesCount);
+                KillsLabel.Content = lastMatches.Select(m => m.Kills).Average();
+                HSLabel.Content = lastMatches.Select(m => m.HSPercentage).Average();
+
+                var avgKR = lastMatches.Select(m => m.KRRatio).Average();
+                KRLabel.Content = avgKR;
+                if (avgKR >= 0.9) KRLabel.Foreground = Brushes.RoyalBlue;
+                else if (avgKR >= 0.8) KRLabel.Foreground = Brushes.Green;
+                else if (avgKR > 0.65) KRLabel.Foreground = Brushes.Yellow;
+                else KRLabel.Foreground = Brushes.Red;
+
+                var avgKD = lastMatches.Select(m => m.KDRatio).Average();
+                KDLabel.Content = avgKD;
+                if (avgKD >= 1) KDLabel.Foreground = Brushes.Green;
+                else KDLabel.Foreground = Brushes.Red;
+
+                var avgWR = (double)lastMatches.Where(m => m.Result == 'W').Count() / lastMatchesCount;
+                WRLabel.Content = avgWR;
+                if (avgWR >= 0.5) WRLabel.Foreground = Brushes.Green;
+                else WRLabel.Foreground = Brushes.Red;
+            }
+
             LoadPage(NavigateTo.First);
             try
             {
