@@ -1,4 +1,4 @@
-﻿<Page x:Class="faceitwpf.DataPage"
+﻿<Page x:Class="faceitwpf.Views.DataPage"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,13 +7,13 @@
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactions"
       xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
       xmlns:chart = "clr-namespace:faceitwpf.Controls" 
-      xmlns:local="clr-namespace:faceitwpf"
+      xmlns:local="clr-namespace:faceitwpf" xmlns:views="clr-namespace:faceitwpf.Views"
       mc:Ignorable="d" 
       d:DesignHeight="750" d:DesignWidth="900"     
       Title="DataPage">
     <Page.Resources>
-        <local:KDRConverter x:Key="KRDC"/>
-        <local:ZeroConverter x:Key="ZC"/>
+        <views:KDRConverter x:Key="KRDC"/>
+        <views:ZeroConverter x:Key="ZC"/>
         <sys:Double x:Key="KRMin">0.74</sys:Double>
         <sys:Double x:Key="KDMin">1</sys:Double>
         <Style x:Key="InfoLabel" TargetType="Label">
@@ -224,7 +224,7 @@
                 />
             </DataGrid.Columns>
         </DataGrid>
-        <Label x:Name="Back" 
+        <Button x:Name="Back" 
                Content="BACK"
                Style="{StaticResource ButtonStyle}"
                MouseLeftButtonDown="Back_MouseLeftButtonDown" 
@@ -249,7 +249,7 @@
                Grid.Row="2" 
                Style="{StaticResource InfoLabel}" Content="Nickname" BorderThickness="0,0,0,1" BorderBrush="#FFFF5500" 
         />
-        <Label x:Name="Next" 
+        <Button x:Name="Next" 
                Content="NEXT" 
                Style="{StaticResource ButtonStyle}"
                MouseLeftButtonDown="Next_MouseLeftButtonDown" 
@@ -257,7 +257,7 @@
                Grid.Column="2" 
                Margin="380,0,0,0"
         />
-        <Label x:Name="Previous" 
+        <Button x:Name="Previous" 
                Content="PREVIOUS"
                Style="{StaticResource ButtonStyle}"
                MouseLeftButtonDown="Previous_MouseLeftButtonDown" 
@@ -268,7 +268,7 @@
         <StackPanel Grid.Column="1" HorizontalAlignment="Left" Height="46" Margin="138,37,0,0" Grid.Row="2" VerticalAlignment="Top"
                     Width="Auto">
             <Label x:Name="LevelLabel" 
-               Style="{StaticResource InfoLabel}" Content="10 Level 2056 Elo" BorderBrush="#FFFF5500" BorderThickness="0,0,0,1" HorizontalAlignment="Stretch"
+               Style="{StaticResource InfoLabel}" Content="10 Level 2056 ELO" BorderBrush="#FFFF5500" BorderThickness="0,0,0,1" HorizontalAlignment="Stretch"
         />
             <Label x:Name="EloLeftLabel" 
                Style="{StaticResource InfoLabel}" Content="-56/+56"
@@ -278,7 +278,7 @@
                Padding="0" HorizontalAlignment="Stretch"
         />
         </StackPanel>
-        <Label x:Name="ChartBtn" 
+        <Button x:Name="ChartBtn" 
             Content="Chart"
             Style="{StaticResource ButtonStyle}"
             MouseLeftButtonDown="ChartBtn_MouseLeftButtonDown" 

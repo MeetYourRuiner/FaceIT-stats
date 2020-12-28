@@ -1,4 +1,5 @@
 ﻿using faceitwpf.Models;
+using faceitwpf.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-namespace faceitwpf
+namespace faceitwpf.Views
 {
     /// <summary>
     /// Логика взаимодействия для DataPage.xaml
@@ -41,12 +42,11 @@ namespace faceitwpf
 
         public async Task Initialize()
         {
-            API api = API.GetInstance();
-            Player player = api.CurrentPlayer;
+            Player player = APIService.CurrentPlayer;
 
             NickLabel.Content = player.Nickname;
 
-            LevelLabel.Content = player.Level + " Level " + player.Elo + " Elo";
+            LevelLabel.Content = player.Level + " Level " + player.Elo + " ELO";
 
             var toDemote = player.Level == 1 ? "∞" : (player.Elo - Levels[player.Level] + 1).ToString();
             var toPromote = player.Level == 10 ? "∞" : (Levels[player.Level + 1] - player.Elo).ToString();
@@ -100,11 +100,10 @@ namespace faceitwpf
 
         private async Task LoadMatchesAsync()
         {
-            API api = API.GetInstance();
-            Player player = api.CurrentPlayer;
+            Player player = APIService.CurrentPlayer;
             try
             {
-                var history = await api.GetInfoAsync<MatchHistory>(player.PlayerID);
+                var history = await APIService.GetHistoryAsync(player.PlayerID);
                 matches = history.Matches;
                 if (matches.Count > 0)
                     EloChart.SetSource(matches.ToArray());
@@ -186,7 +185,7 @@ namespace faceitwpf
 
         private void Back_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            API.GetInstance().CurrentPlayer = null;
+            APIService.ClearCurrentPlayer();
             NavigationService.GoBack();
         }
 

@@ -1,13 +1,14 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace faceitwpf.Classes
+namespace faceitwpf.Services
 {
-    class UpdateManager
+    class UpdateService
     {
         private static string URL = "https://api.github.com/repos/MeetYourRuiner/FaceIT-stats/releases/latest";
         private static string updateLink;
@@ -32,11 +33,11 @@ namespace faceitwpf.Classes
             if (latestVersion == currentVersion)
                 return null;
 
-            var latestVersionNums = latestVersion.Split('.'); // 1.0.0.0
-            var currentVersionNums = GetCurrentVersion().Split('.');
+            var latestVersionNums = latestVersion.Split('.').Select(n => int.Parse(n)).ToArray(); // 1.0.0.0
+            var currentVersionNums = GetCurrentVersion().Split('.').Select(n => int.Parse(n)).ToArray();
             for (int i = 0; i < 4; i++)
             {
-                if (int.Parse(latestVersionNums[i]) < int.Parse(currentVersionNums[i]))
+                if (latestVersionNums[i] < currentVersionNums[i])
                 {
                     return null;
                 }

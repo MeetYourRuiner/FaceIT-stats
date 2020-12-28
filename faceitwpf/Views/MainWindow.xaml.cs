@@ -1,8 +1,8 @@
-﻿using faceitwpf.Classes;
+﻿using faceitwpf.Services;
 using System.Windows;
 using System.Windows.Navigation;
 
-namespace faceitwpf
+namespace faceitwpf.Views
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
@@ -17,7 +17,7 @@ namespace faceitwpf
 
         private void NavigationWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            Title = "Цифорки " + UpdateManager.GetCurrentVersion();
+            Title = "Цифорки " + UpdateService.GetCurrentVersion();
         }
     }
 }
