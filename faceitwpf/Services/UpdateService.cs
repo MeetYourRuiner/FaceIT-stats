@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -46,12 +47,18 @@ namespace faceitwpf.Services
             return latestVersion;
         }
 
-        public static async Task Update()
+        public static async Task Update(Action<string> updateProgressSetter)
         {
             string newfilename = "update.exe";
             string oldfilename = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
             using (WebClient wc = new WebClient())
+            {
+                wc.DownloadProgressChanged += (o, args) =>
+                {
+                    updateProgressSetter(args.ProgressPercentage.ToString());
+                };
                 await wc.DownloadFileTaskAsync(new System.Uri(updateLink), newfilename);
+            }
             Process process = new Process()
             {
                 StartInfo = new ProcessStartInfo()

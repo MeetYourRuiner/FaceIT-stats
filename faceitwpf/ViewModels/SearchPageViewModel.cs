@@ -14,6 +14,7 @@ namespace faceitwpf.ViewModels
     class SearchPageViewModel : INotifyPropertyChanged
     {
         private readonly Page page;
+        private readonly Action setFocusOnTextbox;
 
         private string playerName;
         public string PlayerName
@@ -26,24 +27,13 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private string updateBtnContent;
-        public string UpdateBtnContent
+        private bool isUpdateAvailable = false;
+        public bool IsUpdateAvailable
         {
-            get { return updateBtnContent; }
+            get { return isUpdateAvailable; }
             set
             {
-                updateBtnContent = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Visibility updateBtnVisibility = Visibility.Hidden;
-        public Visibility UpdateBtnVisibility
-        {
-            get { return updateBtnVisibility; }
-            set
-            {
-                updateBtnVisibility = value;
+                isUpdateAvailable = value;
                 OnPropertyChanged();
             }
         }
@@ -59,8 +49,18 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private bool isLoading;
+        private string updateProgress = "0";
+        public string UpdateProgress
+        {
+            get { return updateProgress; }
+            set
+            {
+                updateProgress = value;
+                OnPropertyChanged();
+            }
+        }
 
+        private bool isLoading;
         public bool IsLoading
         {
             get { return isLoading; }
@@ -70,7 +70,6 @@ namespace faceitwpf.ViewModels
                 OnPropertyChanged();
             }
         }
-
 
         private RelayCommand searchCommand;
         public RelayCommand SearchCommand
@@ -86,14 +85,15 @@ namespace faceitwpf.ViewModels
                         APIService.CurrentPlayer = player;
                         DataPage datapage = new DataPage();
                         await datapage.Initialize();
+                        Properties.Settings.Default.LastNickname = PlayerName;
+                        Properties.Settings.Default.Save();
                         page.NavigationService.Navigate(datapage);
                     }
                     catch (Exception ex)
                     {
                         IsLoading = false;
                         PlayerName = ex.Message;
-                        //await nameTextBox.Dispatcher.BeginInvoke(new Action(() => nameTextBox.SelectAll()));
-                        //nameTextBox.Focus();
+                        setFocusOnTextbox();
                     }
                     IsLoading = false;
                 }
@@ -107,24 +107,26 @@ namespace faceitwpf.ViewModels
             {
                 try
                 {
-                    isUpdating = true;
-                    await UpdateService.Update();
+                    IsUpdating = true;
+                    await UpdateService.Update((string percentage) => UpdateProgress = percentage);
                 }
                 catch (Exception ex)
                 {
-                    isUpdating = false;
+                    IsUpdating = false;
                     PlayerName = ex.Message;
                 }
                 finally
                 {
-                    isUpdating = false;
+                    IsUpdating = false;
                 }
             }));
         }
 
-        public SearchPageViewModel(Page page)
+        public SearchPageViewModel(Page page, Action setFocusOnTextbox)
         {
             this.page = page;
+            this.setFocusOnTextbox = setFocusOnTextbox;
+            PlayerName = Properties.Settings.Default.LastNickname;
             CheckUpdates();
         }
 
@@ -133,8 +135,7 @@ namespace faceitwpf.ViewModels
             string latestVersion = await UpdateService.CheckForUpdate();
             if (latestVersion != null)
             {
-                UpdateBtnContent = "Update to\n" + latestVersion;
-                UpdateBtnVisibility = Visibility.Visible;
+                IsUpdateAvailable = true;
             }
         }
 

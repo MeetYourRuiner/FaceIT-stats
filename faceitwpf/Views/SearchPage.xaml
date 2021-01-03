@@ -4,64 +4,107 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:faceitwpf.Views"
+      xmlns:fa="http://schemas.fontawesome.io/icons/" 
+      xmlns:converters="clr-namespace:faceitwpf.Views.Converters"
       mc:Ignorable="d" 
       d:DesignHeight="750" d:DesignWidth="900" 
       Title="Name" Loaded="Page_Loaded">
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
+    </Page.Resources>
     <Grid Background="#FF141616" FocusManager.FocusedElement="{Binding ElementName=nameTextBox}">
         <Grid.RowDefinitions>
             <RowDefinition Height="320*"/>
             <RowDefinition Height="40*"/>
-            <RowDefinition Height="51*"/>
-            <RowDefinition Height="32"/>
+            <RowDefinition Height="83*"/>
             <RowDefinition Height="307*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="13*"/>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="15*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="19*"/>
             <ColumnDefinition Width="13*"/>
         </Grid.ColumnDefinitions>
-        <TextBox 
-            x:Name="nameTextBox" 
-            MaxLength="30" 
-            FontSize="26" 
-            Background="#FF2B2B2B" 
-            BorderThickness="0" 
-            Foreground="#FFEBEFF3" 
-            Grid.ColumnSpan="3" 
-            Padding="0,4" 
-            GotFocus="nameTextBox_GotFocus" 
-            Grid.Column="1" Grid.Row="1"
-            Text="{Binding PlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-        >
-            <TextBox.InputBindings>
-                <KeyBinding Command="{Binding SearchCommand}" Key="Enter"/>
-            </TextBox.InputBindings>
-        </TextBox>
-        <Rectangle HorizontalAlignment="Center" Height="94" Margin="100,108,100,105" Width="100" VerticalAlignment="Center" Grid.Row="4" Grid.Column="2">
+        <fa:ImageAwesome 
+            Icon="CircleOutlineNotch" 
+            Spin="True" 
+            SpinDuration="10" 
+            Grid.Column="1"
+            Grid.Row="1" 
+            Grid.RowSpan="2"
+            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}}" 
+            Foreground="{StaticResource AppOrange}"
+        />
+        <Rectangle HorizontalAlignment="Center" Height="94" Margin="140,108,140,105" Width="100" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1">
             <Rectangle.Fill>
                 <ImageBrush ImageSource="/faceitwpf;component/Resources/icon-pheasant-preview-2-268x151.png" Stretch="None"/>
             </Rectangle.Fill>
         </Rectangle>
-        <Button x:Name="btn" 
-               Content="SEARCH"
-               Style="{StaticResource ButtonStyle}"
-               Width="Auto" 
-               Command="{Binding SearchCommand}"
-               Grid.Row="3"
-               Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto"
-        />
-
-        <Button x:Name="UpdateLabel" 
-               Content="{Binding UpdateBtnContent}"
-               Style="{StaticResource ButtonStyle}"
-               Grid.Column="4" 
-               HorizontalAlignment="Center"
-               Height="57" Width="180"
-               VerticalAlignment="Center"
-               Visibility="{Binding UpdateBtnVisibility}"
-               Command="{Binding UpdateCommand}"
+        <Grid 
+            Grid.Column="1"
+            Grid.Row="1" 
+            Grid.RowSpan="2"
+            Visibility="{Binding IsUpdating, Converter={StaticResource BTVConverter}, ConverterParameter=true}"
+        >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40*"/>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="32*"/>
+            </Grid.RowDefinitions>
+            <TextBox 
+                x:Name="nameTextBox" 
+                MaxLength="30" 
+                FontSize="26" 
+                Background="#FF2B2B2B" 
+                BorderThickness="0" 
+                Foreground="#FFEBEFF3" 
+                Padding="0,4" 
+                GotFocus="nameTextBox_GotFocus"
+                Text="{Binding PlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
+            >
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding SearchCommand}" Key="Enter"/>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Button
+                Content="SEARCH"
+                Style="{StaticResource ButtonStyle}"
+                Width="Auto" 
+                Command="{Binding SearchCommand}"
+                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto"
+                Margin="40,0" Grid.Row="2"
+            />
+        </Grid>
+        <Button
+            Content="UPDATE"
+            Grid.Column="2" 
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Command="{Binding UpdateCommand}" Margin="30,10,30,0"
+        >
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsUpdating}" Value="False" />
+                                <Condition Binding="{Binding IsUpdateAvailable}" Value="True" />
+                                <Condition Binding="{Binding IsLoading}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <ProgressBar
+            Value="{Binding UpdateProgress, Mode=OneWay}" 
+            Grid.Column="1" 
+            Grid.Row="1"
+            Visibility="{Binding IsUpdating, Converter={StaticResource BTVConverter}}"
+            Foreground="{StaticResource AppOrange}"
         />
     </Grid>
 </Page>

@@ -1,10 +1,6 @@
-﻿using faceitwpf.Models;
-using faceitwpf.Services;
-using faceitwpf.ViewModels;
+﻿using faceitwpf.ViewModels;
 using System;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace faceitwpf.Views
 {
@@ -16,21 +12,8 @@ namespace faceitwpf.Views
         public SearchPage()
         {
             InitializeComponent();
-            DataContext = new SearchPageViewModel(this);
-            //nameTextBox.Text = Properties.Settings.Default.LastNickname;
+            DataContext = new SearchPageViewModel(this, new Action(SetFocusOnTextbox));
         }
-
-        //private void Button_MouseEnter(object sender, MouseEventArgs e)
-        //{
-        //    var button = (Label)sender;
-        //    button.Background = new SolidColorBrush(Color.FromRgb(255, 125, 0));
-        //}
-
-        //private void Button_MouseLeave(object sender, MouseEventArgs e)
-        //{
-        //    var button = (Label)sender;
-        //    button.Background = new SolidColorBrush(Color.FromRgb(255, 85, 0));
-        //}
 
         private void nameTextBox_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -39,6 +22,11 @@ namespace faceitwpf.Views
         }
 
         private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            SetFocusOnTextbox();
+        }
+
+        private void SetFocusOnTextbox()
         {
             nameTextBox.Focus();
         }

@@ -7,13 +7,13 @@
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactions"
       xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
       xmlns:chart = "clr-namespace:faceitwpf.Controls" 
-      xmlns:local="clr-namespace:faceitwpf" xmlns:views="clr-namespace:faceitwpf.Views"
+      xmlns:local="clr-namespace:faceitwpf" xmlns:converters="clr-namespace:faceitwpf.Views.Converters"
       mc:Ignorable="d" 
       d:DesignHeight="750" d:DesignWidth="900"     
       Title="DataPage">
     <Page.Resources>
-        <views:KDRConverter x:Key="KRDC"/>
-        <views:ZeroConverter x:Key="ZC"/>
+        <converters:KDRConverter x:Key="KRDC"/>
+        <converters:ZeroToNullConverter x:Key="ZC"/>
         <sys:Double x:Key="KRMin">0.74</sys:Double>
         <sys:Double x:Key="KDMin">1</sys:Double>
         <Style x:Key="InfoLabel" TargetType="Label">
