@@ -9,11 +9,21 @@ using System.Threading.Tasks;
 
 namespace faceitwpf.Services
 {
-    class UpdateService
+    class UpdateService : IUpdateService
     {
         private static string URL = "https://api.github.com/repos/MeetYourRuiner/FaceIT-stats/releases/latest";
         private static string updateLink;
-        public static async Task<string> CheckForUpdate()
+
+        public string CurrentVersion 
+        { 
+            get {
+                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                return fvi.FileVersion;
+            }
+        }
+
+        public async Task<bool> CheckForUpdate()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
             request.UserAgent = "request";
@@ -30,24 +40,24 @@ namespace faceitwpf.Services
             }
             response.Close();
             var latestVersion = ((string)deserializedResponse["tag_name"]).Substring(1);
-            var currentVersion = GetCurrentVersion();
+            var currentVersion = CurrentVersion;
             if (latestVersion == currentVersion)
-                return null;
+                return false;
 
             var latestVersionNums = latestVersion.Split('.').Select(n => int.Parse(n)).ToArray(); // 1.0.0.0
-            var currentVersionNums = GetCurrentVersion().Split('.').Select(n => int.Parse(n)).ToArray();
+            var currentVersionNums = currentVersion.Split('.').Select(n => int.Parse(n)).ToArray();
             for (int i = 0; i < 4; i++)
             {
                 if (latestVersionNums[i] < currentVersionNums[i])
                 {
-                    return null;
+                    return false;
                 }
             }
             updateLink = (string)deserializedResponse["assets"][0]["browser_download_url"];
-            return latestVersion;
+            return true;
         }
 
-        public static async Task Update(Action<string> updateProgressSetter)
+        public async Task UpdateAsync(Action<string> updateProgressSetter)
         {
             string newfilename = "update.exe";
             string oldfilename = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
@@ -80,13 +90,6 @@ namespace faceitwpf.Services
             process.WaitForExit();
             process.Close();
             System.Windows.Application.Current.Shutdown();
-        }
-
-        public static string GetCurrentVersion()
-        {
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
-            return fvi.FileVersion;
         }
     }
 }

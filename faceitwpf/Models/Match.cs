@@ -70,6 +70,6 @@ namespace faceitwpf.Models
     {
         public string Id { get; set; }
 
-        public int[] Levels { get; set; }
+        public int AvgLevel { get; set; }
     }
 }

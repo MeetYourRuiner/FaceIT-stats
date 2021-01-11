@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
 
-namespace faceitwpf.Views
+namespace faceitwpf
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml
