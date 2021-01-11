@@ -14,6 +14,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <lvc:CartesianChart
+            x:Name="chart"
             DisableAnimations="True"
             Series="{Binding MatchSeries}"
             Grid.ColumnSpan="3"

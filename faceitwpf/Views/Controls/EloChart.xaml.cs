@@ -4,6 +4,7 @@ using LiveCharts.Configurations;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -20,15 +21,15 @@ namespace faceitwpf.Views.Controls
         public SeriesCollection MatchSeries { get; set; }
         public Func<Match, string> Formatter { get; set; }
 
-        public MatchHistory History
+        public List<Match> History
         {
-            get { return (MatchHistory)GetValue(HistoryProperty); }
+            get { return (List<Match>)GetValue(HistoryProperty); }
             set { SetValue(HistoryProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Matches.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HistoryProperty =
-            DependencyProperty.Register("History", typeof(MatchHistory), typeof(EloChart), new PropertyMetadata(null, new PropertyChangedCallback(SourceChanged)));
+            DependencyProperty.Register("History", typeof(List<Match>), typeof(EloChart), new PropertyMetadata(null, new PropertyChangedCallback(SourceChanged)));
 
         private static void SourceChanged(DependencyObject depObj,
            DependencyPropertyChangedEventArgs args)
@@ -40,6 +41,7 @@ namespace faceitwpf.Views.Controls
         public EloChart()
         {
             InitializeComponent();
+            chart.DataContext = this;
         }
 
         public void UpdateSource()
@@ -50,7 +52,7 @@ namespace faceitwpf.Views.Controls
                 .X((value, index) => index) //use the X property as X
                 .Y((value, index) => value.ELO) //use the Y property as Y
                 .Fill(value => value.Result == 'W' ? WinBrush : LossBrush);
-            var matchArray = History.Matches.ToArray();
+            var matchArray = History.ToArray();
             var values = matchArray.Reverse().Where(m => m.ELO != 0).AsChartValues();
             MatchSeries = new SeriesCollection(mapper)
             {
@@ -61,7 +63,6 @@ namespace faceitwpf.Views.Controls
                 }
             };
             Formatter = value => value.ELO.ToString();
-            DataContext = this;
         }
     }
 }
