@@ -7,11 +7,11 @@
       xmlns:fa="http://schemas.fontawesome.io/icons/" 
       xmlns:converters="clr-namespace:faceitwpf.Views.Converters"
       mc:Ignorable="d" 
-      d:DesignHeight="750" d:DesignWidth="900" Loaded="Page_Loaded">
+      d:DesignHeight="750" d:DesignWidth="900">
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
     </UserControl.Resources>
-    <Grid FocusManager.FocusedElement="{Binding ElementName=nameTextBox}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="320*"/>
             <RowDefinition Height="40*"/>
@@ -23,6 +23,7 @@
             <ColumnDefinition Width="19*"/>
             <ColumnDefinition Width="13*"/>
         </Grid.ColumnDefinitions>
+        <!--Spinner-->
         <fa:ImageAwesome 
             Icon="CircleOutlineNotch" 
             Spin="True" 
@@ -33,11 +34,20 @@
             Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}}" 
             Foreground="{StaticResource AppOrange}"
         />
-        <Rectangle HorizontalAlignment="Center" Height="94" Margin="140,108,140,105" Width="100" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1">
+        <!--Logo-->
+        <Rectangle 
+            HorizontalAlignment="Center" 
+            Height="94" 
+            Margin="140,108,140,105" 
+            Width="100" 
+            VerticalAlignment="Center"
+            Grid.Row="3" 
+            Grid.Column="1">
             <Rectangle.Fill>
                 <ImageBrush ImageSource="/faceitwpf;component/Resources/icon-pheasant-preview-2-268x151.png" Stretch="None"/>
             </Rectangle.Fill>
         </Rectangle>
+        <!--Search form-->
         <Grid 
             Grid.Column="1"
             Grid.Row="1" 
@@ -50,7 +60,7 @@
                 <RowDefinition Height="32*"/>
             </Grid.RowDefinitions>
             <TextBox 
-                x:Name="nameTextBox" 
+                x:Name="nameTextBox"
                 MaxLength="30" 
                 FontSize="26" 
                 Background="#FF2B2B2B" 
@@ -58,6 +68,7 @@
                 Foreground="#FFEBEFF3" 
                 Padding="0,4" 
                 GotFocus="nameTextBox_GotFocus"
+                local:FocusExtension.IsFocused="{Binding IsTextboxFocused}"
                 Text="{Binding PlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
             >
@@ -75,6 +86,7 @@
                 Margin="40,0" Grid.Row="2"
             />
         </Grid>
+        <!--Update-->
         <Button
             Content="UPDATE"
             Grid.Column="2" 
@@ -98,6 +110,7 @@
                 </Style>
             </Button.Style>
         </Button>
+        <!--Update download progress bar-->
         <ProgressBar
             Value="{Binding UpdateProgress, Mode=OneWay}" 
             Grid.Column="1" 

@@ -66,6 +66,17 @@ namespace faceitwpf.ViewModels
             }
         }
 
+        private bool? _isTextboxFocused;
+        public bool? IsTextboxFocused
+        {
+            get { return _isTextboxFocused; }
+            set
+            {
+                _isTextboxFocused = value;
+                OnPropertyChanged();
+            }
+        }
+
         private RelayCommand _searchCommand;
         public RelayCommand SearchCommand
         {
@@ -85,7 +96,7 @@ namespace faceitwpf.ViewModels
                     {
                         IsLoading = false;
                         PlayerName = ex.Message;
-                        //setFocusOnTextbox();
+                        IsTextboxFocused = true;
                     }
                     IsLoading = false;
                 }
@@ -120,6 +131,7 @@ namespace faceitwpf.ViewModels
             this.updateService = updateService;
             this.navigationService = navigationService;
             PlayerName = Properties.Settings.Default.LastNickname;
+            IsTextboxFocused = true;
             CheckForUpdate();
         }
 
