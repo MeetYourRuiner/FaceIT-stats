@@ -30,7 +30,7 @@
                 </Style>
             </lvc:CartesianChart.Resources>
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="ELO" LabelFormatter="{Binding Formatter}">
+                <lvc:Axis Title="ELO">
                     <lvc:Axis.Separator>
                         <lvc:Separator Step="50" StrokeThickness="1" StrokeDashArray="5">
                             <lvc:Separator.Stroke>

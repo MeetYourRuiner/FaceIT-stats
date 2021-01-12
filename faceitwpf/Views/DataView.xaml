@@ -1,15 +1,13 @@
 ﻿<UserControl x:Class="faceitwpf.Views.DataView"
-      xmlns:sys="clr-namespace:System;assembly=mscorlib"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-      xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
-      xmlns:chart = "clr-namespace:faceitwpf.Views.Controls" 
-      xmlns:local="clr-namespace:faceitwpf" xmlns:converters="clr-namespace:faceitwpf.Views.Converters"
-      mc:Ignorable="d" 
-      d:DesignHeight="750" d:DesignWidth="900"     
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:chart = "clr-namespace:faceitwpf.Views.Controls" 
+    xmlns:converters="clr-namespace:faceitwpf.Views.Converters"
+    mc:Ignorable="d" 
+    d:DesignHeight="750" d:DesignWidth="900"     
 >
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
@@ -72,20 +70,29 @@
             <RowDefinition Height="11*"/>
             <RowDefinition Height="512"/>
             <RowDefinition Height="14*"/>
-            <RowDefinition Height="33"/>
+            <RowDefinition Height="32"/>
             <RowDefinition Height="25*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="14*"/>
-            <ColumnDefinition Width="29*"/>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Rectangle x:Name="CoverImage" Grid.ColumnSpan="4" Grid.RowSpan="4" Stroke="Black" StrokeThickness="0">
+        <!--Cover image-->
+        <Rectangle
+            Grid.ColumnSpan="7" 
+            Grid.RowSpan="4" 
+            Stroke="Black" 
+            StrokeThickness="0">
             <Rectangle.Fill>
                 <ImageBrush ImageSource="{Binding CurrentPlayer.CoverImage, FallbackValue={x:Null}}"/>
             </Rectangle.Fill>
         </Rectangle>
+        <!--Avatar-->
         <Border
             HorizontalAlignment="Left" 
             Width="132" 
@@ -98,22 +105,23 @@
                 Stretch="Fill"
             />
         </Border>
-        <Label x:Name="NickLabel"
-               Grid.Column="1" 
-               Margin="138,0,0,0" 
-               Grid.Row="2" 
-               Style="{StaticResource InfoLabel}" 
-               Content="{Binding CurrentPlayer.Nickname}" 
-               BorderThickness="0,0,0,1" 
-               BorderBrush="{StaticResource AppOrange}" 
+        <!--Nickname-->
+        <Label
+            Grid.Column="1" 
+            Margin="138,0,0,0" 
+            Grid.Row="2" 
+            Style="{StaticResource InfoLabel}" 
+            Content="{Binding CurrentPlayer.Nickname}" 
+            BorderThickness="0,0,0,1" 
+            BorderBrush="{StaticResource AppOrange}"
         />
+        <!--Level label-->
         <StackPanel 
             Grid.Column="1" 
             HorizontalAlignment="Left" 
             Height="46" Margin="138,37,0,0" 
             Grid.Row="2" 
             VerticalAlignment="Top"
-            Width="Auto"
         >
             <Label 
                 x:Name="LevelLabel" 
@@ -154,6 +162,7 @@
                 </Label.Content>
             </Label>
         </StackPanel>
+        <!--Mode toggle button-->
         <Button 
             x:Name="ChartBtn" 
             Content="Chart"
@@ -164,13 +173,14 @@
             Grid.Column="1" VerticalAlignment="Center"
             Margin="138,96,10,4"
         />
+        <!--Last matches perfomance-->
         <DockPanel 
             Grid.Column="2" 
             HorizontalAlignment="Left" 
             Margin="10,0,0,0" 
             Grid.Row="2" 
             VerticalAlignment="Top" 
-            Width="Auto"
+            Width="200" Grid.ColumnSpan="2" Height="128"
         >
             <Label
                 Style="{StaticResource InfoLabel}"
@@ -269,16 +279,21 @@
                 </StackPanel>
             </StackPanel>
         </DockPanel>
-        <chart:EloChart
-            x:Name="EloChart"
+        <!--Chart-->
+        <Grid
             Grid.Row="4"
-            Grid.ColumnSpan="4"
+            Grid.ColumnSpan="7"
             Visibility="{Binding IsChartVisible, Converter={StaticResource BTVConverter}}"
-            History="{Binding Matches}"
-        />
+        >
+            <chart:EloChart
+                x:Name="EloChart"
+                DataContext="{Binding ChartViewModel}"
+            />
+        </Grid>
+        <!--Table-->
         <DataGrid 
             x:Name="matchgrid" 
-            Grid.Row="4" Grid.ColumnSpan="4" 
+            Grid.Row="4" Grid.ColumnSpan="7" 
             Foreground="{StaticResource AppFont}" 
             RowBackground="{StaticResource DGRowBackground}" 
             GridLinesVisibility="Horizontal" 
@@ -422,31 +437,32 @@
                 />
             </DataGrid.Columns>
         </DataGrid>
-        <Button x:Name="Back" 
-               Content="BACK"
-               Style="{StaticResource ButtonStyle}"
-               Command="{Binding BackCommand}"
-               Grid.Row="6" 
-               Width="280" 
-               Grid.Column="1" VerticalAlignment="Center"
+        <!--Back-->
+        <Button
+            Content="BACK"
+            Style="{StaticResource ButtonStyle}"
+            Command="{Binding BackCommand}"
+            Grid.Row="6" 
+            Width="280" 
+            Grid.Column="1" VerticalAlignment="Center"
         />
+        <!--Previous-->
         <Button
             x:Name="Previous" 
             Content="PREVIOUS"
             Style="{StaticResource ButtonStyle}"
             Command="{Binding PrevPageCommand}"
             Grid.Row="6" 
-            Grid.Column="2" 
-            Margin="140,0,240,0"
-            IsEnabled="{Binding IsPrevEnabled}"
+            Grid.Column="2"
+            IsEnabled="{Binding IsPrevEnabled}" Grid.ColumnSpan="2" Margin="138,0,2,0"
         />
-        <Button x:Name="Next" 
-               Content="NEXT" 
-               Style="{StaticResource ButtonStyle}"
-               Command="{Binding NextPageCommand}"
-               Grid.Row="6" 
-               Grid.Column="2" 
-               Margin="380,0,0,0"
+        <!--Next-->
+        <Button
+            Content="NEXT" 
+            Style="{StaticResource ButtonStyle}"
+            Command="{Binding NextPageCommand}"
+            Grid.Row="6" 
+            Grid.Column="5"
             IsEnabled="{Binding IsNextEnabled}"
         />
     </Grid>

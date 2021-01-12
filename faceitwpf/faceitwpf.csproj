@@ -116,6 +116,7 @@
     <Compile Include="Models\StatsRepository.cs" />
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\NavigationService.cs" />
+    <Compile Include="ViewModels\ChartViewModel.cs" />
     <Compile Include="Views\Controls\ChartToolTip.xaml.cs">
       <DependentUpon>ChartToolTip.xaml</DependentUpon>
     </Compile>
@@ -164,7 +165,6 @@
     <Compile Include="Services\IAPIService.cs" />
     <Compile Include="Services\IUpdateService.cs" />
     <Compile Include="Services\UpdateService.cs" />
-    <Compile Include="Models\Stats.cs" />
     <Compile Include="Models\Match.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />

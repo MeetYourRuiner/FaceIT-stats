@@ -146,6 +146,8 @@ namespace faceitwpf.ViewModels
             }));
         }
 
+        public ChartViewModel ChartViewModel { get; set; }
+        
         public DataViewModel(IStatsRepository statsRepository, INavigationService navigationService, object parameter)
         {
             this.statsRepository = statsRepository;
@@ -156,6 +158,8 @@ namespace faceitwpf.ViewModels
             _pagesCount = CountPages();
             SliceOfHistory = GetPage(PageTurn.First);
             LastMatchesPerfomance = new LastMatchesPerfomance(Matches);
+
+            ChartViewModel = new ChartViewModel(Matches);
         }
 
         private List<Match> GetPage(PageTurn pageTurn)
