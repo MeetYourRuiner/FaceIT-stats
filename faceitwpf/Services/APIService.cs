@@ -40,6 +40,11 @@ namespace faceitwpf.Services
                 throw new Exception("Failed to get match history");
             string json = await response.Content.ReadAsStringAsync();
             var matchList = JsonConvert.DeserializeObject<List<Match>>(json);
+
+            for (int i = 0; i < matchList.Count; ++i)
+            {
+                matchList[i].Index = i;
+            }
             List<MatchLvl> matchLevelsList;
             try
             {
@@ -51,8 +56,11 @@ namespace faceitwpf.Services
             }
             for (int i = 0; i < matchList.Count - 1; ++i)
             {
-                if (matchList[i].ELO != 0 && matchList[i + 1].ELO != 0)
-                    matchList[i].ChangeELO = matchList[i].ELO - matchList[i + 1].ELO;
+                if (matchList[i].ELO != 0)
+                {
+                    Match nextMatchWithElo = matchList.FirstOrDefault(m => m.Index > i && m.ELO != 0);
+                    matchList[i].ChangeELO = nextMatchWithElo != null ? matchList[i].ELO - nextMatchWithElo.ELO : 0;
+                }
                 MatchLvl matchLvl = matchLevelsList.FirstOrDefault(m => m.Id == matchList[i].Id);
                 if (matchLvl != null)
                     matchList[i].AvgLevel = matchLvl.AvgLevel;

@@ -4,20 +4,17 @@ using System.Collections.Generic;
 
 namespace faceitwpf.Models
 {
-    public class MatchHistory
-    {
-        public MatchHistory(List<Match> matches)
-        {
-            Matches = matches;
-        }
-
-        [JsonProperty("")]
-        public List<Match> Matches { get; set; }
-    }
+//    public class MatchHistory
+//    {
+//        [JsonProperty("")]
+//        public List<Match> Matches { get; set; }
+//    }
 
     [JsonConverter(typeof(JsonPathConverter))]
     public class Match
     {
+        public int Index { get; set; }
+
         [JsonProperty("matchId")]
         public string Id { get; set; }
 

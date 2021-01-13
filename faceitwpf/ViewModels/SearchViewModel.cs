@@ -137,7 +137,11 @@ namespace faceitwpf.ViewModels
 
         private async void CheckForUpdate()
         {
-            IsUpdateAvailable = await updateService.CheckForUpdate();
+            try
+            {
+                IsUpdateAvailable = await updateService.CheckForUpdate();
+            }
+            catch { }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace faceitwpf.ViewModels
         private const int MATCHES_ON_PAGE = 9;
 
         private int _pagesCount = 1;
-        private int _page;
+        private int _page = 0;
         private int Page
         {
             get => _page;
@@ -24,13 +24,6 @@ namespace faceitwpf.ViewModels
                 OnPropertyChanged("IsPrevEnabled");
                 OnPropertyChanged("IsNextEnabled");
             }
-        }
-
-        private enum PageTurn
-        {
-            Next,
-            Previous,
-            First
         }
 
         private Player _currentPlayer;
@@ -79,7 +72,7 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private string _toggleButtonContent;
+        private string _toggleButtonContent = "Chart";
         public string ToggleButtonContent
         {
             get { return _toggleButtonContent; }
@@ -100,7 +93,6 @@ namespace faceitwpf.ViewModels
             get { return Page > 0; }
         }
 
-
         private RelayCommand _backCommand;
         public RelayCommand BackCommand
         {
@@ -117,7 +109,7 @@ namespace faceitwpf.ViewModels
             {
                 try
                 {
-                    SliceOfHistory = GetPage(PageTurn.Next);
+                    SliceOfHistory = GetPage(++Page);
                 }
                 catch { }
             }));
@@ -130,7 +122,7 @@ namespace faceitwpf.ViewModels
             {
                 try
                 {
-                    SliceOfHistory = GetPage(PageTurn.Previous);
+                    SliceOfHistory = GetPage(--Page);
                 }
                 catch { }
             }));
@@ -146,6 +138,15 @@ namespace faceitwpf.ViewModels
             }));
         }
 
+        private RelayCommand _showMatchDetailsCommand;
+        public RelayCommand ShowMatchDetailsCommand
+        {
+            get => _showMatchDetailsCommand ?? (_showMatchDetailsCommand = new RelayCommand((obj) =>
+            {
+                int index = (int)obj;
+            }));
+        }
+
         public ChartViewModel ChartViewModel { get; set; }
         
         public DataViewModel(IStatsRepository statsRepository, INavigationService navigationService, object parameter)
@@ -155,29 +156,15 @@ namespace faceitwpf.ViewModels
 
             CurrentPlayer = statsRepository.GetCurrentPlayer();
             Matches = statsRepository.GetMatches();
-            _pagesCount = CountPages();
-            SliceOfHistory = GetPage(PageTurn.First);
+            _pagesCount = CountPages(Matches);
+            SliceOfHistory = GetPage(Page);
             LastMatchesPerfomance = new LastMatchesPerfomance(Matches);
 
             ChartViewModel = new ChartViewModel(Matches);
         }
 
-        private List<Match> GetPage(PageTurn pageTurn)
+        private List<Match> GetPage(int page)
         {
-            switch (pageTurn)
-            {
-                case PageTurn.Next:
-                    ++Page;
-                    break;
-                case PageTurn.Previous:
-                    --Page;
-                    break;
-                case PageTurn.First:
-                    Page = 0;
-                    break;
-                default:
-                    break;
-            }
             try
             {
                 if (Matches.Count == 0)
@@ -192,16 +179,16 @@ namespace faceitwpf.ViewModels
             }
             catch (System.Exception)
             {
-                if (pageTurn != PageTurn.First)
+                if (page != 0)
                     throw;
             }
             return Matches;
         }
 
-        private int CountPages()
+        private int CountPages(List<Match> matches)
         {
-            int pagesCount = Matches.Count / MATCHES_ON_PAGE;
-            if (Matches.Count % MATCHES_ON_PAGE > 0)
+            int pagesCount = matches.Count / MATCHES_ON_PAGE;
+            if (matches.Count % MATCHES_ON_PAGE > 0)
                 ++pagesCount;
             return pagesCount;
         }
