@@ -1,6 +1,7 @@
 ﻿using faceitwpf.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace faceitwpf.Models
@@ -8,54 +9,52 @@ namespace faceitwpf.Models
     class StatsRepository : IStatsRepository
     {
         private readonly IAPIService apiService;
-        private List<Match> loadedMatches;
-        private Player currentPlayer;
 
         public StatsRepository(IAPIService apiService)
         {
             this.apiService = apiService;
         }
 
-        public Player GetCurrentPlayer()
-        {
-            if (currentPlayer != null)
-            {
-                return currentPlayer;
-            }
-            else
-            {
-                throw new Exception("Stats was not preloaded");
-            }
-        }
-
-        public async Task<Match> GetMatchDetailsAsync(string matchId)
+        public async Task<MatchDetails> GetMatchDetailsAsync(string matchId)
         {
             throw new NotImplementedException();
         }
 
-        public List<Match> GetMatches()
+        public async Task<List<Match>> GetMatchesAsync(string playerId)
         {
-            if (loadedMatches != null)
-            {
-                return loadedMatches;
-            }
-            else
-            {
-                throw new Exception("Stats was not preloaded");
-            }
-        }
-
-        public async Task TryToLoadStatsAsync(string nickname)
-        {
+            List<Match> matches;
             try
             {
-                currentPlayer = await apiService.GetPlayerAsync(nickname);
-                loadedMatches = await apiService.GetMatchesAsync(currentPlayer.PlayerID);
+                matches = await apiService.FetchMatchesAsync(playerId);
             }
-            catch (Exception)
+            catch { throw; }
+            try
             {
-                throw;
+                List<MatchAvgLevel> matchesAvgLevels = await apiService.FetchMatchesAvgLevelsAsync(playerId);
+                matchesAvgLevels.ForEach(mal => {
+                    var match = matches.FirstOrDefault(m => m.Id == mal.Id);
+                    if (match != null)
+                        match.AvgLevel = mal.AvgLevel;
+                });
             }
+            catch { }
+
+            for (int i = 0; i < matches.Count - 1; ++i)
+            {
+                if (matches[i].ELO != 0)
+                {
+                    Match nextMatchWithElo = matches.FirstOrDefault(m => m.Index > i && m.ELO != 0);
+                    matches[i].ChangeELO = nextMatchWithElo != null ? matches[i].ELO - nextMatchWithElo.ELO : 0;
+                }
+            }
+
+            return matches;
+        }
+
+        public async Task<Player> GetPlayerAsync(string playerName)
+        {
+            Player player = await apiService.FetchPlayerAsync(playerName);
+            return player;
         }
     }
 }

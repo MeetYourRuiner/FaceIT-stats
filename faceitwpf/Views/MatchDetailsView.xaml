@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="faceitwpf.Views.MatchDetailsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:faceitwpf.Views"
+    mc:Ignorable="d" 
+    d:DesignHeight="{StaticResource AppHeight}" 
+    d:DesignWidth="{StaticResource AppWidth}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="68*"/>
+            <RowDefinition Height="140*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="429*"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="26"/>
+        </Grid.RowDefinitions>
+        <DataGrid Grid.Row="3"
+            Style="{StaticResource DGStyle}"
+            ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
+            RowStyle="{StaticResource DGRowStyle}"/>
+        <DataGrid Grid.Row="3" Grid.Column="1"
+            Style="{StaticResource DGStyle}"
+            ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
+            RowStyle="{StaticResource DGRowStyle}"/>
+
+        <!--Back-->
+        <Button
+                Content="BACK"
+                Style="{StaticResource ButtonStyle}"
+                Command="{Binding BackCommand}"
+                Grid.Row="5" 
+                Width="280" VerticalAlignment="Center"
+            />
+    </Grid>
+</UserControl>

@@ -8,7 +8,6 @@ namespace faceitwpf.ViewModels
 {
     class SearchViewModel : BaseViewModel
     {
-        private readonly IStatsRepository statsRepository;
         private readonly IUpdateService updateService;
         private readonly INavigationService navigationService;
         private string _playerName;
@@ -84,21 +83,20 @@ namespace faceitwpf.ViewModels
             {
                 if (PlayerName.Length > 0 && PlayerName.Length < 30)
                 {
-                    IsLoading = true;
-                    try
-                    {
-                        await statsRepository.TryToLoadStatsAsync(PlayerName);
+                //    IsLoading = true;
+                //    try
+                //    {
                         Properties.Settings.Default.LastNickname = PlayerName;
                         Properties.Settings.Default.Save();
-                        navigationService.Navigate(ViewTypes.Data);
-                    }
-                    catch (Exception ex)
-                    {
-                        IsLoading = false;
-                        PlayerName = ex.Message;
-                        IsTextboxFocused = true;
-                    }
-                    IsLoading = false;
+                        navigationService.Navigate(ViewTypes.Data, PlayerName);
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    IsLoading = false;
+                    //    PlayerName = ex.Message;
+                    //    IsTextboxFocused = true;
+                    //}
+                    //IsLoading = false;
                 }
             }));
         }
@@ -125,14 +123,22 @@ namespace faceitwpf.ViewModels
             }));
         }
 
-        public SearchViewModel(IStatsRepository statsRepository, IUpdateService updateService, INavigationService navigationService, object parameter)
+        private RelayCommand _loadedCommand;
+        public RelayCommand LoadedCommand
         {
-            this.statsRepository = statsRepository;
+            get => _loadedCommand ?? (_loadedCommand = new RelayCommand(async (obj) =>
+            {
+                PlayerName = Properties.Settings.Default.LastNickname;
+                IsTextboxFocused = true;
+                CheckForUpdate();
+            }));
+        }
+
+
+        public SearchViewModel(IUpdateService updateService, INavigationService navigationService, object parameter)
+        {
             this.updateService = updateService;
             this.navigationService = navigationService;
-            PlayerName = Properties.Settings.Default.LastNickname;
-            IsTextboxFocused = true;
-            CheckForUpdate();
         }
 
         private async void CheckForUpdate()

@@ -14,6 +14,16 @@ namespace faceitwpf.Models
         public string Nickname { get; set; }
         [JsonProperty("player_id")]
         public string PlayerID { get; set; }
+        private string _faceitURL;
+        [JsonProperty("faceit_url")]
+        public string FaceitURL 
+        {
+            get => _faceitURL; 
+            set => _faceitURL = value.Replace("{lang}", "en");
+        }
+        [JsonProperty("steam_id_64")]
+        public string SteamID64 { get; set; }
+        public string SteamURL { get => $"http://steamcommunity.com/profiles/{SteamID64}"; }
         [JsonProperty("avatar")]
         public string Avatar { get; set; }
         [JsonProperty("cover_image")]

@@ -9,6 +9,7 @@
     <SolidColorBrush x:Key="AppControlBackground" Color="#FF0A0C0C" />
     <SolidColorBrush x:Key="AppFont" Color="#FFF5F8FA" />
 
+    <SolidColorBrush x:Key="LinkBackground" Color="#282828" />
 
     <SolidColorBrush x:Key="DGCBackground" Color="#232828" />
     <SolidColorBrush x:Key="DGRowBackground" Color="#FF141417" />

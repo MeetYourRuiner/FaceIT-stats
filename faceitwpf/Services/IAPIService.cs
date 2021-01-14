@@ -6,7 +6,9 @@ namespace faceitwpf.Services
 {
     interface IAPIService
     {
-        Task<Player> GetPlayerAsync(string playerName);
-        Task<List<Match>> GetMatchesAsync(string playerId);
+        Task<Player> FetchPlayerAsync(string playerName);
+        Task<List<Match>> FetchMatchesAsync(string playerId);
+        Task<MatchDetails> FetchMatchDetailsAsync(string matchId);
+        Task<List<MatchAvgLevel>> FetchMatchesAvgLevelsAsync(string playerId);
     }
 }

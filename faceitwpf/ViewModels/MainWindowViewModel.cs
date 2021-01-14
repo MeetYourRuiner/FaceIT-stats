@@ -2,6 +2,8 @@
 using faceitwpf.Models;
 using faceitwpf.Services;
 using faceitwpf.Views.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace faceitwpf.ViewModels
 {
@@ -24,6 +26,19 @@ namespace faceitwpf.ViewModels
             }
         }
 
+        private Error _error;
+        public Error Error
+        {
+            get { return _error; }
+            private set
+            {
+                _error = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Stack<BaseViewModel> History { get; } = new Stack<BaseViewModel>();
+
         public MainWindowViewModel()
         {
             _apiService = new APIService();
@@ -32,14 +47,17 @@ namespace faceitwpf.ViewModels
             _statsRepository = new StatsRepository(_apiService);
 
             _vmStore = new VMStore();
-            _vmStore.Add<SearchViewModel>((parameter) => new SearchViewModel(_statsRepository, _updateService, _navigationService, parameter));
+            _vmStore.Add<SearchViewModel>((parameter) => new SearchViewModel(_updateService, _navigationService, parameter));
             _vmStore.Add<DataViewModel>((parameter) => new DataViewModel(_statsRepository, _navigationService, parameter));
+            _vmStore.Add<MatchDetailsViewModel>((parameter) => new MatchDetailsViewModel(_statsRepository, _navigationService, parameter));
 
             _navigationService.Navigate(ViewTypes.Search);
         }
 
-        public void ChangeViewModel(ViewTypes destination, object parameter)
+        public void Navigate(ViewTypes destination, object parameter)
         {
+            if (CurrentViewModel != null)
+                History.Push(CurrentViewModel);
             switch (destination)
             {
                 case ViewTypes.Data:
@@ -48,9 +66,30 @@ namespace faceitwpf.ViewModels
                 case ViewTypes.Search:
                     CurrentViewModel = _vmStore.Get<SearchViewModel>(parameter);
                     break;
-                default:
+                case ViewTypes.Match:
+                    CurrentViewModel = _vmStore.Get<MatchDetailsViewModel>(parameter);
                     break;
             }
+        }
+
+        private void SetError(Exception exception)
+        {
+            Error = new Error(exception.Message, 3);
+            Error.TimerElapsed += (sender, e) => 
+            { Error = null; };
+        }
+
+        public void GoBack(Exception exception)
+        {
+            if (exception != null)
+                SetError(exception);
+            if (History.Peek() != null)
+                CurrentViewModel = History.Pop();
+        }
+
+        public void ClearHistory()
+        {
+            History.Clear();
         }
     }
 }

@@ -3,6 +3,7 @@
     enum ViewTypes
     {
         Search,
-        Data
+        Data,
+        Match
     }
 }

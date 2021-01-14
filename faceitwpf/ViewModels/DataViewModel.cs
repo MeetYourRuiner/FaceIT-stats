@@ -2,6 +2,7 @@
 using faceitwpf.Services;
 using faceitwpf.ViewModels.Commands;
 using faceitwpf.Views.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace faceitwpf.ViewModels
@@ -13,6 +14,8 @@ namespace faceitwpf.ViewModels
 
         private const int MATCHES_ON_PAGE = 9;
 
+        private bool _isLoaded = false;
+        private string playerName;
         private int _pagesCount = 1;
         private int _page = 0;
         private int Page
@@ -23,6 +26,29 @@ namespace faceitwpf.ViewModels
                 _page = value;
                 OnPropertyChanged("IsPrevEnabled");
                 OnPropertyChanged("IsNextEnabled");
+            }
+        }
+
+        public bool _isLoading = false;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged();
+                OnPropertyChanged("IsNextEnabled");
+            }
+        }
+
+        private ChartViewModel _chartViewModel;
+        public ChartViewModel ChartViewModel 
+        { 
+            get { return _chartViewModel; }
+            set
+            {
+                _chartViewModel = value;
+                OnPropertyChanged();
             }
         }
 
@@ -98,6 +124,7 @@ namespace faceitwpf.ViewModels
         {
             get => _backCommand ?? (_backCommand = new RelayCommand((obj) =>
             {
+                navigationService.ClearHistory();
                 navigationService.Navigate(ViewTypes.Search);
             }));
         }
@@ -143,24 +170,67 @@ namespace faceitwpf.ViewModels
         {
             get => _showMatchDetailsCommand ?? (_showMatchDetailsCommand = new RelayCommand((obj) =>
             {
-                int index = (int)obj;
+                navigationService.Navigate(ViewTypes.Match);
             }));
         }
 
-        public ChartViewModel ChartViewModel { get; set; }
-        
+        private RelayCommand _loadedCommand;
+        public RelayCommand LoadedCommand
+        {
+            get => _loadedCommand ?? (_loadedCommand = new RelayCommand(async (obj) =>
+            {
+                if (_isLoaded)
+                    return;
+                IsLoading = true;
+                try
+                {
+                    CurrentPlayer = await statsRepository.GetPlayerAsync(playerName);
+                    Matches = await statsRepository.GetMatchesAsync(CurrentPlayer.PlayerID);
+                    _pagesCount = CountPages(Matches);
+                    SliceOfHistory = GetPage(Page);
+                    LastMatchesPerfomance = new LastMatchesPerfomance(Matches);
+                    ChartViewModel = new ChartViewModel(Matches);
+                }
+                catch(Exception ex)
+                {
+                    navigationService.GoBack(ex);
+                }
+                _isLoaded = true;
+                IsLoading = false;
+            }));
+        }
+
+        private RelayCommand _openPlayerFaceit;
+        public RelayCommand OpenPlayerFaceit
+        {
+            get => _openPlayerFaceit ?? (_openPlayerFaceit = new RelayCommand((obj) =>
+            {
+                var sInfo = new System.Diagnostics.ProcessStartInfo(CurrentPlayer.FaceitURL)
+                {
+                    UseShellExecute = true,
+                };
+                System.Diagnostics.Process.Start(sInfo);
+            }));
+        }
+
+        private RelayCommand _openPlayerSteam;
+        public RelayCommand OpenPlayerSteam
+        {
+            get => _openPlayerSteam ?? (_openPlayerSteam = new RelayCommand((obj) =>
+            {
+                var sInfo = new System.Diagnostics.ProcessStartInfo(CurrentPlayer.SteamURL)
+                {
+                    UseShellExecute = true,
+                };
+                System.Diagnostics.Process.Start(sInfo);
+            }));
+        }
+
         public DataViewModel(IStatsRepository statsRepository, INavigationService navigationService, object parameter)
         {
             this.statsRepository = statsRepository;
             this.navigationService = navigationService;
-
-            CurrentPlayer = statsRepository.GetCurrentPlayer();
-            Matches = statsRepository.GetMatches();
-            _pagesCount = CountPages(Matches);
-            SliceOfHistory = GetPage(Page);
-            LastMatchesPerfomance = new LastMatchesPerfomance(Matches);
-
-            ChartViewModel = new ChartViewModel(Matches);
+            playerName = (string)parameter;
         }
 
         private List<Match> GetPage(int page)

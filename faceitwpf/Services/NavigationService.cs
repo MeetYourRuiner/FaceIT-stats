@@ -1,5 +1,6 @@
 ﻿using faceitwpf.ViewModels;
 using faceitwpf.Views.Enums;
+using System;
 
 namespace faceitwpf.Services
 {
@@ -11,9 +12,20 @@ namespace faceitwpf.Services
         {
             this.navigationViewModel = navigationViewModel;
         }
+
+        public void GoBack(Exception exception = null)
+        {
+            navigationViewModel.GoBack(exception);
+        }
+
         public void Navigate(ViewTypes destination, object parameter = null)
         {
-            navigationViewModel.ChangeViewModel(destination, parameter);
+            navigationViewModel.Navigate(destination, parameter);
+        }
+
+        public void ClearHistory()
+        {
+            navigationViewModel.ClearHistory();
         }
     }
 }

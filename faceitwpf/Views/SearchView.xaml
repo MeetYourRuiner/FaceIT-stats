@@ -5,11 +5,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:faceitwpf.Views"
     xmlns:fa="http://schemas.fontawesome.io/icons/" 
-    xmlns:converters="clr-namespace:faceitwpf.Views.Converters"
-    mc:Ignorable="d" 
+    xmlns:converters="clr-namespace:faceitwpf.Views.Converters" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" 
     d:DesignHeight="{StaticResource AppHeight}" 
     d:DesignWidth="{StaticResource AppWidth}"
 >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
     </UserControl.Resources>
@@ -25,17 +30,6 @@
             <ColumnDefinition Width="19*"/>
             <ColumnDefinition Width="13*"/>
         </Grid.ColumnDefinitions>
-        <!--Spinner-->
-        <fa:ImageAwesome 
-            Icon="CircleOutlineNotch" 
-            Spin="True" 
-            SpinDuration="3" 
-            Grid.Column="1"
-            Grid.Row="1" 
-            Grid.RowSpan="2"
-            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}}" 
-            Foreground="{StaticResource AppOrange}"
-        />
         <!--Logo-->
         <Rectangle 
             HorizontalAlignment="Center" 

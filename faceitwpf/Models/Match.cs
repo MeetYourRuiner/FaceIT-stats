@@ -4,12 +4,6 @@ using System.Collections.Generic;
 
 namespace faceitwpf.Models
 {
-//    public class MatchHistory
-//    {
-//        [JsonProperty("")]
-//        public List<Match> Matches { get; set; }
-//    }
-
     [JsonConverter(typeof(JsonPathConverter))]
     public class Match
     {
@@ -63,7 +57,7 @@ namespace faceitwpf.Models
         public string LevelImage { get => $"/faceitwpf;component/Resources/lvl{AvgLevel}.png"; }
     }
 
-    public class MatchLvl
+    public class MatchAvgLevel
     {
         public string Id { get; set; }
 
