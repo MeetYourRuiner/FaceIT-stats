@@ -1,87 +1,43 @@
-﻿<UserControl x:Class="faceitwpf.Views.SearchView"
+﻿<UserControl
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:faceitwpf.Views"
-    xmlns:fa="http://schemas.fontawesome.io/icons/" 
-    xmlns:converters="clr-namespace:faceitwpf.Views.Converters" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             mc:Ignorable="d" 
+    xmlns:converters="clr-namespace:faceitwpf.Views.Converters" 
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:Controls="clr-namespace:faceitwpf.Views.Controls" 
+    x:Class="faceitwpf.Views.SearchView"
+    mc:Ignorable="d"
     d:DesignHeight="{StaticResource AppHeight}" 
     d:DesignWidth="{StaticResource AppWidth}"
 >
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
+    </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <UserControl.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="320*"/>
-            <RowDefinition Height="40*"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="83*"/>
             <RowDefinition Height="307*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="13*"/>
-            <ColumnDefinition Width="19*"/>
-            <ColumnDefinition Width="13*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="380"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <!--Logo-->
-        <Rectangle 
-            HorizontalAlignment="Center" 
-            Height="94" 
-            Margin="140,108,140,105" 
-            Width="100" 
-            VerticalAlignment="Center"
-            Grid.Row="3" 
-            Grid.Column="1">
-            <Rectangle.Fill>
-                <ImageBrush ImageSource="/faceitwpf;component/Resources/icon-pheasant-preview-2-268x151.png" Stretch="None"/>
-            </Rectangle.Fill>
-        </Rectangle>
-        <!--Search form-->
-        <Grid 
-            Grid.Column="1"
-            Grid.Row="1" 
-            Grid.RowSpan="2"
-            Visibility="{Binding IsUpdating, Converter={StaticResource BTVConverter}, ConverterParameter=true}"
-        >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40*"/>
-                <RowDefinition Height="50*"/>
-                <RowDefinition Height="32*"/>
-            </Grid.RowDefinitions>
-            <TextBox 
-                x:Name="nameTextBox"
-                MaxLength="30" 
-                FontSize="26" 
-                Background="#FF2B2B2B" 
-                BorderThickness="0" 
-                Foreground="#FFEBEFF3" 
-                Padding="0,4" 
-                GotFocus="nameTextBox_GotFocus"
-                local:FocusExtension.IsFocused="{Binding IsTextboxFocused}"
-                Text="{Binding PlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
-            >
-                <TextBox.InputBindings>
-                    <KeyBinding Command="{Binding SearchCommand}" Key="Enter"/>
-                </TextBox.InputBindings>
-            </TextBox>
-            <Button
-                Content="SEARCH"
-                Style="{StaticResource ButtonStyle}"
-                Width="Auto" 
-                Command="{Binding SearchCommand}"
-                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
-                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto"
-                Margin="40,0" Grid.Row="2"
-            />
-        </Grid>
+        <local:FavoritesView
+            Visibility="{Binding IsFavoritesOpen, Converter={StaticResource BTVConverter}}"
+            Grid.ColumnSpan="3" 
+            Grid.RowSpan="4" 
+            Panel.ZIndex="1"
+        />
         <!--Update-->
         <Button
             Content="UPDATE"
@@ -91,7 +47,7 @@
             Command="{Binding UpdateCommand}" Margin="30,10,30,0"
         >
             <Button.Style>
-                <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonStyle}">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
                         <MultiDataTrigger>
@@ -114,5 +70,92 @@
             Visibility="{Binding IsUpdating, Converter={StaticResource BTVConverter}}"
             Foreground="{StaticResource AppOrange}"
         />
+        <!--Logo-->
+        <Rectangle 
+            HorizontalAlignment="Center" 
+            Height="94" 
+            Margin="140,108,140,105" 
+            Width="100" 
+            VerticalAlignment="Center"
+            Grid.Row="3" 
+            Grid.Column="1">
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="/faceitwpf;component/Resources/icon-pheasant-preview-2-268x151.png" Stretch="None"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <!--Favorites-->
+        <Button 
+            Width="32"
+            Height="32" 
+            Grid.Column="2"
+            Grid.Row="1" 
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Center"
+            Margin="5, 0, 0, 0"
+            Visibility="{Binding IsUpdating, Converter={StaticResource BTVConverter}, ConverterParameter=true}"
+            Command="{Binding OpenFavoritesCommand}"
+            Focusable="False"
+        >
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border" Background="Transparent" CornerRadius="4" BorderBrush="Gray" BorderThickness="1" >
+                                    <Image x:Name="image" Width="24" Source="/faceitwpf;component/Resources/emptyheart.png"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AppOrange}"/>
+                                        <Setter TargetName="image" Property="Source" Value="/faceitwpf;component/Resources/heart.png"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+        </Button>
+        <!--Search form-->
+        <Grid 
+            Grid.Column="1"
+            Grid.Row="1" 
+            Grid.RowSpan="2"
+            Visibility="{Binding IsUpdating, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
+        >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="32"/>
+            </Grid.RowDefinitions>
+            <TextBox 
+                x:Name="nameTextBox"
+                MaxLength="30" 
+                FontSize="26" 
+                Background="#FF2B2B2B" 
+                BorderThickness="0" 
+                Foreground="#FFEBEFF3" 
+                Padding="0,4" 
+                VerticalContentAlignment="Center"
+                GotFocus="nameTextBox_GotFocus"
+                local:FocusExtension.IsFocused="{Binding IsTextboxFocused}"
+                Text="{Binding PlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
+            >
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding SearchCommand}" Key="Enter"/>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Button
+                Content="SEARCH"
+                Style="{StaticResource ButtonStyle}"
+                Width="Auto" 
+                Command="{Binding SearchCommand}"
+                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto"
+                Margin="40,0" Grid.Row="2"
+            />
+        </Grid>
     </Grid>
 </UserControl>

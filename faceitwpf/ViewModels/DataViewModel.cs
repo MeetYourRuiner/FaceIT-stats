@@ -41,6 +41,20 @@ namespace faceitwpf.ViewModels
             }
         }
 
+        private bool _isFavoritePlayer;
+        public bool IsFavoritePlayer
+        {
+            get 
+            {
+                return _isFavoritePlayer;
+            }
+            set
+            {
+                _isFavoritePlayer = value;
+                OnPropertyChanged();
+            }
+        }
+
         private ChartViewModel _chartViewModel;
         public ChartViewModel ChartViewModel 
         { 
@@ -185,6 +199,7 @@ namespace faceitwpf.ViewModels
                 try
                 {
                     CurrentPlayer = await statsRepository.GetPlayerAsync(playerName);
+                    IsFavoritePlayer = Properties.Settings.Default.Favorites.Contains(CurrentPlayer.Nickname);
                     Matches = await statsRepository.GetMatchesAsync(CurrentPlayer.PlayerID);
                     _pagesCount = CountPages(Matches);
                     SliceOfHistory = GetPage(Page);
@@ -223,6 +238,30 @@ namespace faceitwpf.ViewModels
                     UseShellExecute = true,
                 };
                 System.Diagnostics.Process.Start(sInfo);
+            }));
+        }
+
+        private RelayCommand _addToFavoritesCommand;
+        public RelayCommand AddToFavoritesCommand
+        {
+            get => _addToFavoritesCommand ?? (_addToFavoritesCommand = new RelayCommand((obj) =>
+            {
+                System.Collections.Specialized.StringCollection favorites = Properties.Settings.Default.Favorites;
+                if (!IsFavoritePlayer)
+                {
+                    favorites.Add(CurrentPlayer.Nickname);
+                    Properties.Settings.Default.Favorites = favorites;
+                    Properties.Settings.Default.Save();
+                    IsFavoritePlayer = true;
+                }
+                else
+                {
+                    favorites.Remove(CurrentPlayer.Nickname);
+                    Properties.Settings.Default.Favorites = favorites;
+                    Properties.Settings.Default.Save();
+                    IsFavoritePlayer = false;
+                }
+                OnPropertyChanged("IsFavoritePlayer");
             }));
         }
 

@@ -3,6 +3,7 @@ using faceitwpf.Services;
 using faceitwpf.ViewModels.Commands;
 using faceitwpf.Views.Enums;
 using System;
+using System.Collections.Specialized;
 
 namespace faceitwpf.ViewModels
 {
@@ -17,6 +18,17 @@ namespace faceitwpf.ViewModels
             set
             {
                 _playerName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string[] _favorites;
+        public string[] Favorites
+        {
+            get => _favorites;
+            set
+            {
+                _favorites = value;
                 OnPropertyChanged();
             }
         }
@@ -65,6 +77,17 @@ namespace faceitwpf.ViewModels
             }
         }
 
+        private bool _isFavoritesOpen;
+        public bool IsFavoritesOpen
+        {
+            get { return _isFavoritesOpen; }
+            set
+            {
+                _isFavoritesOpen = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool? _isTextboxFocused;
         public bool? IsTextboxFocused
         {
@@ -79,24 +102,18 @@ namespace faceitwpf.ViewModels
         private RelayCommand _searchCommand;
         public RelayCommand SearchCommand
         {
-            get => _searchCommand ?? (_searchCommand = new RelayCommand(async (obj) =>
+            get => _searchCommand ?? (_searchCommand = new RelayCommand((obj) =>
             {
-                if (PlayerName.Length > 0 && PlayerName.Length < 30)
+                if (obj != null)
                 {
-                //    IsLoading = true;
-                //    try
-                //    {
-                        Properties.Settings.Default.LastNickname = PlayerName;
-                        Properties.Settings.Default.Save();
-                        navigationService.Navigate(ViewTypes.Data, PlayerName);
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    IsLoading = false;
-                    //    PlayerName = ex.Message;
-                    //    IsTextboxFocused = true;
-                    //}
-                    //IsLoading = false;
+                    string playerName = (string)obj;
+                    navigationService.Navigate(ViewTypes.Data, playerName);
+                }
+                else if (PlayerName.Length > 0 && PlayerName.Length < 30)
+                {
+                    Properties.Settings.Default.LastNickname = PlayerName;
+                    Properties.Settings.Default.Save();
+                    navigationService.Navigate(ViewTypes.Data, PlayerName);
                 }
             }));
         }
@@ -126,14 +143,54 @@ namespace faceitwpf.ViewModels
         private RelayCommand _loadedCommand;
         public RelayCommand LoadedCommand
         {
-            get => _loadedCommand ?? (_loadedCommand = new RelayCommand(async (obj) =>
+            get => _loadedCommand ?? (_loadedCommand = new RelayCommand((obj) =>
             {
                 PlayerName = Properties.Settings.Default.LastNickname;
+
+                StringCollection favoritesCollection = Properties.Settings.Default.Favorites;
+                string[] favorites = new string[favoritesCollection.Count];
+                favoritesCollection.CopyTo(favorites, 0);
+                Favorites = favorites;
+
                 IsTextboxFocused = true;
                 CheckForUpdate();
             }));
         }
 
+        private RelayCommand _openFavoritesCommand;
+        public RelayCommand OpenFavoritesCommand
+        {
+            get => _openFavoritesCommand ?? (_openFavoritesCommand = new RelayCommand((obj) =>
+            {
+                IsFavoritesOpen = true;
+            }));
+        }
+
+        private RelayCommand _closeFavoritesCommand;
+        public RelayCommand CloseFavoritesCommand
+        {
+            get => _closeFavoritesCommand ?? (_closeFavoritesCommand = new RelayCommand((obj) =>
+            {
+                IsFavoritesOpen = false;
+            }));
+        }
+
+        private RelayCommand _removeFromFavoritesCommand;
+        public RelayCommand RemoveFromFavoritesCommand
+        {
+            get => _removeFromFavoritesCommand ?? (_removeFromFavoritesCommand = new RelayCommand((obj) =>
+            {
+                string playerName = (string)obj;
+                StringCollection favoritesCollection = Properties.Settings.Default.Favorites;
+                favoritesCollection.Remove(playerName);
+                Properties.Settings.Default.Favorites = favoritesCollection;
+                Properties.Settings.Default.Save();
+
+                string[] favorites = new string[favoritesCollection.Count];
+                favoritesCollection.CopyTo(favorites, 0);
+                Favorites = favorites;
+            }));
+        }
 
         public SearchViewModel(IUpdateService updateService, INavigationService navigationService, object parameter)
         {

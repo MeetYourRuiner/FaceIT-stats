@@ -10,6 +10,9 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
+            <ColumnDefinition Width="420"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="420"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -24,19 +27,22 @@
         <DataGrid Grid.Row="3"
             Style="{StaticResource DGStyle}"
             ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
-            RowStyle="{StaticResource DGRowStyle}"/>
-        <DataGrid Grid.Row="3" Grid.Column="1"
+            RowStyle="{StaticResource DGRowStyle}" Grid.Column="1"/>
+        <DataGrid Grid.Row="3" Grid.Column="3"
             Style="{StaticResource DGStyle}"
             ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
             RowStyle="{StaticResource DGRowStyle}"/>
 
         <!--Back-->
         <Button
-                Content="BACK"
-                Style="{StaticResource ButtonStyle}"
-                Command="{Binding BackCommand}"
-                Grid.Row="5" 
-                Width="280" VerticalAlignment="Center"
+            Content="BACK"
+            Style="{StaticResource ButtonStyle}"
+            Command="{Binding BackCommand}"
+            Grid.Row="5" 
+            Width="280" 
+            VerticalAlignment="Center" 
+            HorizontalAlignment="Left" 
+            Grid.Column="1"
             />
     </Grid>
 </UserControl>
