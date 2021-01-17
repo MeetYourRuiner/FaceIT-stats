@@ -3,7 +3,7 @@ using System;
 
 namespace faceitwpf.Services
 {
-    interface INavigationService
+    interface INavigator
     {
         void Navigate(ViewTypes destination, object parameter = null);
         void ClearHistory();

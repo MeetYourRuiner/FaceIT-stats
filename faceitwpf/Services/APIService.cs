@@ -23,13 +23,13 @@ namespace faceitwpf.Services
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apikey);
         }
 
-        public async Task<Player> FetchPlayerAsync(string playerName)
+        public async Task<PlayerProfile> FetchPlayerProfileAsync(string playerName)
         {
             var response = await _client.GetAsync($"https://open.faceit.com/data/v4/players?nickname={playerName}&game=csgo");
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception("Player is not found");
             string json = await response.Content.ReadAsStringAsync();
-            return JObject.Parse(json).ToObject<Player>();
+            return JObject.Parse(json).ToObject<PlayerProfile>();
         }
 
         public async Task<List<Match>> FetchMatchesAsync(string playerId)
@@ -49,29 +49,27 @@ namespace faceitwpf.Services
             return matchList;
         }
 
-        public async Task<List<MatchAvgLevel>> FetchMatchesAvgLevelsAsync(string playerId)
+        public async Task<List<MatchOverview>> FetchMatchesOverviewsAsync(string playerId)
         {
             var response = await _client.GetAsync($"https://open.faceit.com/data/v4/players/{playerId}/history?game=csgo&limit=99");
-            if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("Failed");
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new System.Exception("Failed");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
-            var list = jObject["items"].Select(m =>
-                new MatchAvgLevel
-                {
-                    Id = m["match_id"].Value<string>(),
-                    AvgLevel = (int)Math.Round(
-                        m
-                        .SelectTokens("$..skill_level")
-                        .Values<double>()
-                        .Average()
-                    )
-                });
+
+            var list = jObject["items"].ToObject<List<MatchOverview>>();
             return list.ToList();
         }
 
-        public Task<MatchDetails> FetchMatchDetailsAsync(string matchId)
+        public async Task<MatchDetails> FetchMatchDetailsAsync(string matchId)
         {
-            throw new NotImplementedException();
+            var response = await _client.GetAsync($"https://open.faceit.com/data/v4/matches/{matchId}/stats");
+            if (response.StatusCode != HttpStatusCode.OK) 
+                throw new System.Exception("Failed");
+            string json = await response.Content.ReadAsStringAsync();
+            JObject jObject = JObject.Parse(json);
+            var md = jObject["rounds"][0].ToObject<MatchDetails>();
+            return md;
         }
     }
 }

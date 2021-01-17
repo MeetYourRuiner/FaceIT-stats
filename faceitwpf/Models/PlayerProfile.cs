@@ -3,7 +3,7 @@
 namespace faceitwpf.Models
 {
     [JsonConverter(typeof(JsonPathConverter))]
-    public class Player
+    public class PlayerProfile
     {
         private readonly int[] Levels =
         {

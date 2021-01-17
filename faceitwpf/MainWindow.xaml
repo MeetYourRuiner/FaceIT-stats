@@ -37,7 +37,7 @@
     </Window.DataContext>
 
     <Grid>
-        <ContentControl Content="{Binding CurrentViewModel}"/>
+        <ContentControl Content="{Binding CurrentViewModel}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         <ContentControl Content="{Binding Error}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,5,5"/>
     </Grid>
 </Window>

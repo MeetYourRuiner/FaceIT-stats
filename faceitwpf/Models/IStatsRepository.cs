@@ -7,6 +7,6 @@ namespace faceitwpf.Models
     {
         Task<List<Match>> GetMatchesAsync(string playerId);
         Task<MatchDetails> GetMatchDetailsAsync(string matchId);
-        Task<Player> GetPlayerAsync(string playerName);
+        Task<PlayerProfile> GetPlayerProfileAsync(string playerName);
     }
 }

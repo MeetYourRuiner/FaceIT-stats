@@ -7,12 +7,11 @@ using System.Collections.Generic;
 
 namespace faceitwpf.ViewModels
 {
-    class MainWindowViewModel : BaseViewModel, INavigationViewModel
+    class MainWindowViewModel : BaseViewModel, INavigator
     {
         private readonly VMStore _vmStore;
         private readonly IAPIService _apiService;
         private readonly IUpdateService _updateService;
-        private readonly INavigationService _navigationService;
         private readonly IStatsRepository _statsRepository;
 
         private BaseViewModel _currentViewModel;
@@ -43,18 +42,17 @@ namespace faceitwpf.ViewModels
         {
             _apiService = new APIService();
             _updateService = new UpdateService();
-            _navigationService = new NavigationService(this);
             _statsRepository = new StatsRepository(_apiService);
 
             _vmStore = new VMStore();
-            _vmStore.Add<SearchViewModel>((parameter) => new SearchViewModel(_updateService, _navigationService, parameter));
-            _vmStore.Add<DataViewModel>((parameter) => new DataViewModel(_statsRepository, _navigationService, parameter));
-            _vmStore.Add<MatchDetailsViewModel>((parameter) => new MatchDetailsViewModel(_statsRepository, _navigationService, parameter));
+            _vmStore.Add<SearchViewModel>((parameter) => new SearchViewModel(_updateService, this, parameter));
+            _vmStore.Add<DataViewModel>((parameter) => new DataViewModel(_statsRepository, this, parameter));
+            _vmStore.Add<MatchDetailsViewModel>((parameter) => new MatchDetailsViewModel(_statsRepository, this, parameter));
 
-            _navigationService.Navigate(ViewTypes.Search);
+            Navigate(ViewTypes.Search);
         }
 
-        public void Navigate(ViewTypes destination, object parameter)
+        public void Navigate(ViewTypes destination, object parameter = null)
         {
             if (CurrentViewModel != null)
                 History.Push(CurrentViewModel);

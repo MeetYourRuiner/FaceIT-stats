@@ -3,6 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:v="clr-namespace:faceitwpf.Views">
+    <Style TargetType="Image">
+        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+    </Style>
+
     <!-- Button -->
     <Style x:Key="ButtonStyle" TargetType="Button">
         <Style.Setters>
@@ -145,7 +149,7 @@
             <Setter Property="SelectionMode" Value="Single"/>
             <Setter Property="CanUserSortColumns" Value="False"/>
             <Setter Property="CanUserReorderColumns" Value="False"/>
-            <Setter Property="RowHeight" Value="50"/>
+            <Setter Property="RowHeight" Value="49"/>
             <Setter Property="CellStyle" Value="{StaticResource DGCellStyleWhiteFont}" />
             <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
             <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
@@ -155,7 +159,8 @@
     <Style x:Key="DGColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
         <Setter Property="FontSize" Value="20" />
         <Setter Property="Background" Value="{StaticResource AppControlBackground}" />
-        <Setter Property="Padding" Value="10,10,0,10"/>
+        <Setter Property="Padding" Value="10, 0"/>
+        <Setter Property="Height" Value="49"/>
     </Style>
 
     <Style x:Key="DGRowStyle" TargetType="{x:Type DataGridRow}">

@@ -4,13 +4,14 @@ using faceitwpf.ViewModels.Commands;
 using faceitwpf.Views.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace faceitwpf.ViewModels
 {
     class DataViewModel : BaseViewModel
     {
         private readonly IStatsRepository statsRepository;
-        private readonly INavigationService navigationService;
+        private readonly INavigator navigator;
 
         private const int MATCHES_ON_PAGE = 9;
 
@@ -66,13 +67,13 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private Player _currentPlayer;
-        public Player CurrentPlayer
+        private PlayerProfile _currentPlayerProfile;
+        public PlayerProfile CurrentPlayerProfile
         {
-            get { return _currentPlayer; }
+            get { return _currentPlayerProfile; }
             set
             {
-                _currentPlayer = value;
+                _currentPlayerProfile = value;
                 OnPropertyChanged();
             }
         }
@@ -138,8 +139,7 @@ namespace faceitwpf.ViewModels
         {
             get => _backCommand ?? (_backCommand = new RelayCommand((obj) =>
             {
-                navigationService.ClearHistory();
-                navigationService.Navigate(ViewTypes.Search);
+                navigator.GoBack();
             }));
         }
 
@@ -184,7 +184,9 @@ namespace faceitwpf.ViewModels
         {
             get => _showMatchDetailsCommand ?? (_showMatchDetailsCommand = new RelayCommand((obj) =>
             {
-                navigationService.Navigate(ViewTypes.Match);
+                int index = (int)obj;
+                Match match = Matches.FirstOrDefault((m) => m.Index == index);
+                navigator.Navigate(ViewTypes.Match, match);
             }));
         }
 
@@ -198,9 +200,9 @@ namespace faceitwpf.ViewModels
                 IsLoading = true;
                 try
                 {
-                    CurrentPlayer = await statsRepository.GetPlayerAsync(playerName);
-                    IsFavoritePlayer = Properties.Settings.Default.Favorites.Contains(CurrentPlayer.Nickname);
-                    Matches = await statsRepository.GetMatchesAsync(CurrentPlayer.PlayerID);
+                    CurrentPlayerProfile = await statsRepository.GetPlayerProfileAsync(playerName);
+                    IsFavoritePlayer = Properties.Settings.Default.Favorites.Contains(CurrentPlayerProfile.Nickname);
+                    Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.PlayerID);
                     _pagesCount = CountPages(Matches);
                     SliceOfHistory = GetPage(Page);
                     LastMatchesPerfomance = new LastMatchesPerfomance(Matches);
@@ -208,7 +210,7 @@ namespace faceitwpf.ViewModels
                 }
                 catch(Exception ex)
                 {
-                    navigationService.GoBack(ex);
+                    navigator.GoBack(ex);
                 }
                 _isLoaded = true;
                 IsLoading = false;
@@ -220,7 +222,7 @@ namespace faceitwpf.ViewModels
         {
             get => _openPlayerFaceit ?? (_openPlayerFaceit = new RelayCommand((obj) =>
             {
-                var sInfo = new System.Diagnostics.ProcessStartInfo(CurrentPlayer.FaceitURL)
+                var sInfo = new System.Diagnostics.ProcessStartInfo(CurrentPlayerProfile.FaceitURL)
                 {
                     UseShellExecute = true,
                 };
@@ -233,7 +235,7 @@ namespace faceitwpf.ViewModels
         {
             get => _openPlayerSteam ?? (_openPlayerSteam = new RelayCommand((obj) =>
             {
-                var sInfo = new System.Diagnostics.ProcessStartInfo(CurrentPlayer.SteamURL)
+                var sInfo = new System.Diagnostics.ProcessStartInfo(CurrentPlayerProfile.SteamURL)
                 {
                     UseShellExecute = true,
                 };
@@ -249,14 +251,14 @@ namespace faceitwpf.ViewModels
                 System.Collections.Specialized.StringCollection favorites = Properties.Settings.Default.Favorites;
                 if (!IsFavoritePlayer)
                 {
-                    favorites.Add(CurrentPlayer.Nickname);
+                    favorites.Add(CurrentPlayerProfile.Nickname);
                     Properties.Settings.Default.Favorites = favorites;
                     Properties.Settings.Default.Save();
                     IsFavoritePlayer = true;
                 }
                 else
                 {
-                    favorites.Remove(CurrentPlayer.Nickname);
+                    favorites.Remove(CurrentPlayerProfile.Nickname);
                     Properties.Settings.Default.Favorites = favorites;
                     Properties.Settings.Default.Save();
                     IsFavoritePlayer = false;
@@ -265,10 +267,10 @@ namespace faceitwpf.ViewModels
             }));
         }
 
-        public DataViewModel(IStatsRepository statsRepository, INavigationService navigationService, object parameter)
+        public DataViewModel(IStatsRepository statsRepository, INavigator navigator, object parameter)
         {
             this.statsRepository = statsRepository;
-            this.navigationService = navigationService;
+            this.navigator = navigator;
             playerName = (string)parameter;
         }
 

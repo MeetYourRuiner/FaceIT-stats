@@ -24,9 +24,7 @@
         <converters:KDToColorConverter x:Key="KDtCConverter"/>
         <converters:WRToColorConverter x:Key="WRtCConverter"/>
         <converters:ZeroToNullConverter x:Key="ZC"/>
-        <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/icon-pheasant-preview-2-268x151.png'/>
-        <sys:Double x:Key="KRMin">0.74</sys:Double>
-        <sys:Double x:Key="KDMin">1</sys:Double>
+        <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
     </UserControl.Resources>
     <Grid>
         <controls:LoadingAnimation
@@ -39,13 +37,12 @@
         <Grid
             x:Name="mainGrid"
             Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}, ConverterParameter=true}" 
-            >
+        >
             <Grid.RowDefinitions>
-                <RowDefinition Height="0*"/>
                 <RowDefinition/>
                 <RowDefinition Height="128"/>
                 <RowDefinition/>
-                <RowDefinition Height="512"/>
+                <RowDefinition Height="508"/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="32"/>
                 <RowDefinition Height="26"/>
@@ -55,17 +52,18 @@
                 <ColumnDefinition Width="860"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
+
             <!--Cover image-->
             <Rectangle
                 Grid.ColumnSpan="3" 
-                Grid.RowSpan="4" 
+                Grid.RowSpan="3" 
                 Stroke="Black" 
                 StrokeThickness="0">
                 <Rectangle.Fill>
-                    <ImageBrush ImageSource="{Binding CurrentPlayer.CoverImage, FallbackValue={x:Null}}"/>
+                    <ImageBrush ImageSource="{Binding CurrentPlayerProfile.CoverImage, FallbackValue={x:Null}}"/>
                 </Rectangle.Fill>
             </Rectangle>
-            <Grid Name="topGrid" Grid.Column="1" Grid.Row="2">
+            <Grid Name="topGrid" Grid.Column="1" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="39*"/>
                     <RowDefinition Height="5"/>
@@ -90,7 +88,7 @@
                 >
                     <Image 
                         x:Name="avatar"
-                        Source="{Binding CurrentPlayer.Avatar, FallbackValue={StaticResource defaultAvatar}}" 
+                        Source="{Binding CurrentPlayerProfile.Avatar, FallbackValue={StaticResource defaultAvatar}}" 
                         Stretch="Fill"
                     />
                 </Border>
@@ -98,7 +96,7 @@
                 <Label
                     Grid.Column="2" 
                     Style="{StaticResource InfoLabel}" 
-                    Content="{Binding CurrentPlayer.Nickname}" 
+                    Content="{Binding CurrentPlayerProfile.Nickname}" 
                     BorderThickness="0,0,0,1" 
                     BorderBrush="{StaticResource AppOrange}"
                     HorizontalAlignment="Left"
@@ -122,8 +120,8 @@
                         <TextBlock>
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0} Level {1} Elo">
-                                    <Binding Path="CurrentPlayer.Level"/>
-                                    <Binding Path="CurrentPlayer.Elo"/>
+                                    <Binding Path="CurrentPlayerProfile.Level"/>
+                                    <Binding Path="CurrentPlayerProfile.Elo"/>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
@@ -140,8 +138,8 @@
                         <TextBlock>
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="-{0}/+{1}">
-                                    <Binding Path="CurrentPlayer.ToDemote"/>
-                                    <Binding Path="CurrentPlayer.ToPromote"/>
+                                    <Binding Path="CurrentPlayerProfile.ToDemote"/>
+                                    <Binding Path="CurrentPlayerProfile.ToPromote"/>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
@@ -280,7 +278,7 @@
                         <Image Width="32">
                             <Image.Style>
                                 <Style TargetType="{x:Type Image}">
-                                <Setter Property="Source" Value="/faceitwpf;component/Resources/emptyheart.png"/>
+                                    <Setter Property="Source" Value="/faceitwpf;component/Resources/emptyheart.png"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsFavoritePlayer}" Value="True">
                                             <Setter Property="Source" Value="/faceitwpf;component/Resources/heart.png"/>
@@ -292,7 +290,7 @@
                     </Button>
                 </StackPanel>
             </Grid>
-            <Grid x:Name="dataGrid" Grid.Row="4" Grid.ColumnSpan="3">
+            <Grid x:Name="dataGrid" Grid.Row="3" Grid.ColumnSpan="3">
                 <!--Chart-->
                 <Grid
                     Visibility="{Binding IsChartVisible, Converter={StaticResource BTVConverter}}"
@@ -384,7 +382,7 @@
                             </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
                         <DataGridTemplateColumn 
-                            Width="80"
+                            Width="70"
                         >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -401,27 +399,18 @@
                         <DataGridTemplateColumn Width="50">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <!--<Button
-                                        Margin="0,0,10,0"
-                                        Width="40"
-                                        Style="{StaticResource ButtonStyle}"
-                                        Command="{Binding DataContext.ShowMatchDetailsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DataView}}}" 
-                                        CommandParameter="{Binding Index}"
-                                    >
-                                        <Image Width="20" Height="20" Source="/faceitwpf;component/Resources/details.png" />
-                                    </Button>-->
                                     <Button 
                                         Width="40"
                                         Height="40" 
                                         Grid.Column="2"
-                                        Grid.Row="1" 
+                                        Grid.Row="0" 
                                         HorizontalAlignment="Left" 
                                         VerticalAlignment="Center"
-                                        Margin="0,0,10,0"
+                                        Margin="0,0,4,0"
                                         Command="{Binding DataContext.ShowMatchDetailsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DataView}}}" 
                                         CommandParameter="{Binding Index}"
                                         Focusable="False"
-                                    >                   
+                                    >
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
                                                 <Setter Property="Background" Value="Transparent" />
@@ -448,7 +437,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
-            <Grid x:Name="buttonGrid" Grid.Column="1" Grid.Row="6">
+            <Grid x:Name="buttonGrid" Grid.Column="1" Grid.Row="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="280"/>
                     <ColumnDefinition Width="7*"/>

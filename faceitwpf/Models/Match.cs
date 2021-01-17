@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace faceitwpf.Models
 {
@@ -54,13 +53,7 @@ namespace faceitwpf.Models
         }
 
         public int AvgLevel { get; set; }
+        public MatchOverview MatchOverview { get; set; }
         public string LevelImage { get => $"/faceitwpf;component/Resources/lvl{AvgLevel}.png"; }
-    }
-
-    public class MatchAvgLevel
-    {
-        public string Id { get; set; }
-
-        public int AvgLevel { get; set; }
     }
 }

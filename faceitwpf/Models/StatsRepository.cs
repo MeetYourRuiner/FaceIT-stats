@@ -17,7 +17,12 @@ namespace faceitwpf.Models
 
         public async Task<MatchDetails> GetMatchDetailsAsync(string matchId)
         {
-            throw new NotImplementedException();
+            MatchDetails matchDetails = await apiService.FetchMatchDetailsAsync(matchId);
+            matchDetails.Teams.ForEach((t) =>
+            {
+                t.Players.Sort((p1, p2) => p2.PlayerStats.Kills.CompareTo(p1.PlayerStats.Kills));
+            });
+            return matchDetails;
         }
 
         public async Task<List<Match>> GetMatchesAsync(string playerId)
@@ -30,11 +35,18 @@ namespace faceitwpf.Models
             catch { throw; }
             try
             {
-                List<MatchAvgLevel> matchesAvgLevels = await apiService.FetchMatchesAvgLevelsAsync(playerId);
-                matchesAvgLevels.ForEach(mal => {
-                    var match = matches.FirstOrDefault(m => m.Id == mal.Id);
+                List<MatchOverview> matchesOverviews = await apiService.FetchMatchesOverviewsAsync(playerId);
+                matchesOverviews.ForEach(mo => {
+                    var match = matches.FirstOrDefault(m => m.Id == mo.Id);
                     if (match != null)
-                        match.AvgLevel = mal.AvgLevel;
+                    {
+                        match.MatchOverview = mo;
+                        match.AvgLevel = (int)Math.Round(
+                            mo.TeamA.PlayerOverviews.Select(po => po.Level)
+                            .Union(mo.TeamB.PlayerOverviews.Select(po => po.Level))
+                            .Average()
+                        );
+                    }
                 });
             }
             catch { }
@@ -51,9 +63,9 @@ namespace faceitwpf.Models
             return matches;
         }
 
-        public async Task<Player> GetPlayerAsync(string playerName)
+        public async Task<PlayerProfile> GetPlayerProfileAsync(string playerName)
         {
-            Player player = await apiService.FetchPlayerAsync(playerName);
+            PlayerProfile player = await apiService.FetchPlayerProfileAsync(playerName);
             return player;
         }
     }

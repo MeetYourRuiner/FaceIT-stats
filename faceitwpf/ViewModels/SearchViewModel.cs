@@ -10,8 +10,9 @@ namespace faceitwpf.ViewModels
     class SearchViewModel : BaseViewModel
     {
         private readonly IUpdateService updateService;
-        private readonly INavigationService navigationService;
+        private readonly INavigator navigator;
         private string _playerName;
+        private bool _isLoaded = false;
         public string PlayerName
         {
             get { return _playerName; }
@@ -107,13 +108,13 @@ namespace faceitwpf.ViewModels
                 if (obj != null)
                 {
                     string playerName = (string)obj;
-                    navigationService.Navigate(ViewTypes.Data, playerName);
+                    navigator.Navigate(ViewTypes.Data, playerName);
                 }
                 else if (PlayerName.Length > 0 && PlayerName.Length < 30)
                 {
                     Properties.Settings.Default.LastNickname = PlayerName;
                     Properties.Settings.Default.Save();
-                    navigationService.Navigate(ViewTypes.Data, PlayerName);
+                    navigator.Navigate(ViewTypes.Data, PlayerName);
                 }
             }));
         }
@@ -145,6 +146,8 @@ namespace faceitwpf.ViewModels
         {
             get => _loadedCommand ?? (_loadedCommand = new RelayCommand((obj) =>
             {
+                if (_isLoaded)
+                    return;
                 PlayerName = Properties.Settings.Default.LastNickname;
 
                 StringCollection favoritesCollection = Properties.Settings.Default.Favorites;
@@ -153,6 +156,7 @@ namespace faceitwpf.ViewModels
                 Favorites = favorites;
 
                 IsTextboxFocused = true;
+                _isLoaded = true;
                 CheckForUpdate();
             }));
         }
@@ -192,10 +196,10 @@ namespace faceitwpf.ViewModels
             }));
         }
 
-        public SearchViewModel(IUpdateService updateService, INavigationService navigationService, object parameter)
+        public SearchViewModel(IUpdateService updateService, INavigator navigator, object parameter)
         {
             this.updateService = updateService;
-            this.navigationService = navigationService;
+            this.navigator = navigator;
         }
 
         private async void CheckForUpdate()

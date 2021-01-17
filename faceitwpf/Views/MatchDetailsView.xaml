@@ -3,46 +3,422 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:local="clr-namespace:faceitwpf.Views"
-    mc:Ignorable="d" 
+    xmlns:local="clr-namespace:faceitwpf.Views" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:controls="clr-namespace:faceitwpf.Views.Controls" xmlns:converters="clr-namespace:faceitwpf.Views.Converters" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
     d:DesignHeight="{StaticResource AppHeight}" 
     d:DesignWidth="{StaticResource AppWidth}">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="420"/>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="420"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="68*"/>
-            <RowDefinition Height="140*"/>
-            <RowDefinition Height="40*"/>
-            <RowDefinition Height="429*"/>
-            <RowDefinition Height="15"/>
-            <RowDefinition Height="32"/>
-            <RowDefinition Height="26"/>
-        </Grid.RowDefinitions>
-        <DataGrid Grid.Row="3"
-            Style="{StaticResource DGStyle}"
-            ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
-            RowStyle="{StaticResource DGRowStyle}" Grid.Column="1"/>
-        <DataGrid Grid.Row="3" Grid.Column="3"
-            Style="{StaticResource DGStyle}"
-            ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
-            RowStyle="{StaticResource DGRowStyle}"/>
 
-        <!--Back-->
-        <Button
-            Content="BACK"
-            Style="{StaticResource ButtonStyle}"
-            Command="{Binding BackCommand}"
-            Grid.Row="5" 
-            Width="280" 
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
+        <converters:KRToColorConverter x:Key="KRtCConverter"/>
+        <converters:KDToColorConverter x:Key="KDtCConverter"/>
+
+        <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
+
+        <Style x:Key="FinalScoreLabel" TargetType="Label" BasedOn="{StaticResource InfoLabel}">
+            <Setter Property="Height" Value="50" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="40"/>
+        </Style>
+        <Style x:Key="HalfScoreLabel" TargetType="Label" BasedOn="{StaticResource InfoLabel}">
+            <Setter Property="Height" Value="Auto" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+        <Style x:Key="MatchDetailsDGStyle" TargetType="DataGrid" BasedOn="{StaticResource DGStyle}">
+            <Setter Property="RowHeight" Value="45"/>
+        </Style>
+        <Style x:Key="MatchDetailsDGColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}">
+            <Setter Property="Height" Value="45"/>
+        </Style>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <controls:LoadingAnimation
+            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}}" 
+            Height="300" 
+            Width="300"
+            HorizontalAlignment="Center" 
             VerticalAlignment="Center" 
-            HorizontalAlignment="Left" 
-            Grid.Column="1"
+        />
+        <Grid
+            x:Name="mainGrid"
+            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}, ConverterParameter=true}" 
+        >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="860"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="85"/>
+                <RowDefinition Height="280"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="280"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="26"/>
+            </Grid.RowDefinitions>
+            <DataGrid 
+                Grid.Row="1"
+                Style="{StaticResource MatchDetailsDGStyle}"
+                ColumnHeaderStyle="{StaticResource MatchDetailsDGColumnHeaderStyle}"
+                RowStyle="{StaticResource DGRowStyle}"
+                ItemsSource="{Binding TeamA.Players}" Grid.ColumnSpan="3"
+            >
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn 
+                        Width="45"
+                    >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource AppLightOrange}" Height="40" Width="40" BorderThickness="1" Background="{StaticResource AppControlBackground}">
+                                    <Image Source="{Binding PlayerOverview.Avatar, FallbackValue={StaticResource defaultAvatar}, TargetNullValue={StaticResource defaultAvatar}}" Stretch="Fill"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn 
+                        Width="45"
+                    >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding PlayerOverview.LevelImage}" Height="32" Width="32"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn  
+                        Binding="{Binding Nickname}" 
+                        Width="150"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    >
+                        <DataGridTextColumn.Header>
+                            <TextBlock>
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Text" Value="LOSS"/>
+                                        <Setter Property="Foreground" Value="Red"/>
+                                        <Setter Property="FontSize" Value="16"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DataContext.TeamA.TeamStats.TeamWin, 
+                                              RelativeSource={RelativeSource AncestorType={x:Type local:MatchDetailsView}}}" Value="1">
+                                                <Setter Property="Text" Value="WIN"/>
+                                                <Setter Property="Foreground" Value="Green"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn 
+                        Header="K" 
+                        Binding="{Binding PlayerStats.Kills}" 
+                        Width="65"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="D" 
+                        Binding="{Binding PlayerStats.Deaths}" 
+                        Width="65"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="A" 
+                        Binding="{Binding PlayerStats.Assists}" 
+                        Width="65"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="KR" 
+                        Binding="{Binding PlayerStats.KRRatio}" 
+                        Width="75"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
+                                <Setter Property="Foreground" Value="{Binding PlayerStats.KRRatio, Converter={StaticResource KRtCConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn 
+                        Header="KDR" 
+                        Binding="{Binding PlayerStats.KDRatio}" 
+                        Width="75"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
+                                <Setter Property="Foreground" Value="{Binding PlayerStats.KDRatio, Converter={StaticResource KDtCConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn 
+                        Header="MVPs" 
+                        Binding="{Binding PlayerStats.MVPs}" 
+                        Width="75"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="HS%" 
+                        Binding="{Binding PlayerStats.HSPercentage, StringFormat={}{0}%}" 
+                        Width="75"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="3K" 
+                        Binding="{Binding PlayerStats.TripleKills}" 
+                        Width="50"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="4K" 
+                        Binding="{Binding PlayerStats.QuadroKills}" 
+                        Width="50"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="Ace" 
+                        Binding="{Binding PlayerStats.PentaKills}" 
+                        Width="59"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid 
+                Grid.Row="3"
+                Style="{StaticResource MatchDetailsDGStyle}"
+                ColumnHeaderStyle="{StaticResource MatchDetailsDGColumnHeaderStyle}"
+                RowStyle="{StaticResource DGRowStyle}"
+                ItemsSource="{Binding TeamB.Players}" Grid.ColumnSpan="3"
+            >
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn 
+                        Width="45"
+                    >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource AppLightOrange}" Height="40" Width="40" BorderThickness="1" Background="{StaticResource AppControlBackground}">
+                                    <Image Source="{Binding PlayerOverview.Avatar, FallbackValue={StaticResource defaultAvatar}, TargetNullValue={StaticResource defaultAvatar}}" Stretch="Fill"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn 
+                        Width="45"
+                    >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding PlayerOverview.LevelImage}" Height="32" Width="32"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn
+                        Binding="{Binding Nickname}" 
+                        Width="150"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    >
+                        <DataGridTextColumn.Header>
+                            <TextBlock>
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Text" Value="LOSS"/>
+                                        <Setter Property="Foreground" Value="Red"/>
+                                        <Setter Property="FontSize" Value="16"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DataContext.TeamB.TeamStats.TeamWin, 
+                                              RelativeSource={RelativeSource AncestorType={x:Type local:MatchDetailsView}}}" Value="1">
+                                                <Setter Property="Text" Value="WIN"/>
+                                                <Setter Property="Foreground" Value="Green"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn 
+                        Header="K" 
+                        Binding="{Binding PlayerStats.Kills}" 
+                        Width="65"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="D" 
+                        Binding="{Binding PlayerStats.Deaths}" 
+                        Width="65"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="A" 
+                        Binding="{Binding PlayerStats.Assists}" 
+                        Width="65"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="KR" 
+                        Binding="{Binding PlayerStats.KRRatio}" 
+                        Width="75"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
+                                <Setter Property="Foreground" Value="{Binding PlayerStats.KRRatio, Converter={StaticResource KRtCConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn 
+                        Header="KDR" 
+                        Binding="{Binding PlayerStats.KDRatio}" 
+                        Width="75"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
+                                <Setter Property="Foreground" Value="{Binding PlayerStats.KDRatio, Converter={StaticResource KDtCConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn 
+                        Header="MVPs" 
+                        Binding="{Binding PlayerStats.MVPs}" 
+                        Width="75"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="HS%" 
+                        Binding="{Binding PlayerStats.HSPercentage, StringFormat={}{0}%}" 
+                        Width="75"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="3K" 
+                        Binding="{Binding PlayerStats.TripleKills}" 
+                        Width="50"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="4K" 
+                        Binding="{Binding PlayerStats.QuadroKills}" 
+                        Width="50"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                    <DataGridTextColumn 
+                        Header="Ace" 
+                        Binding="{Binding PlayerStats.PentaKills}" 
+                        Width="59"
+                        ElementStyle="{StaticResource ColumnElementStyle}"
+                    />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!--Back-->
+            <Button
+                Content="BACK"
+                Style="{StaticResource ButtonStyle}"
+                Command="{Binding BackCommand}"
+                Grid.Row="5" 
+                Width="280" 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Left" 
+                Grid.Column="1"
             />
+            <Grid Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1">
+                    <Label
+                        DockPanel.Dock="Top" 
+                        Content="{Binding TeamA.TeamStats.FinalScore}"
+                    >
+                        <Label.Style>
+                            <Style BasedOn="{StaticResource FinalScoreLabel}" TargetType="{x:Type Label}">
+                                <Setter Property="Foreground" Value="Red"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding TeamA.TeamStats.TeamWin}" Value="1">
+                                        <Setter Property="Foreground" Value="Green"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <Grid DockPanel.Dock="Bottom" Height="Auto">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label 
+                            Style="{StaticResource HalfScoreLabel}" 
+                            Content="{Binding TeamA.TeamStats.FirstHalfScore}"
+                            Grid.Column="0" 
+                        />
+                        <Label 
+                            Style="{StaticResource HalfScoreLabel}" 
+                            Content="{Binding TeamA.TeamStats.SecondHalfScore}"
+                            Grid.Column="1" 
+                        />
+                    </Grid>
+                </DockPanel>
+                <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="3">
+                    <Label
+                        DockPanel.Dock="Top" 
+                        Content="{Binding TeamB.TeamStats.FinalScore}"
+                    >
+                        <Label.Style>
+                            <Style BasedOn="{StaticResource FinalScoreLabel}" TargetType="{x:Type Label}">
+                                <Setter Property="Foreground" Value="Red"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding TeamB.TeamStats.TeamWin}" Value="1">
+                                        <Setter Property="Foreground" Value="Green"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <Grid DockPanel.Dock="Bottom" Height="Auto">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label 
+                            Style="{StaticResource HalfScoreLabel}" 
+                            Content="{Binding TeamB.TeamStats.FirstHalfScore}"
+                            Grid.Column="0" 
+                        />
+                        <Label 
+                            Style="{StaticResource HalfScoreLabel}" 
+                            Content="{Binding TeamB.TeamStats.SecondHalfScore}"
+                            Grid.Column="1" 
+                        />
+                    </Grid>
+                </DockPanel>
+                <Label
+                    Style="{StaticResource FinalScoreLabel}"
+                    Grid.Column="2" 
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch" Height="Auto" 
+                >
+                    <Image Stretch="Fill" Source="{Binding CurrentMatchDetails.RoundStats.MapImage}"/>
+                </Label>
+            </Grid>
+            <Button Width="45" Height="45" Style="{StaticResource LinkButton}" VerticalAlignment="Center" HorizontalAlignment="Right" Command="{Binding OpenMatchFaceit}" Grid.Column="1">
+                <Image Width="32" Source="/faceitwpf;component/Resources/faceit.png"/>
+            </Button>
+        </Grid>
     </Grid>
 </UserControl>
