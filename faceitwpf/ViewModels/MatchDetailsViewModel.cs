@@ -58,31 +58,39 @@ namespace faceitwpf.ViewModels
             get => _loadedCommand ?? (_loadedCommand = new RelayCommand(async (obj) =>
             {
                 IsLoading = true;
-                CurrentMatchDetails = await statsRepository.GetMatchDetailsAsync(Match.Id);
-                if (Match.MatchOverview != null)
+                try
                 {
-                    TeamA.Players.ForEach(p =>
+                    CurrentMatchDetails = await statsRepository.GetMatchDetailsAsync(Match.Id);
+                    if (Match.MatchOverview != null)
                     {
-                        p.PlayerOverview = Match.MatchOverview.TeamA.PlayerOverviews
-                            .FirstOrDefault((po) => po.Id == p.PlayerId);
-                    });
-                    TeamB.Players.ForEach(p =>
+                        TeamA.Players.ForEach(p =>
+                        {
+                            p.PlayerOverview = Match.MatchOverview.TeamA.PlayerOverviews
+                                .FirstOrDefault((po) => po.Id == p.PlayerId);
+                        });
+                        TeamB.Players.ForEach(p =>
+                        {
+                            p.PlayerOverview = Match.MatchOverview.TeamB.PlayerOverviews
+                                .FirstOrDefault((po) => po.Id == p.PlayerId);
+                        });
+                    }
+                    else
                     {
-                        p.PlayerOverview = Match.MatchOverview.TeamB.PlayerOverviews
-                            .FirstOrDefault((po) => po.Id == p.PlayerId);
-                    });
+                        TeamA.Players.ForEach(p =>
+                        {
+                            p.PlayerOverview = new PlayerOverview();
+                        });
+                        TeamB.Players.ForEach(p =>
+                        {
+                            p.PlayerOverview = new PlayerOverview();
+                        });
+                    }
                 }
-                else
+                catch (System.Exception ex)
                 {
-                    TeamA.Players.ForEach(p =>
-                    {
-                        p.PlayerOverview = new PlayerOverview();
-                    });
-                    TeamB.Players.ForEach(p =>
-                    {
-                        p.PlayerOverview = new PlayerOverview();
-                    });
+                    navigator.GoBack(ex);
                 }
+                
                 IsLoading = false;
             }));
         }
