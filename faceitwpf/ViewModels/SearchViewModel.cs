@@ -1,5 +1,4 @@
-﻿using faceitwpf.Models;
-using faceitwpf.Services;
+﻿using faceitwpf.Services;
 using faceitwpf.ViewModels.Commands;
 using faceitwpf.Views.Enums;
 using System;
@@ -132,7 +131,7 @@ namespace faceitwpf.ViewModels
                 catch (Exception ex)
                 {
                     IsUpdating = false;
-                    PlayerName = ex.Message;
+                    navigator.DisplayError(ex);
                 }
                 finally
                 {

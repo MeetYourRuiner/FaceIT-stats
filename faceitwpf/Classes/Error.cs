@@ -16,7 +16,8 @@ namespace faceitwpf.Classes
             timer.Start();
             timer.Elapsed += (sender, e) =>
             {
-                TimerElapsed?.Invoke(sender, e);
+                TimerElapsed?.Invoke(this, e);
+                timer.Stop();
             };
             timer.Start();
         }

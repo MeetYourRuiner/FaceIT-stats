@@ -70,11 +70,19 @@ namespace faceitwpf.ViewModels
             }
         }
 
+        public void DisplayError(Exception exception)
+        {
+            SetError(exception);
+        }
+
         private void SetError(Exception exception)
         {
             Error = new Error(exception.Message, 3);
             Error.TimerElapsed += (sender, e) => 
-            { Error = null; };
+            { 
+                if (sender.Equals(Error))
+                    Error = null; 
+            };
         }
 
         public void GoBack(Exception exception)

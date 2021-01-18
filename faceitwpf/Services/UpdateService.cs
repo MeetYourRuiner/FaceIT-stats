@@ -16,7 +16,8 @@ namespace faceitwpf.Services
 
         public string CurrentVersion 
         { 
-            get {
+            get 
+            {
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
                 return fvi.FileVersion;
@@ -27,18 +28,26 @@ namespace faceitwpf.Services
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
             request.UserAgent = "request";
-            WebResponse response = await request.GetResponseAsync();
             JObject deserializedResponse;
-            Trace.WriteLine(((HttpWebResponse)response).StatusDescription);
-            using (Stream dataStream = response.GetResponseStream())
+            try
             {
-                using (StreamReader reader = new StreamReader(dataStream))
+                using (WebResponse response = await request.GetResponseAsync())
                 {
-                    string responseFromServer = reader.ReadToEnd();
-                    deserializedResponse = JObject.Parse(responseFromServer);
+                    Trace.WriteLine(((HttpWebResponse)response).StatusDescription);
+                    using (Stream dataStream = response.GetResponseStream())
+                    {
+                        using (StreamReader reader = new StreamReader(dataStream))
+                        {
+                            string responseFromServer = reader.ReadToEnd();
+                            deserializedResponse = JObject.Parse(responseFromServer);
+                        }
+                    }
                 }
             }
-            response.Close();
+            catch
+            {
+                throw new Exception("Could not find the update");
+            }
             var latestVersion = ((string)deserializedResponse["tag_name"]).Substring(1);
             var currentVersion = CurrentVersion;
             if (latestVersion == currentVersion)

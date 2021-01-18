@@ -222,11 +222,18 @@ namespace faceitwpf.ViewModels
         {
             get => _openPlayerFaceit ?? (_openPlayerFaceit = new RelayCommand((obj) =>
             {
-                var sInfo = new System.Diagnostics.ProcessStartInfo(CurrentPlayerProfile.FaceitURL)
+                try
                 {
-                    UseShellExecute = true,
-                };
-                System.Diagnostics.Process.Start(sInfo);
+                    var sInfo = new System.Diagnostics.ProcessStartInfo(CurrentPlayerProfile.FaceitURL)
+                    {
+                        UseShellExecute = true,
+                    };
+                    System.Diagnostics.Process.Start(sInfo);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to open link in browser", ex);
+                }
             }));
         }
 
@@ -235,11 +242,18 @@ namespace faceitwpf.ViewModels
         {
             get => _openPlayerSteam ?? (_openPlayerSteam = new RelayCommand((obj) =>
             {
-                var sInfo = new System.Diagnostics.ProcessStartInfo(CurrentPlayerProfile.SteamURL)
+                try
                 {
-                    UseShellExecute = true,
-                };
-                System.Diagnostics.Process.Start(sInfo);
+                    var sInfo = new System.Diagnostics.ProcessStartInfo(CurrentPlayerProfile.SteamURL)
+                    {
+                        UseShellExecute = true,
+                    };
+                    System.Diagnostics.Process.Start(sInfo);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to open link in browser", ex);
+                }
             }));
         }
 

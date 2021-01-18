@@ -1,6 +1,7 @@
 ﻿using faceitwpf.Models;
 using faceitwpf.Services;
 using faceitwpf.ViewModels.Commands;
+using System;
 using System.Linq;
 
 namespace faceitwpf.ViewModels
@@ -86,7 +87,7 @@ namespace faceitwpf.ViewModels
                         });
                     }
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     navigator.GoBack(ex);
                 }
@@ -109,11 +110,18 @@ namespace faceitwpf.ViewModels
         {
             get => _openMatchFaceit ?? (_openMatchFaceit = new RelayCommand((obj) =>
             {
-                var sInfo = new System.Diagnostics.ProcessStartInfo($"https://www.faceit.com/en/csgo/room/{Match.Id}")
+                try
                 {
-                    UseShellExecute = true,
-                };
-                System.Diagnostics.Process.Start(sInfo);
+                    var sInfo = new System.Diagnostics.ProcessStartInfo($"https://www.faceit.com/en/csgo/room/{Match.Id}")
+                    {
+                        UseShellExecute = true,
+                    };
+                    System.Diagnostics.Process.Start(sInfo);
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception("Failed to open link in browser", ex);
+                }
             }));
         }
 

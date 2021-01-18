@@ -53,7 +53,7 @@ namespace faceitwpf.Services
         {
             var response = await _client.GetAsync($"https://open.faceit.com/data/v4/players/{playerId}/history?game=csgo&limit=99");
             if (response.StatusCode != HttpStatusCode.OK)
-                throw new System.Exception("Failed");
+                throw new System.Exception("Failed to get matches levels");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
 
@@ -65,7 +65,7 @@ namespace faceitwpf.Services
         {
             var response = await _client.GetAsync($"https://open.faceit.com/data/v4/matches/{matchId}/stats");
             if (response.StatusCode != HttpStatusCode.OK) 
-                throw new System.Exception("Failed");
+                throw new System.Exception("Failed to get match details");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
             var md = jObject["rounds"][0].ToObject<MatchDetails>();
