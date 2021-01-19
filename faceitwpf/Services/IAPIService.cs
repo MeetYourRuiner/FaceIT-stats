@@ -9,6 +9,6 @@ namespace faceitwpf.Services
         Task<PlayerProfile> FetchPlayerProfileAsync(string playerName);
         Task<List<Match>> FetchMatchesAsync(string playerId);
         Task<MatchDetails> FetchMatchDetailsAsync(string matchId);
-        Task<List<MatchOverview>> FetchMatchesOverviewsAsync(string playerId);
+        Task<MatchOverview> FetchMatchOverviewAsync(string matchId);
     }
 }

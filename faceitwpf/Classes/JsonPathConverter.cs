@@ -21,13 +21,21 @@ namespace faceitwpf
                                                 .FirstOrDefault();
 
                 string jsonPath = (att != null ? att.PropertyName : prop.Name);
-                JToken token = jo.SelectToken(jsonPath);
-
-                if (token != null && token.Type != JTokenType.Null)
+                if (jsonPath == null)
                 {
-                    object value = token.ToObject(prop.PropertyType, serializer);
+                    object value = jo.ToObject(prop.PropertyType, serializer);
                     prop.SetValue(targetObj, value, null);
                 }
+                else
+                {
+                    JToken token = jo.SelectToken(jsonPath);
+                    if (token != null && token.Type != JTokenType.Null)
+                    {
+                        object value = token.ToObject(prop.PropertyType, serializer);
+                        prop.SetValue(targetObj, value, null);
+                    }
+                }
+                
             }
 
             return targetObj;

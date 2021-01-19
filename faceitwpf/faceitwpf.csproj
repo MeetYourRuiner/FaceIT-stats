@@ -112,8 +112,11 @@
     <Compile Include="Classes\VMStore.cs" />
     <Compile Include="Models\IStatsRepository.cs" />
     <Compile Include="Models\LastMatchesPerfomance.cs" />
+    <Compile Include="Models\BaseMatch.cs" />
     <Compile Include="Models\MatchDetails.cs" />
     <Compile Include="Models\MatchOverview.cs" />
+    <Compile Include="Models\PlayerStats.cs" />
+    <Compile Include="Models\RoundStats.cs" />
     <Compile Include="Models\StatsRepository.cs" />
     <Compile Include="Services\INavigator.cs" />
     <Compile Include="ViewModels\ChartViewModel.cs" />

@@ -25,6 +25,12 @@ namespace faceitwpf.Models
             return matchDetails;
         }
 
+        public async Task<MatchOverview> GetMatchOverviewAsync(string matchId)
+        {
+            MatchOverview matchOverview = await apiService.FetchMatchOverviewAsync(matchId);
+            return matchOverview;
+        }
+
         public async Task<List<Match>> GetMatchesAsync(string playerId)
         {
             List<Match> matches;
@@ -33,24 +39,6 @@ namespace faceitwpf.Models
                 matches = await apiService.FetchMatchesAsync(playerId);
             }
             catch { throw; }
-            try
-            {
-                List<MatchOverview> matchesOverviews = await apiService.FetchMatchesOverviewsAsync(playerId);
-                matchesOverviews.ForEach(mo => {
-                    var match = matches.FirstOrDefault(m => m.Id == mo.Id);
-                    if (match != null)
-                    {
-                        match.MatchOverview = mo;
-                        match.AvgLevel = (int)Math.Round(
-                            mo.TeamA.PlayerOverviews.Select(po => po.Level)
-                            .Union(mo.TeamB.PlayerOverviews.Select(po => po.Level))
-                            .Average()
-                        );
-                    }
-                });
-            }
-            catch { }
-
             for (int i = 0; i < matches.Count - 1; ++i)
             {
                 if (matches[i].ELO != 0)

@@ -170,6 +170,8 @@
     <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource {x:Type ToolTip}}">
         <Setter Property="Background" Value="{StaticResource AppControlBackground}"/>
         <Setter Property="Foreground" Value="{StaticResource AppFont}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AppLightOrange}"/>
+        <Setter Property="Opacity" Value="0.75"/>
     </Style>
 
     <!-- Window -->

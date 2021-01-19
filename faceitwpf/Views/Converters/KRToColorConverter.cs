@@ -13,7 +13,7 @@ namespace faceitwpf.Views.Converters
 
             if (val >= 0.85) return new SolidColorBrush(Colors.RoyalBlue);
             else if (val >= 0.75) return new SolidColorBrush(Colors.Green);
-            else if (val > 0.65) return new SolidColorBrush(Colors.Yellow);
+            else if (val > 0.64) return new SolidColorBrush(Colors.Yellow);
             else return new SolidColorBrush(Colors.Red);
         }
 

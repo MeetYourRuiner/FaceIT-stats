@@ -15,6 +15,52 @@
 
         <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
 
+        <Style TargetType="{x:Type ContextMenu}">
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+            <Setter Property="HasDropShadow" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContextMenu}">
+                        <Border x:Name="Border"
+                            Background="{StaticResource AppControlBackground}"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource AppOrange}"
+                        >
+                            <StackPanel IsItemsHost="True"
+                            KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasDropShadow" Value="true">
+                                <Setter TargetName="Border" Property="Padding" Value="0, 3, 0 ,3" />
+                                <Setter TargetName="Border" Property="CornerRadius" Value="4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type MenuItem}">
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Border x:Name="Bd" Padding="17,0,17,0" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" Uid="Border_38">
+                            <ContentPresenter x:Name="ContentPresenter"  Content="{TemplateBinding Header}" Grid.Column="1" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Uid="ContentPresenter_33"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource AppItemBackground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="FinalScoreLabel" TargetType="Label" BasedOn="{StaticResource InfoLabel}">
             <Setter Property="Height" Value="50" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -70,12 +116,23 @@
                 <RowDefinition Height="26"/>
             </Grid.RowDefinitions>
             <DataGrid 
+                Name="TeamADG"
                 Grid.Row="1"
                 Style="{StaticResource MatchDetailsDGStyle}"
                 ColumnHeaderStyle="{StaticResource MatchDetailsDGColumnHeaderStyle}"
                 RowStyle="{StaticResource DGRowStyle}"
                 ItemsSource="{Binding TeamA.Players}" Grid.ColumnSpan="3"
             >
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem 
+                            Header="Open player stats"
+                            CommandParameter="{Binding PlacementTarget.SelectedItem,
+                                RelativeSource={RelativeSource FindAncestor,AncestorType=ContextMenu}}"
+                            Command="{Binding OpenPlayerStatsCommand}" 
+                        />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTemplateColumn 
                         Width="45"
@@ -93,7 +150,13 @@
                     >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding PlayerOverview.LevelImage}" Height="32" Width="32"/>
+                                <Image Source="{Binding PlayerOverview.LevelImage}" Height="32" Width="32">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Setter Property="ToolTip" Value="{Binding Path=PlayerOverview.Elo}"/>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -106,13 +169,21 @@
                             <TextBlock>
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Text" Value="LOSS"/>
+                                        <Setter Property="Text">
+                                            <Setter.Value>
+                                                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type local:MatchDetailsView}}" Path="DataContext.MinusElo" StringFormat="{}LOSS ({0})"/>
+                                            </Setter.Value>
+                                        </Setter>
                                         <Setter Property="Foreground" Value="Red"/>
                                         <Setter Property="FontSize" Value="16"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding DataContext.TeamA.TeamStats.TeamWin, 
                                               RelativeSource={RelativeSource AncestorType={x:Type local:MatchDetailsView}}}" Value="1">
-                                                <Setter Property="Text" Value="WIN"/>
+                                                <Setter Property="Text">
+                                                    <Setter.Value>
+                                                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type local:MatchDetailsView}}" Path="DataContext.PlusElo" StringFormat="{}WIN (+{0})"/>
+                                                    </Setter.Value>
+                                                </Setter>
                                                 <Setter Property="Foreground" Value="Green"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -196,12 +267,23 @@
                 </DataGrid.Columns>
             </DataGrid>
             <DataGrid 
+                Name="TeamBDG"
                 Grid.Row="3"
                 Style="{StaticResource MatchDetailsDGStyle}"
                 ColumnHeaderStyle="{StaticResource MatchDetailsDGColumnHeaderStyle}"
                 RowStyle="{StaticResource DGRowStyle}"
                 ItemsSource="{Binding TeamB.Players}" Grid.ColumnSpan="3"
             >
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem 
+                            Header="Open player stats"
+                            CommandParameter="{Binding PlacementTarget.SelectedItem,
+                                RelativeSource={RelativeSource FindAncestor,AncestorType=ContextMenu}}"
+                            Command="{Binding OpenPlayerStatsCommand}" 
+                        />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTemplateColumn 
                         Width="45"
@@ -219,7 +301,14 @@
                     >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding PlayerOverview.LevelImage}" Height="32" Width="32"/>
+                                <Image Source="{Binding PlayerOverview.LevelImage}" Height="32" Width="32">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                                            <Setter Property="ToolTip" Value="{Binding Path=PlayerOverview.Elo}"/>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -232,13 +321,21 @@
                             <TextBlock>
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Text" Value="LOSS"/>
+                                        <Setter Property="Text">
+                                            <Setter.Value>
+                                                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type local:MatchDetailsView}}" Path="DataContext.MinusElo" StringFormat="{}LOSS ({0})"/>
+                                            </Setter.Value>
+                                        </Setter>
                                         <Setter Property="Foreground" Value="Red"/>
                                         <Setter Property="FontSize" Value="16"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding DataContext.TeamB.TeamStats.TeamWin, 
                                               RelativeSource={RelativeSource AncestorType={x:Type local:MatchDetailsView}}}" Value="1">
-                                                <Setter Property="Text" Value="WIN"/>
+                                                <Setter Property="Text">
+                                                    <Setter.Value>
+                                                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type local:MatchDetailsView}}" Path="DataContext.PlusElo" StringFormat="{}WIN (+{0})"/>
+                                                    </Setter.Value>
+                                                </Setter>
                                                 <Setter Property="Foreground" Value="Green"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -336,12 +433,14 @@
             <Grid Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="245"/>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="170"/>
                     <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="245"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1">
+                <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="2">
                     <Label
                         DockPanel.Dock="Top" 
                         Content="{Binding TeamA.TeamStats.FinalScore}"
@@ -374,7 +473,7 @@
                         />
                     </Grid>
                 </DockPanel>
-                <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="3">
+                <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="4">
                     <Label
                         DockPanel.Dock="Top" 
                         Content="{Binding TeamB.TeamStats.FinalScore}"
@@ -409,16 +508,65 @@
                 </DockPanel>
                 <Label
                     Style="{StaticResource FinalScoreLabel}"
-                    Grid.Column="2" 
+                    Grid.Column="3" 
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" Height="Auto" 
                 >
                     <Image Stretch="Fill" Source="{Binding CurrentMatchDetails.RoundStats.MapImage}"/>
                 </Label>
+                <StackPanel
+                    Grid.ColumnSpan="2"
+                    Height="85"
+                >
+                    <Label
+                        Style="{StaticResource InfoLabel}" 
+                        Content="{Binding CurrentMatchOverview.CompetitionName}" 
+                        ContentStringFormat="{}{0:d MMMM yyyy, HH:mm }"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        BorderThickness="0,0,2,2" 
+                        BorderBrush="{StaticResource DGLine}"
+                        Background="{StaticResource DGRowBackground}"
+                        Height="42"
+                    />
+                    <Label
+                        Style="{StaticResource InfoLabel}" 
+                        Content="{Binding CurrentMatchDetails.Date}" 
+                        ContentStringFormat="{}{0:d MMMM yyyy, HH:mm }"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        BorderThickness="0,0,2,2" 
+                        BorderBrush="{StaticResource DGLine}"
+                        Background="{StaticResource DGRowBackground}"
+                        Height="42"
+                    />
+                </StackPanel>
+                <Button
+                    Width="45"
+                    Height="45"
+                    Style="{StaticResource LinkButton}"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Right" 
+                    Command="{Binding OpenMatchFaceitCommand}" 
+                    Grid.Column="5"
+                >
+                    <Image Width="32" Source="/faceitwpf;component/Resources/faceit.png"/>
+                </Button>
             </Grid>
-            <Button Width="45" Height="45" Style="{StaticResource LinkButton}" VerticalAlignment="Center" HorizontalAlignment="Right" Command="{Binding OpenMatchFaceit}" Grid.Column="1">
-                <Image Width="32" Source="/faceitwpf;component/Resources/faceit.png"/>
-            </Button>
+            <TextBlock 
+                Grid.Column="1" 
+                HorizontalAlignment="Right"
+                Grid.Row="5"
+                TextWrapping="NoWrap" 
+                Text="RMB: Context menu" 
+                VerticalAlignment="Center"
+                Width="Auto"
+                Foreground="{StaticResource AppFont}"
+                Opacity="0.1"
+                FontSize="12"
+            />
         </Grid>
     </Grid>
 </UserControl>

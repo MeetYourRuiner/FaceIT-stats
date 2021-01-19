@@ -16,12 +16,12 @@ namespace faceitwpf.Models
             if (matches.Count == 0)
                 return;
             var lastMatchesCount = matches.Count > 20 ? 20 : matches.Count;
-            var lastMatches = matches.GetRange(0, lastMatchesCount);
-            Kills = lastMatches.Select(m => m.Kills).Average();
-            HS = lastMatches.Select(m => m.HSPercentage).Average();
-            KR = lastMatches.Select(m => m.KRRatio).Average();
-            KD = lastMatches.Select(m => m.KDRatio).Average();
-            Winrate = (double)lastMatches.Where(m => m.Result == 'W').Count() / lastMatchesCount;
+            var lastMatchesStats = matches.GetRange(0, lastMatchesCount).Select(m => m.PlayerStats);
+            Kills = lastMatchesStats.Select(m => m.Kills).Average();
+            HS = lastMatchesStats.Select(m => m.HSPercentage).Average();
+            KR = lastMatchesStats.Select(m => m.KRRatio).Average();
+            KD = lastMatchesStats.Select(m => m.KDRatio).Average();
+            Winrate = (double)lastMatchesStats.Where(m => m.Result == 'W').Count() / lastMatchesCount;
         }
     }
 }

@@ -213,6 +213,16 @@ namespace faceitwpf.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icon_pheasant_preview_2_268x151 {
+            get {
+                object obj = ResourceManager.GetObject("icon_pheasant_preview_2_268x151", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap lvl0 {
             get {
                 object obj = ResourceManager.GetObject("lvl0", resourceCulture);
