@@ -1,0 +1,393 @@
+﻿<UserControl 
+    x:Class="faceitwpf.Views.OngoingMatchView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:faceitwpf.Views" 
+    xmlns:controls="clr-namespace:faceitwpf.Views.Controls" 
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+    xmlns:converters="clr-namespace:faceitwpf.Views.Converters" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    mc:Ignorable="d" 
+    d:DesignHeight="{StaticResource AppHeight}" 
+    d:DesignWidth="{StaticResource AppWidth}"
+>
+    <UserControl.Resources>
+        <sys:Double x:Key="RowHeight">75</sys:Double>
+        <!--RowHeight * 5 + 10-->
+        <sys:Double x:Key="DGHeight">385</sys:Double>
+        <!--RowHeight + DGHeight-->
+        <sys:Double x:Key="GridHeight">460</sys:Double>
+
+        <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
+
+        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
+        <converters:KRToColorConverter x:Key="KRtCConverter"/>
+        <converters:KDToColorConverter x:Key="KDtCConverter"/>
+
+        <Style x:Key="DGLabelHeader" TargetType="{x:Type Label}" BasedOn="{StaticResource InfoLabel}">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+        <Style x:Key="MatchDetailsDGStyle" TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
+            <Setter Property="RowHeight" Value="{StaticResource RowHeight}"/>
+        </Style>
+        <Style x:Key="MatchDetailsDGColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}">
+            <Setter Property="Height" Value="45"/>
+        </Style>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <controls:LoadingAnimation
+            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}}" 
+            Height="300" 
+            Width="300"
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center" 
+        />
+        <Grid
+            x:Name="mainGrid"
+            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}, ConverterParameter=true}" 
+        >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="429"/>
+                <ColumnDefinition Width="2"/>
+                <ColumnDefinition Width="429"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="85"/>
+                <RowDefinition Height="42"/>
+                <RowDefinition Height="{Binding Source={StaticResource GridHeight}}"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="47*"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="26"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.ColumnSpan="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="245"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="245"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Column="2"
+                    Content="{Binding CurrentMatchInfo.TeamAScore}"
+                    Style="{StaticResource FinalScoreLabel}"
+                    Foreground="{StaticResource AppFont}"
+                    Height="Auto"
+                />
+                <Label
+                    Grid.Column="4"
+                    Content="{Binding CurrentMatchInfo.TeamBScore}"
+                    Style="{StaticResource FinalScoreLabel}"
+                    Foreground="{StaticResource AppFont}"
+                    Height="Auto"
+                />
+                <Label
+                    Style="{StaticResource FinalScoreLabel}"
+                    Grid.Column="3" 
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch" Height="Auto" 
+                >
+                    <Image Stretch="Fill" Source="{Binding CurrentMatchInfo.MapImage}"/>
+                </Label>
+                <StackPanel
+                    Grid.ColumnSpan="2"
+                    Height="85"
+                >
+                    <Label
+                        Style="{StaticResource InfoLabel}" 
+                        Content="{Binding CurrentMatchInfo.CompetitionName}" 
+                        ContentStringFormat="{}{0:d MMMM yyyy, HH:mm }"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        BorderThickness="0,0,2,2" 
+                        BorderBrush="{StaticResource DGLine}"
+                        Background="{StaticResource DGRowBackground}"
+                        Height="42"
+                    />
+                    <Label
+                        Style="{StaticResource InfoLabel}" 
+                        Content="{Binding CurrentMatchInfo.Date}" 
+                        ContentStringFormat="{}{0:d MMMM yyyy, HH:mm }"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        BorderThickness="0,0,2,2" 
+                        BorderBrush="{StaticResource DGLine}"
+                        Background="{StaticResource DGRowBackground}"
+                        Height="42"
+                    />
+                </StackPanel>
+                <Button 
+                    Width="40"
+                    Height="40" 
+                    Grid.Column="5"
+                    Grid.Row="0"
+                    Margin="20, 0, 0, 0"
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center"
+                    Command="{Binding RefreshCommand}"
+                    Focusable="False"
+                    Style="{StaticResource TransparentButton}"
+                >
+                    <Image Width="20" Height="20" Source="/faceitwpf;component/Resources/details.png"/>
+                </Button>
+                <Button
+                    Width="45"
+                    Height="45"
+                    Style="{StaticResource LinkButton}"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Right" 
+                    Command="{Binding OpenMatchFaceitCommand}" 
+                    Grid.Column="5"
+                >
+                    <Image Width="32" Source="/faceitwpf;component/Resources/faceit.png"/>
+                </Button>
+            </Grid>
+            <!--Back-->
+            <Button
+                Content="BACK"
+                Style="{StaticResource ButtonStyle}"
+                Command="{Binding BackCommand}"
+                Grid.Row="7" 
+                Width="280" 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Left" 
+                Grid.Column="1"
+            />
+            <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="{Binding Source={StaticResource RowHeight}}"/>
+                    <RowDefinition Height="{Binding Source={StaticResource DGHeight}}"/>
+                </Grid.RowDefinitions>
+                <DockPanel Background="{StaticResource AppControlBackground}">
+                    <StackPanel
+                        Width="125"
+                        Orientation="Horizontal" 
+                        DockPanel.Dock="Right">
+                        <Label
+                            Style="{StaticResource DGLabelHeader}"
+                            Content="Avg Elo:"/>
+                        <Label
+                            Style="{StaticResource DGLabelHeader}"
+                            Content="{Binding CurrentMatchInfo.TeamA.AverageElo}"/>
+                    </StackPanel>
+                    <StackPanel
+                        Width="125"
+                        Orientation="Horizontal" 
+                        DockPanel.Dock="Right">
+                        <Label
+                            Style="{StaticResource DGLabelHeader}"
+                            Content="Avg Level:"/>
+                        <Image Source="{Binding CurrentMatchInfo.TeamA.AverageLevelImage}" Height="32" Width="32"/>
+                    </StackPanel>
+                    <Label
+                        DockPanel.Dock="Left"
+                        Style="{StaticResource DGLabelHeader}"
+                        Content="{Binding CurrentMatchInfo.TeamA.Name}"/>
+                </DockPanel>
+                <DataGrid 
+                    x:Name="TeamADG"
+                    Style="{StaticResource MatchDetailsDGStyle}"
+                    HeadersVisibility="None"
+                    RowStyle="{StaticResource DGRowStyle}"
+                    ItemsSource="{Binding CurrentMatchInfo.TeamA.Players}"
+                    Grid.Row="1"
+                >
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem 
+                                Header="Open player stats"
+                                CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                Command="{Binding OpenPlayerStatsCommand}" 
+                            />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn 
+                            Width="{Binding Source={StaticResource RowHeight}}"
+                        >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{StaticResource AppLightOrange}" BorderThickness="1" Background="{StaticResource AppControlBackground}">
+                                        <Image Source="{Binding Avatar, FallbackValue={StaticResource defaultAvatar}, TargetNullValue={StaticResource defaultAvatar}}" Stretch="Fill"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn 
+                            Width="45"
+                        >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding LevelImage}" Height="32" Width="32">
+                                        <Image.Style>
+                                            <Style TargetType="{x:Type Image}">
+                                                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                                                <Setter Property="ToolTip" Value="{Binding Path=Elo}"/>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn  
+                            Binding="{Binding Nickname}" 
+                            Width="*"
+                            ElementStyle="{StaticResource ColumnElementStyle}"
+                        />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+            <Grid Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="{Binding Source={StaticResource RowHeight}}"/>
+                    <RowDefinition Height="{Binding Source={StaticResource DGHeight}}"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Background="{StaticResource AppControlBackground}">
+                    <StackPanel
+                        Width="125"
+                        Orientation="Horizontal" 
+                        DockPanel.Dock="Left">
+                        <Label
+                            Style="{StaticResource DGLabelHeader}"
+                            HorizontalContentAlignment="Right"
+                            Content="Avg Level:"/>
+                        <Image Source="{Binding CurrentMatchInfo.TeamB.AverageLevelImage}" Height="32" Width="32"/>
+                    </StackPanel>
+                    <StackPanel
+                        Width="125"
+                        Orientation="Horizontal" 
+                        DockPanel.Dock="Left">
+                        <Label
+                            Style="{StaticResource DGLabelHeader}"
+                            HorizontalContentAlignment="Right"
+                            Content="Avg Elo:"/>
+                        <Label
+                            Style="{StaticResource DGLabelHeader}"
+                            HorizontalContentAlignment="Right"
+                            Content="{Binding CurrentMatchInfo.TeamB.AverageElo}"/>
+                    </StackPanel>
+                    <Label
+                        DockPanel.Dock="Right"
+                        HorizontalContentAlignment="Right"
+                        Style="{StaticResource DGLabelHeader}"
+                        Content="{Binding CurrentMatchInfo.TeamB.Name}"/>
+                </DockPanel>
+                <DataGrid 
+                    x:Name="TeamBDG"
+                    Style="{StaticResource MatchDetailsDGStyle}"
+                    HeadersVisibility="None"
+                    RowStyle="{StaticResource DGRowStyle}"
+                    ItemsSource="{Binding CurrentMatchInfo.TeamB.Players}" 
+                    Grid.Row="1"
+                >
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem 
+                                Header="Open player stats"
+                                CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                Command="{Binding OpenPlayerStatsCommand}" 
+                            />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn  
+                            Binding="{Binding Nickname}" 
+                            Width="326"
+                        >
+                            <DataGridTextColumn.ElementStyle>
+                                <Style BasedOn="{StaticResource ColumnElementStyle}" TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                    <Setter Property="Margin" Value="0, 0, 10, 0" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn 
+                            Width="45"
+                        >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding LevelImage}" Height="32" Width="32">
+                                        <Image.Style>
+                                            <Style TargetType="{x:Type Image}">
+                                                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                                                <Setter Property="ToolTip" Value="{Binding Path=Elo}"/>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn 
+                            Width="{Binding Source={StaticResource RowHeight}}"
+                        >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{StaticResource AppLightOrange}" BorderThickness="1" Background="{StaticResource AppControlBackground}">
+                                        <Image Source="{Binding Avatar, FallbackValue={StaticResource defaultAvatar}, TargetNullValue={StaticResource defaultAvatar}}" Stretch="Fill"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+            <Label
+                Style="{StaticResource InfoLabel}" 
+                Content="{Binding CurrentMatchInfo.State}" 
+                ContentStringFormat="{}{0:d MMMM yyyy, HH:mm }"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                BorderThickness="0,0,2,2" 
+                BorderBrush="{StaticResource DGLine}"
+                Background="{StaticResource DGRowBackground}"
+                Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5"
+            />
+            <Button
+                Style="{StaticResource TransparentButton}"
+                Content="ЧЕ ПО КАРТАМ"
+                Command="{Binding AnalyzeCommand}"
+                CommandParameter="A"
+                Grid.Row="4" 
+                Width="280" 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Center" 
+                Grid.Column="1"
+                Height="32"
+            />
+            <Button
+                Style="{StaticResource TransparentButton}"
+                Content="ЧЕ ПО КАРТАМ"
+                Command="{Binding AnalyzeCommand}"
+                CommandParameter="B"
+                Grid.Row="4" 
+                Width="280" 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Center" 
+                Grid.Column="3"
+                Height="32"
+            />
+        </Grid>
+    </Grid>
+</UserControl>

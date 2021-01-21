@@ -158,9 +158,22 @@
                     Command="{Binding ToggleModeCommand}" 
                     Width="132" 
                     Grid.Column="1" 
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Bottom"
                     HorizontalAlignment="Center"
                     Grid.Row="4"
+                />
+
+                <!--Ongoing match button-->
+                <Button 
+                    Content="ONGOING"
+                    Style="{StaticResource ButtonStyle}"
+                    Command="{Binding ShowOngoingMatchCommand}" 
+                    Width="132" 
+                    Grid.Column="4" 
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Center"
+                    Grid.Row="4"
+                    IsEnabled="{Binding IsInGame}"
                 />
                 <!--Last matches perfomance-->
                 <DockPanel Grid.Column="3" Grid.RowSpan="5"
@@ -325,17 +338,17 @@
                                     <Border BorderThickness="0" Background="{StaticResource AppControlBackground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Border.Style>
                                             <Style TargetType="{x:Type Border}">
-                                                <Setter Property="ToolTip" Value="{Binding Path=RoundStats.Map}"/>
+                                                <Setter Property="ToolTip" Value="{Binding Path=Round.Map}"/>
                                             </Style>
                                         </Border.Style>
-                                        <Image Height="49" Stretch="Fill" Source="{Binding RoundStats.MapImage, FallbackValue={StaticResource defaultMap}}"/>
+                                        <Image Height="49" Stretch="Fill" Source="{Binding Round.MapImage, FallbackValue={StaticResource defaultMap}}"/>
                                     </Border>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn 
                             Header="Score" 
-                            Binding="{Binding RoundStats.Score}" 
+                            Binding="{Binding Round.Score}" 
                             Width="75"
                             ElementStyle="{StaticResource ColumnElementStyle}"
                         >
@@ -356,7 +369,7 @@
                                     <Setter Property="Foreground" Value="Red"/>
                                     <Setter Property="ToolTip" Value="{Binding ELO}" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding PlayerStats.Result}" Value='W'>
+                                        <DataTrigger Binding="{Binding Stats.Result}" Value='W'>
                                             <Setter Property="Foreground" Value="Green"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -365,43 +378,43 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn 
                             Header="K" 
-                            Binding="{Binding PlayerStats.Kills}" 
+                            Binding="{Binding Stats.Kills}" 
                             Width="100"
                             ElementStyle="{StaticResource ColumnElementStyle}"
                         />
                         <DataGridTextColumn 
                             Header="D" 
-                            Binding="{Binding PlayerStats.Deaths}" 
+                            Binding="{Binding Stats.Deaths}" 
                             Width="100"
                             ElementStyle="{StaticResource ColumnElementStyle}"
                         />
                         <DataGridTextColumn 
                             Header="KR" 
-                            Binding="{Binding PlayerStats.KRRatio}" 
+                            Binding="{Binding Stats.KRRatio}" 
                             Width="95"
                             ElementStyle="{StaticResource ColumnElementStyle}"
                         >
                             <DataGridTextColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
-                                    <Setter Property="Foreground" Value="{Binding PlayerStats.KRRatio, Converter={StaticResource KRtCConverter}}"/>
+                                    <Setter Property="Foreground" Value="{Binding Stats.KRRatio, Converter={StaticResource KRtCConverter}}"/>
                                 </Style>
                             </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
                         <DataGridTextColumn 
                             Header="KDR" 
-                            Binding="{Binding PlayerStats.KDRatio}" 
+                            Binding="{Binding Stats.KDRatio}" 
                             Width="95"
                             ElementStyle="{StaticResource ColumnElementStyle}"
                         >
                             <DataGridTextColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
-                                    <Setter Property="Foreground" Value="{Binding PlayerStats.KDRatio, Converter={StaticResource KDtCConverter}}"/>
+                                    <Setter Property="Foreground" Value="{Binding Stats.KDRatio, Converter={StaticResource KDtCConverter}}"/>
                                 </Style>
                             </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
                         <DataGridTextColumn 
                             Header="HS%" 
-                            Binding="{Binding PlayerStats.HSPercentage, StringFormat={}{0}%}" 
+                            Binding="{Binding Stats.HSPercentage, StringFormat={}{0}%}" 
                             Width="70"
                             ElementStyle="{StaticResource ColumnElementStyle}"
                         />
@@ -416,9 +429,7 @@
                                 <DataTemplate>
                                     <Button 
                                         Width="40"
-                                        Height="40" 
-                                        Grid.Column="2"
-                                        Grid.Row="0" 
+                                        Height="40"
                                         HorizontalAlignment="Left" 
                                         VerticalAlignment="Center"
                                         Margin="0,0,4,0"

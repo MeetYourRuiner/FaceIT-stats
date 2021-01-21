@@ -35,11 +35,11 @@ namespace faceitwpf.ViewModels
 
         public Team TeamA
         {
-            get => CurrentMatchDetails?.Teams[0];
+            get => CurrentMatchStats?.Teams[0];
         }
         public Team TeamB
         {
-            get => CurrentMatchDetails?.Teams[1];
+            get => CurrentMatchStats?.Teams[1];
         }
 
         private int _plusElo;
@@ -64,25 +64,16 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private MatchDetails _currentMatchDetails;
-        public MatchDetails CurrentMatchDetails
+        private MatchStats _currentMatchStats;
+        public MatchStats CurrentMatchStats
         {
-            get => _currentMatchDetails;
+            get => _currentMatchStats;
             set
             {
-                _currentMatchDetails = value;
+                _currentMatchStats = value;
                 OnPropertyChanged();
-            }
-        }
-
-        private MatchOverview _currentMatchOverview;
-        public MatchOverview CurrentMatchOverview
-        {
-            get => _currentMatchOverview;
-            set
-            {
-                _currentMatchOverview = value;
-                OnPropertyChanged();
+                OnPropertyChanged("TeamA");
+                OnPropertyChanged("TeamB");
             }
         }
 
@@ -96,23 +87,14 @@ namespace faceitwpf.ViewModels
                 IsLoading = true;
                 try
                 {
-                    CurrentMatchDetails = await statsRepository.GetMatchDetailsAsync(Match.Id);
+                    CurrentMatchStats = await statsRepository.GetMatchStatsAsync(Match.Id);
 
-                    try
-                    {
-                        CurrentMatchOverview = await statsRepository.GetMatchOverviewAsync(Match.Id);
-                    }
-                    catch (Exception ex)
-                    {
-                        navigator.DisplayError(ex);
-                    }
-
-                    if (Match.ChangeELO > 0)
+                    if (Match.ChangeELO > 0 && Match.ChangeELO < 50)
                     {
                         PlusElo = Match.ChangeELO;
                         MinusElo = Match.ChangeELO - 50;
                     }
-                    else if (Match.ChangeELO < 0)
+                    else if (Match.ChangeELO < 0 && Match.ChangeELO > -50)
                     {
                         MinusElo = Match.ChangeELO;
                         PlusElo = Match.ChangeELO + 50;
@@ -122,32 +104,6 @@ namespace faceitwpf.ViewModels
                         MinusElo = 0;
                         PlusElo = 0;
                     }
-                    if (CurrentMatchOverview != null)
-                    {
-                        TeamA.Players.ForEach(p =>
-                        {
-                            p.PlayerOverview = CurrentMatchOverview.TeamA.PlayerOverviews
-                                .FirstOrDefault((po) => po.Id == p.PlayerId);
-                        });
-                        TeamB.Players.ForEach(p =>
-                        {
-                            p.PlayerOverview = CurrentMatchOverview.TeamB.PlayerOverviews
-                                .FirstOrDefault((po) => po.Id == p.PlayerId);
-                        });
-                    }
-                    else
-                    {
-                        TeamA.Players.ForEach(p =>
-                        {
-                            p.PlayerOverview = new PlayerOverview();
-                        });
-                        TeamB.Players.ForEach(p =>
-                        {
-                            p.PlayerOverview = new PlayerOverview();
-                        });
-                    }
-                    OnPropertyChanged("TeamA");
-                    OnPropertyChanged("TeamB");
                 }
                 catch (Exception ex)
                 {

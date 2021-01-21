@@ -16,7 +16,7 @@ namespace faceitwpf.Models
             if (matches.Count == 0)
                 return;
             var lastMatchesCount = matches.Count > 20 ? 20 : matches.Count;
-            var lastMatchesStats = matches.GetRange(0, lastMatchesCount).Select(m => m.PlayerStats);
+            var lastMatchesStats = matches.GetRange(0, lastMatchesCount).Select(m => m.Stats);
             Kills = lastMatchesStats.Select(m => m.Kills).Average();
             HS = lastMatchesStats.Select(m => m.HSPercentage).Average();
             KR = lastMatchesStats.Select(m => m.KRRatio).Average();

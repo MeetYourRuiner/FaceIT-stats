@@ -7,7 +7,7 @@ namespace faceitwpf.Models
         public int Index { get; set; }
 
         [JsonProperty]
-        public PlayerStats PlayerStats { get; set; }
+        public PlayerStats Stats { get; set; }
 
         [JsonProperty("elo")]
         public int ELO { get; set; }
@@ -17,7 +17,7 @@ namespace faceitwpf.Models
             get
             {
                 var sign = ChangeELO >= 0 ? "+" : string.Empty;
-                return $"{PlayerStats.Result}({sign}{ChangeELO})";
+                return $"{Stats.Result}({sign}{ChangeELO})";
             }
         }
     }

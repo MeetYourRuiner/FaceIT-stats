@@ -15,20 +15,51 @@ namespace faceitwpf.Models
             this.apiService = apiService;
         }
 
-        public async Task<MatchDetails> GetMatchDetailsAsync(string matchId)
+        public async Task<MatchStats> GetMatchStatsAsync(string matchId)
         {
-            MatchDetails matchDetails = await apiService.FetchMatchDetailsAsync(matchId);
-            matchDetails.Teams.ForEach((t) =>
+            MatchStats matchStats = await apiService.FetchMatchStatsAsync(matchId);
+            MatchInfo matchInfo = null;
+            try
+            {
+                matchInfo = await GetMatchInfoAsync(matchId);
+            }
+            catch { }
+            if (matchInfo != null)
+            {
+                matchStats.CompetitionName = matchInfo.CompetitionName;
+                matchStats.Teams[0].Players.ForEach(p =>
+                {
+                    p.PlayerInfo = matchInfo.TeamA.Players
+                        .FirstOrDefault((po) => po.Id == p.PlayerId);
+                });
+                matchStats.Teams[1].Players.ForEach(p =>
+                {
+                    p.PlayerInfo = matchInfo.TeamB.Players
+                        .FirstOrDefault((po) => po.Id == p.PlayerId);
+                });
+            }
+            else
+            {
+                matchStats.Teams[0].Players.ForEach(p =>
+                {
+                    p.PlayerInfo = new PlayerInfo();
+                });
+                matchStats.Teams[1].Players.ForEach(p =>
+                {
+                    p.PlayerInfo = new PlayerInfo();
+                });
+            }
+            matchStats.Teams.ForEach((t) =>
             {
                 t.Players.Sort((p1, p2) => p2.PlayerStats.Kills.CompareTo(p1.PlayerStats.Kills));
             });
-            return matchDetails;
+            return matchStats;
         }
 
-        public async Task<MatchOverview> GetMatchOverviewAsync(string matchId)
+        public async Task<MatchInfo> GetMatchInfoAsync(string matchId)
         {
-            MatchOverview matchOverview = await apiService.FetchMatchOverviewAsync(matchId);
-            return matchOverview;
+            MatchInfo matchInfo = await apiService.FetchMatchInfoAsync(matchId);
+            return matchInfo;
         }
 
         public async Task<List<Match>> GetMatchesAsync(string playerId)
@@ -53,8 +84,36 @@ namespace faceitwpf.Models
 
         public async Task<PlayerProfile> GetPlayerProfileAsync(string playerName)
         {
-            PlayerProfile player = await apiService.FetchPlayerProfileAsync(playerName);
+            PlayerProfile player;
+            try
+            {
+                player = await apiService.FetchPlayerProfileAsync(playerName);
+                try
+                {
+                    player.OngoingMatchId = await apiService.FetchOngoingMatchIdAsync(player.PlayerId);
+                }
+                catch { }
+            }
+            catch
+            {
+                throw;
+            }
             return player;
+        }
+
+
+        public async Task<OngoingMatchInfo> GetOngoingMatchAsync(string matchId)
+        {
+            OngoingMatchInfo ongoingMatch;
+            try
+            {
+                ongoingMatch = await apiService.FetchOngoingMatchAsync(matchId);
+            }
+            catch
+            {
+                throw;
+            }
+            return ongoingMatch;
         }
     }
 }

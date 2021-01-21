@@ -40,7 +40,11 @@ namespace faceitwpf.Services
             return JObject.Parse(json).ToObject<PlayerProfile>();
         }
 
-        public async Task<List<Match>> FetchMatchesAsync(string playerId)
+        //public async Task<PlayerProfile> FetchPlayerProfileByIdAsync(string playerId)
+        //{
+            // https://api.faceit.com/core/v1/users/11fc14fa-092c-4960-a99d-3fad119b124e
+        //}
+            public async Task<List<Match>> FetchMatchesAsync(string playerId)
         {
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
@@ -63,7 +67,7 @@ namespace faceitwpf.Services
             return matchList;
         }
 
-        public async Task<MatchOverview> FetchMatchOverviewAsync(string matchId)
+        public async Task<MatchInfo> FetchMatchInfoAsync(string matchId)
         {
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
@@ -74,15 +78,15 @@ namespace faceitwpf.Services
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
 
-            var mo = jObject["payload"].ToObject<MatchOverview>();
+            var mo = jObject["payload"].ToObject<MatchInfo>();
 
             stopwatch.Stop();
             TimeSpan timeTaken = stopwatch.Elapsed;
-            System.Diagnostics.Trace.WriteLine("FetchMatchesOverviewsAsync:" + timeTaken);
+            System.Diagnostics.Trace.WriteLine("FetchMatchInfoAsync:" + timeTaken);
             return mo;
         }
 
-        public async Task<MatchDetails> FetchMatchDetailsAsync(string matchId)
+        public async Task<MatchStats> FetchMatchStatsAsync(string matchId)
         {
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
@@ -95,19 +99,57 @@ namespace faceitwpf.Services
             string json = await response.Content.ReadAsStringAsync();
             json = json.Trim(new char[] { '[', ']' });
             JObject jObject = JObject.Parse(json);
-            var md = jObject.ToObject<MatchDetails>();
+            var md = jObject.ToObject<MatchStats>();
 
             stopwatch.Stop();
             TimeSpan timeTaken = stopwatch.Elapsed;
-            System.Diagnostics.Trace.WriteLine("FetchMatchDetailsAsync:" + timeTaken);
+            System.Diagnostics.Trace.WriteLine("FetchMatchStatsAsync:" + timeTaken);
             return md;
         }
-
-        /*
-        public async Task<OngoingMatch> FetchOngoingMatchAsync(string playerId)
+        public async Task<string> FetchOngoingMatchIdAsync(string playerId)
         {
-            //https://api.faceit.com/match/v1/matches/groupByState?userId={playerId}
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+
+            var response = await _v1Client.GetAsync($"https://api.faceit.com/match/v1/matches/groupByState?userId={playerId}");
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new System.Exception("Failed to get ongoing match id");
+            string json = await response.Content.ReadAsStringAsync();
+            JObject jObject = JObject.Parse(json);
+
+            var payload = jObject["payload"];
+
+            if (!payload.HasValues)
+                throw new System.Exception("No ongoing match");
+            string ongoingMatchId = payload.First.First[0]["id"].Value<string>();
+
+            stopwatch.Stop();
+            TimeSpan timeTaken = stopwatch.Elapsed;
+            System.Diagnostics.Trace.WriteLine("FetchOngoingMatchIdAsync:" + timeTaken);
+            return ongoingMatchId;
         }
-        */
+
+        public async Task<OngoingMatchInfo> FetchOngoingMatchAsync(string matchId)
+        {
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+
+            var response = await _v1Client.GetAsync($"https://api.faceit.com/match/v2/match/{matchId}");
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new System.Exception("Failed to get ongoing match");
+            string json = await response.Content.ReadAsStringAsync();
+            JObject jObject = JObject.Parse(json);
+
+            var payload = jObject["payload"];
+
+            if (!payload.HasValues)
+                throw new System.Exception("No ongoing match");
+            var ongoingMatch = payload.ToObject<OngoingMatchInfo>();
+
+            stopwatch.Stop();
+            TimeSpan timeTaken = stopwatch.Elapsed;
+            System.Diagnostics.Trace.WriteLine("FetchOngoingMatchAsync:" + timeTaken);
+            return ongoingMatch;
+        }
     }
 }

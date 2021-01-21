@@ -145,14 +145,15 @@ namespace faceitwpf.ViewModels
         {
             get => _loadedCommand ?? (_loadedCommand = new RelayCommand((obj) =>
             {
-                if (_isLoaded)
-                    return;
-                PlayerName = Properties.Settings.Default.LastNickname;
-
                 StringCollection favoritesCollection = Properties.Settings.Default.Favorites;
                 string[] favorites = new string[favoritesCollection.Count];
                 favoritesCollection.CopyTo(favorites, 0);
                 Favorites = favorites;
+
+                if (_isLoaded)
+                    return;
+
+                PlayerName = Properties.Settings.Default.LastNickname;
 
                 IsTextboxFocused = true;
                 _isLoaded = true;

@@ -10,7 +10,7 @@ namespace faceitwpf.Models
         public string Id { get; set; }
 
         [JsonProperty]
-        public RoundStats RoundStats { get; set; }
+        public RoundStats Round { get; set; }
 
         [JsonProperty("date")]
         public long _Date { set => Date = DateTimeOffset.FromUnixTimeMilliseconds(value).ToLocalTime(); }

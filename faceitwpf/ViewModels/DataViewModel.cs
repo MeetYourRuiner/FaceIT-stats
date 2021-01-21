@@ -56,6 +56,20 @@ namespace faceitwpf.ViewModels
             }
         }
 
+        private bool _isInGame;
+        public bool IsInGame
+        {
+            get
+            {
+                return _isInGame;
+            }
+            set
+            {
+                _isInGame = value;
+                OnPropertyChanged();
+            }
+        }
+
         private ChartViewModel _chartViewModel;
         public ChartViewModel ChartViewModel 
         { 
@@ -190,6 +204,15 @@ namespace faceitwpf.ViewModels
             }));
         }
 
+        private RelayCommand _showOngoingMatchCommand;
+        public RelayCommand ShowOngoingMatchCommand
+        {
+            get => _showOngoingMatchCommand ?? (_showOngoingMatchCommand = new RelayCommand((obj) =>
+            {
+                navigator.Navigate(ViewTypes.OngoingMatch, CurrentPlayerProfile.OngoingMatchId);
+            }));
+        }
+
         private RelayCommand _loadedCommand;
         public RelayCommand LoadedCommand
         {
@@ -198,20 +221,23 @@ namespace faceitwpf.ViewModels
                 if (_isLoaded)
                     return;
                 IsLoading = true;
+
                 try
                 {
                     CurrentPlayerProfile = await statsRepository.GetPlayerProfileAsync(playerName);
                     IsFavoritePlayer = Properties.Settings.Default.Favorites.Contains(CurrentPlayerProfile.Nickname);
-                    Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.PlayerID);
-                    _pagesCount = CountPages(Matches);
-                    SliceOfHistory = GetPage(Page);
-                    LastMatchesPerfomance = new LastMatchesPerfomance(Matches);
-                    ChartViewModel = new ChartViewModel(Matches);
+                    Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.PlayerId);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     navigator.GoBack(ex);
                 }
+                _pagesCount = CountPages(Matches);
+                SliceOfHistory = GetPage(Page);
+                LastMatchesPerfomance = new LastMatchesPerfomance(Matches);
+                ChartViewModel = new ChartViewModel(Matches);
+                IsInGame = CurrentPlayerProfile.OngoingMatchId != null;
+
                 _isLoaded = true;
                 IsLoading = false;
             }));

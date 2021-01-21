@@ -6,8 +6,9 @@ namespace faceitwpf.Models
     interface IStatsRepository
     {
         Task<List<Match>> GetMatchesAsync(string playerId);
-        Task<MatchDetails> GetMatchDetailsAsync(string matchId);
-        Task<MatchOverview> GetMatchOverviewAsync(string matchId);
+        Task<MatchStats> GetMatchStatsAsync(string matchId);
+        Task<MatchInfo> GetMatchInfoAsync(string matchId);
         Task<PlayerProfile> GetPlayerProfileAsync(string playerName);
+        Task<OngoingMatchInfo> GetOngoingMatchAsync(string matchId);
     }
 }

@@ -110,17 +110,20 @@
     </ApplicationDefinition>
     <Compile Include="Classes\Error.cs" />
     <Compile Include="Classes\VMStore.cs" />
-    <Compile Include="Models\IStatsRepository.cs" />
+    <Compile Include="Models\Abstractions\BaseMatchInfo.cs" />
+    <Compile Include="Models\Abstractions\IStatsRepository.cs" />
     <Compile Include="Models\LastMatchesPerfomance.cs" />
-    <Compile Include="Models\BaseMatch.cs" />
-    <Compile Include="Models\MatchDetails.cs" />
-    <Compile Include="Models\MatchOverview.cs" />
-    <Compile Include="Models\PlayerStats.cs" />
-    <Compile Include="Models\RoundStats.cs" />
+    <Compile Include="Models\Abstractions\BaseMatch.cs" />
+    <Compile Include="Models\MatchStats\MatchStats.cs" />
+    <Compile Include="Models\MatchPlayersInformation\MatchInfo.cs" />
+    <Compile Include="Models\MatchPlayersInformation\OngoingMatchInfo.cs" />
+    <Compile Include="Models\MatchStats\PlayerStats.cs" />
+    <Compile Include="Models\MatchStats\RoundStats.cs" />
     <Compile Include="Models\StatsRepository.cs" />
     <Compile Include="Services\INavigator.cs" />
     <Compile Include="ViewModels\ChartViewModel.cs" />
     <Compile Include="ViewModels\MatchDetailsViewModel.cs" />
+    <Compile Include="ViewModels\OngoingMatchViewModel.cs" />
     <Compile Include="Views\Controls\ChartToolTip.xaml.cs">
       <DependentUpon>ChartToolTip.xaml</DependentUpon>
     </Compile>
@@ -147,6 +150,9 @@
     <Compile Include="Views\FocusExtension.cs" />
     <Compile Include="Views\MatchDetailsView.xaml.cs">
       <DependentUpon>MatchDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OngoingMatchView.xaml.cs">
+      <DependentUpon>OngoingMatchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ViewTypes.cs">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -181,6 +187,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\OngoingMatchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Styles\Colors.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -201,7 +211,7 @@
     <Compile Include="Services\IAPIService.cs" />
     <Compile Include="Services\IUpdateService.cs" />
     <Compile Include="Services\UpdateService.cs" />
-    <Compile Include="Models\Match.cs" />
+    <Compile Include="Models\MatchStats\Match.cs" />
     <Compile Include="Models\PlayerProfile.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\Commands\RelayCommand.cs" />
@@ -376,6 +386,7 @@
   <ItemGroup>
     <Resource Include="Resources\de_overpass.jpeg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.3.1.3\build\Fody.targets" Condition="Exists('..\packages\Fody.3.1.3\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
