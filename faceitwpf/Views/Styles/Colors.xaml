@@ -7,6 +7,7 @@
     <SolidColorBrush x:Key="AppWhite" Color="#FFEBEFF3" />
     <SolidColorBrush x:Key="AppWindowBackground" Color="#FF141616" />
     <SolidColorBrush x:Key="AppControlBackground" Color="#FF0A0C0C" />
+    <SolidColorBrush x:Key="AppControlBackgroundB" Color="#FF0E1010" />
     <SolidColorBrush x:Key="AppItemBackground" Color="#FF282828" />
     <SolidColorBrush x:Key="AppFont" Color="#FFF5F8FA" />
 
@@ -14,6 +15,7 @@
 
     <SolidColorBrush x:Key="DGCBackground" Color="#232828" />
     <SolidColorBrush x:Key="DGRowBackground" Color="#FF141417" />
+    <SolidColorBrush x:Key="DGRowBackgroundB" Color="#FF19191C" />
     <SolidColorBrush x:Key="DGLine" Color="#FF141616" />
 
 </ResourceDictionary>

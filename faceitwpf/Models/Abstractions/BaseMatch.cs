@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace faceitwpf.Models
+namespace faceitwpf.Models.Abstractions
 {
     [JsonConverter(typeof(JsonPathConverter))]
     public abstract class BaseMatch

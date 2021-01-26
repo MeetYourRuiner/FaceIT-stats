@@ -1,4 +1,5 @@
 ﻿using faceitwpf.Models;
+using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
 using faceitwpf.ViewModels.Commands;
 using faceitwpf.Views.Enums;
@@ -226,11 +227,12 @@ namespace faceitwpf.ViewModels
                 {
                     CurrentPlayerProfile = await statsRepository.GetPlayerProfileAsync(playerName);
                     IsFavoritePlayer = Properties.Settings.Default.Favorites.Contains(CurrentPlayerProfile.Nickname);
-                    Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.PlayerId);
+                    Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.PlayerId, MATCHES_ON_PAGE * 10);
                 }
                 catch (Exception ex)
                 {
                     navigator.GoBack(ex);
+                    return;
                 }
                 _pagesCount = CountPages(Matches);
                 SliceOfHistory = GetPage(Page);

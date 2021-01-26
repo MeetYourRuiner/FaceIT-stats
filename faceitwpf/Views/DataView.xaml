@@ -102,6 +102,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     VerticalContentAlignment="Center"
+                    Opacity="0.95"
                 />
                 <!--Level label-->
                 <StackPanel 
@@ -169,7 +170,7 @@
                     Style="{StaticResource ButtonStyle}"
                     Command="{Binding ShowOngoingMatchCommand}" 
                     Width="132" 
-                    Grid.Column="4" 
+                    Grid.Column="5" 
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Center"
                     Grid.Row="4"

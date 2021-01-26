@@ -44,12 +44,12 @@ namespace faceitwpf.Services
         //{
             // https://api.faceit.com/core/v1/users/11fc14fa-092c-4960-a99d-3fad119b124e
         //}
-            public async Task<List<Match>> FetchMatchesAsync(string playerId)
+        public async Task<List<Match>> FetchMatchesAsync(string playerId, int size)
         {
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
 
-            var response = await _v1Client.GetAsync($"https://api.faceit.com/stats/v1/stats/time/users/{playerId}/games/csgo?&size=99");
+            var response = await _v1Client.GetAsync($"https://api.faceit.com/stats/v1/stats/time/users/{playerId}/games/csgo?&size={size}");
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception("Failed to get match history");
             string json = await response.Content.ReadAsStringAsync();

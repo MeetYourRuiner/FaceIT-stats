@@ -1,7 +1,10 @@
 ﻿using faceitwpf.Models;
+using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
 using faceitwpf.ViewModels.Commands;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace faceitwpf.ViewModels
 {
@@ -13,26 +16,6 @@ namespace faceitwpf.ViewModels
         private string currentMatchId;
 
         private bool _isLoaded = false;
-        private RelayCommand _loadedCommand;
-        public RelayCommand LoadedCommand
-        {
-            get => _loadedCommand ?? (_loadedCommand = new RelayCommand(async (obj) =>
-            {
-                if (_isLoaded)
-                    return;
-                IsLoading = true;
-                try
-                {
-                    CurrentMatchInfo = await statsRepository.GetOngoingMatchAsync(currentMatchId);
-                }
-                catch (Exception ex)
-                {
-                    navigator.GoBack(ex);
-                }
-                IsLoading = false;
-                _isLoaded = true;
-            }));
-        }
 
         public bool _isLoading = false;
         public bool IsLoading
@@ -43,6 +26,39 @@ namespace faceitwpf.ViewModels
                 _isLoading = value;
                 OnPropertyChanged();
             }
+        }
+
+        public bool _isRefreshing = false;
+        public bool IsRefreshing 
+        {
+            get => _isRefreshing ;
+            set
+            {
+                _isRefreshing = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private RelayCommand _loadedCommand;
+        public RelayCommand LoadedCommand
+        {
+            get => _loadedCommand ?? (_loadedCommand = new RelayCommand(async (obj) =>
+            {
+                if (_isLoaded)
+                    return;
+                IsLoading = true;
+                try
+                {
+                    await UpdateMatchInfo();
+                }
+                catch (Exception ex)
+                {
+                    navigator.GoBack(ex);
+                    return;
+                }
+                IsLoading = false;
+                _isLoaded = true;
+            }));
         }
 
         private RelayCommand _backCommand;
@@ -68,10 +84,18 @@ namespace faceitwpf.ViewModels
         private RelayCommand _refreshCommand;
         public RelayCommand RefreshCommand
         {
-            get => _refreshCommand ?? (_refreshCommand = new RelayCommand((obj) =>
+            get => _refreshCommand ?? (_refreshCommand = new RelayCommand(async (obj) =>
             {
-                _isLoaded = false;
-                LoadedCommand.Execute(obj);
+                IsRefreshing = true;
+                try
+                {
+                    await UpdateMatchInfo();
+                }
+                catch(Exception ex)
+                {
+                    navigator.DisplayError(ex);
+                }
+                IsRefreshing = false;
             }));
         }
 
@@ -82,6 +106,21 @@ namespace faceitwpf.ViewModels
             {
                 OngoingMatchPlayerInfo player = (OngoingMatchPlayerInfo)obj;
                 navigator.Navigate(Views.Enums.ViewTypes.Data, player.Nickname);
+            }));
+        }
+
+        private RelayCommand _analyzeCommand;
+        public RelayCommand AnalyzeCommand
+        {
+            get => _analyzeCommand ?? (_analyzeCommand = new RelayCommand((obj) =>
+            {
+                string team = (string)obj;
+                List<BasePlayerInfo> players;
+                if (team == "A")
+                    players = CurrentMatchInfo.TeamA.Players.ConvertAll(p => (BasePlayerInfo)p);
+                else
+                    players = CurrentMatchInfo.TeamB.Players.ConvertAll(p => (BasePlayerInfo)p);
+                navigator.Navigate(Views.Enums.ViewTypes.TeamAnalyze, players);
             }));
         }
 
@@ -109,6 +148,11 @@ namespace faceitwpf.ViewModels
             this.statsRepository = statsRepository;
             this.navigator = navigator;
             currentMatchId = (string)parameter;
+        }
+    
+        private async Task UpdateMatchInfo()
+        {
+            CurrentMatchInfo = await statsRepository.GetOngoingMatchAsync(currentMatchId);
         }
     }
 }

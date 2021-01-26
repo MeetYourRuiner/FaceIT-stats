@@ -1,4 +1,5 @@
 ﻿using faceitwpf.Models;
+using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
 using faceitwpf.ViewModels.Commands;
 using System;
@@ -108,6 +109,7 @@ namespace faceitwpf.ViewModels
                 catch (Exception ex)
                 {
                     navigator.GoBack(ex);
+                    return;
                 }
                 _isLoaded = true;
                 IsLoading = false;

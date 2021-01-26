@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace faceitwpf.Models
+namespace faceitwpf.Models.Abstractions
 {
     interface IStatsRepository
     {
-        Task<List<Match>> GetMatchesAsync(string playerId);
+        Task<List<Match>> GetMatchesAsync(string playerId, int size);
         Task<MatchStats> GetMatchStatsAsync(string matchId);
         Task<MatchInfo> GetMatchInfoAsync(string matchId);
         Task<PlayerProfile> GetPlayerProfileAsync(string playerName);

@@ -12,6 +12,7 @@
         <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
         <converters:KRToColorConverter x:Key="KRtCConverter"/>
         <converters:KDToColorConverter x:Key="KDtCConverter"/>
+        <converters:PartyColorConverter x:Key="PartyConverter"/>
 
         <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
 
@@ -100,12 +101,10 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn  
-                        Binding="{Binding Nickname}" 
+                    <DataGridTemplateColumn 
                         Width="150"
-                        ElementStyle="{StaticResource ColumnElementStyle}"
                     >
-                        <DataGridTextColumn.Header>
+                        <DataGridTemplateColumn.Header>
                             <TextBlock>
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
@@ -130,8 +129,16 @@
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="0, 0, 10, 0" HorizontalAlignment="Left" Text="{Binding Nickname}"/>
+                                    <Ellipse Width="8" Height="8" Fill="{Binding PlayerInfo.PartyIndex, Converter={StaticResource PartyConverter}}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn 
                         Header="K" 
                         Binding="{Binding PlayerStats.Kills}" 
@@ -252,12 +259,10 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn
-                        Binding="{Binding Nickname}" 
+                    <DataGridTemplateColumn 
                         Width="150"
-                        ElementStyle="{StaticResource ColumnElementStyle}"
                     >
-                        <DataGridTextColumn.Header>
+                        <DataGridTemplateColumn.Header>
                             <TextBlock>
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
@@ -282,8 +287,16 @@
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="0, 0, 10, 0" HorizontalAlignment="Left" Text="{Binding Nickname}"/>
+                                    <Ellipse Width="8" Height="8" Fill="{Binding PlayerInfo.PartyIndex, Converter={StaticResource PartyConverter}}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn 
                         Header="K" 
                         Binding="{Binding PlayerStats.Kills}" 

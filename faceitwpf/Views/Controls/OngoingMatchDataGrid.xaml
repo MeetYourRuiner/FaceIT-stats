@@ -1,0 +1,111 @@
+﻿<UserControl x:Class="faceitwpf.Views.Controls.OngoingMatchDataGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:faceitwpf.Views.Controls" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+             xmlns:converters="clr-namespace:faceitwpf.Views.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="446" Loaded="UserControl_Loaded" x:Name="ongoingMatchDataGrid">
+    <UserControl.Resources>
+        <sys:Double x:Key="RowHeight">75</sys:Double>
+        <!--RowHeight * 5 + 10-->
+        <sys:Double x:Key="DGHeight">385</sys:Double>
+        <!--RowHeight + DGHeight-->
+        <sys:Double x:Key="GridHeight">460</sys:Double>
+
+        <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
+
+        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
+        <converters:PartyColorConverter x:Key="PartyConverter"/>
+
+        <Style x:Key="DGLabelHeader" TargetType="{x:Type Label}" BasedOn="{StaticResource InfoLabel}">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+        <Style x:Key="MatchDetailsDGStyle" TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
+            <Setter Property="RowHeight" Value="{StaticResource RowHeight}"/>
+        </Style>
+        <Style x:Key="MatchDetailsDGColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}">
+            <Setter Property="Height" Value="45"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{Binding Source={StaticResource RowHeight}}"/>
+            <RowDefinition Height="{Binding Source={StaticResource DGHeight}}"/>
+        </Grid.RowDefinitions>
+        <DockPanel x:Name="dpHeader"
+            Background="{StaticResource AppControlBackground}">
+            <StackPanel x:Name="spAverageElo"
+                Width="125"
+                Orientation="Horizontal" 
+                DockPanel.Dock="Right">
+                <Label
+                    Style="{StaticResource DGLabelHeader}"
+                    Content="Avg Elo:"/>
+                <Label
+                    Style="{StaticResource DGLabelHeader}"
+                    Content="{Binding TeamSource.AverageElo, ElementName=ongoingMatchDataGrid}"/>
+            </StackPanel>
+            <StackPanel x:Name="spAverageLevel"
+                Width="125"
+                Orientation="Horizontal" 
+                DockPanel.Dock="Right">
+                <Label
+                    Style="{StaticResource DGLabelHeader}"
+                    Content="Avg Level:"/>
+                <Image Source="{Binding TeamSource.AverageLevelImage, ElementName=ongoingMatchDataGrid}" Height="32" Width="32"/>
+            </StackPanel>
+            <Label x:Name="lTeamName"
+                Width="194"
+                DockPanel.Dock="Left"
+                Style="{StaticResource DGLabelHeader}"
+                Content="{Binding TeamSource.Name, ElementName=ongoingMatchDataGrid}"/>
+        </DockPanel>
+        <DataGrid x:Name="TeamDG"
+            Style="{StaticResource MatchDetailsDGStyle}"
+            HeadersVisibility="None"
+            RowStyle="{StaticResource DGRowStyle}"
+            ItemsSource="{Binding TeamSource.Players, ElementName=ongoingMatchDataGrid}"
+            Grid.Row="1"
+            ContextMenu="{Binding ContextMenu, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OngoingMatchDataGrid}}}"
+        >
+            <DataGrid.Columns>
+                <DataGridTemplateColumn x:Name="colAvatar"
+                    Width="{Binding Source={StaticResource RowHeight}}"
+                >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{StaticResource AppLightOrange}" BorderThickness="1" Background="{StaticResource AppControlBackground}">
+                                <Image Source="{Binding Avatar, FallbackValue={StaticResource defaultAvatar}, TargetNullValue={StaticResource defaultAvatar}}" Stretch="Fill"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn x:Name="colLevel"
+                    Width="45"
+                >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding LevelImage}" Height="32" Width="32">
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                                        <Setter Property="ToolTip" Value="{Binding Path=Elo}"/>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn x:Name="colNickname"
+                    Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

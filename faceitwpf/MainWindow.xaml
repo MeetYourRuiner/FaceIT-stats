@@ -31,6 +31,9 @@
         <DataTemplate DataType="{x:Type vm:OngoingMatchViewModel}">
             <local:OngoingMatchView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TeamAnalyzeViewModel}">
+            <local:TeamAnalyzeView/>
+        </DataTemplate>
         <DataTemplate DataType="{x:Type classes:Error}">
             <controls:ErrorMessage/>
         </DataTemplate>

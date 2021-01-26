@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using faceitwpf.Models.Abstractions;
+using Newtonsoft.Json;
 
 namespace faceitwpf.Models
 {

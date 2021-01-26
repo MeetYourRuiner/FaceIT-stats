@@ -6,6 +6,7 @@ namespace faceitwpf.Views.Enums
         Search,
         Data,
         Match,
-        OngoingMatch
+        OngoingMatch,
+        TeamAnalyze
     }
 }

@@ -1,4 +1,5 @@
-﻿using faceitwpf.Services;
+﻿using faceitwpf.Models.Abstractions;
+using faceitwpf.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,15 +60,16 @@ namespace faceitwpf.Models
         public async Task<MatchInfo> GetMatchInfoAsync(string matchId)
         {
             MatchInfo matchInfo = await apiService.FetchMatchInfoAsync(matchId);
+            matchInfo.FillPartiesIndices();
             return matchInfo;
         }
 
-        public async Task<List<Match>> GetMatchesAsync(string playerId)
+        public async Task<List<Match>> GetMatchesAsync(string playerId, int size)
         {
             List<Match> matches;
             try
             {
-                matches = await apiService.FetchMatchesAsync(playerId);
+                matches = await apiService.FetchMatchesAsync(playerId, size);
             }
             catch { throw; }
             for (int i = 0; i < matches.Count - 1; ++i)
@@ -108,6 +110,7 @@ namespace faceitwpf.Models
             try
             {
                 ongoingMatch = await apiService.FetchOngoingMatchAsync(matchId);
+                ongoingMatch.FillPartiesIndices();
             }
             catch
             {

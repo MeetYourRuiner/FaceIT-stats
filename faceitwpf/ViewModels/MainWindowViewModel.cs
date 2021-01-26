@@ -1,5 +1,6 @@
 ﻿using faceitwpf.Classes;
 using faceitwpf.Models;
+using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
 using faceitwpf.Views.Enums;
 using System;
@@ -49,13 +50,14 @@ namespace faceitwpf.ViewModels
             _vmStore.Add<DataViewModel>((parameter) => new DataViewModel(_statsRepository, this, parameter));
             _vmStore.Add<MatchDetailsViewModel>((parameter) => new MatchDetailsViewModel(_statsRepository, this, parameter));
             _vmStore.Add<OngoingMatchViewModel>((parameter) => new OngoingMatchViewModel(_statsRepository, this, parameter));
+            _vmStore.Add<TeamAnalyzeViewModel>((parameter) => new TeamAnalyzeViewModel(_statsRepository, this, parameter));
 
             Navigate(ViewTypes.Search);
         }
 
-        public void Navigate(ViewTypes destination, object parameter = null)
+        public void Navigate(ViewTypes destination, object parameter = null, bool replace = false)
         {
-            if (CurrentViewModel != null)
+            if (CurrentViewModel != null && replace == false)
                 History.Push(CurrentViewModel);
             switch (destination)
             {
@@ -70,6 +72,9 @@ namespace faceitwpf.ViewModels
                     break;
                 case ViewTypes.OngoingMatch:
                     CurrentViewModel = _vmStore.Get<OngoingMatchViewModel>(parameter);
+                    break;
+                case ViewTypes.TeamAnalyze:
+                    CurrentViewModel = _vmStore.Get<TeamAnalyzeViewModel>(parameter);
                     break;
             }
         }

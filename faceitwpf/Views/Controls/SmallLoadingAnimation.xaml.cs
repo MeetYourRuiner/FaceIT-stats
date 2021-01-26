@@ -5,9 +5,9 @@ namespace faceitwpf.Views.Controls
     /// <summary>
     /// Interaction logic for LoadingAnimation.xaml
     /// </summary>
-    public partial class LoadingAnimation : UserControl
+    public partial class SmallLoadingAnimation : UserControl
     {
-        public LoadingAnimation()
+        public SmallLoadingAnimation()
         {
             InitializeComponent();
         }
