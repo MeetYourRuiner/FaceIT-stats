@@ -90,11 +90,6 @@ namespace faceitwpf.Models
             try
             {
                 player = await apiService.FetchPlayerProfileAsync(playerName);
-                try
-                {
-                    player.OngoingMatchId = await apiService.FetchOngoingMatchIdAsync(player.PlayerId);
-                }
-                catch { }
             }
             catch
             {
@@ -102,7 +97,19 @@ namespace faceitwpf.Models
             }
             return player;
         }
-
+        public async Task<string> GetOngoingMatchIdAsync(string playerId)
+        {
+            string ongoingMatchId;
+            try
+            {
+                ongoingMatchId = await apiService.FetchOngoingMatchIdAsync(playerId);
+            }
+            catch
+            {
+                throw;
+            }
+            return ongoingMatchId;
+        }
 
         public async Task<OngoingMatchInfo> GetOngoingMatchAsync(string matchId)
         {

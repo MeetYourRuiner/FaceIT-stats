@@ -165,6 +165,55 @@
                 />
 
                 <!--Ongoing match button-->
+                <Button
+                    Width="32"
+                    Height="32" 
+                    Grid.Column="4"
+                    Grid.Row="4"
+                    Margin="20, 0, 0, 0"
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Bottom"
+                    Command="{Binding RefreshOngoingMatchCommand}"
+                    Focusable="False"
+                    Style="{StaticResource TransparentButton}"
+                    IsEnabled="{Binding IsRefreshButtonEnabled}"
+                >
+                    <Image 
+                        Width="16" 
+                        Height="16" 
+                        Source="/faceitwpf;component/Resources/refresh.png"
+                        RenderTransformOrigin="0.5, 0.5"
+                        IsEnabled="{Binding IsRefreshButtonEnabled}"
+                    >
+                        <Image.RenderTransform>
+                            <RotateTransform Angle="0"/>
+                        </Image.RenderTransform>
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                                <Style.Resources>
+                                    <Storyboard x:Key="Animation0" BeginTime="00:00:00.0" RepeatBehavior="0:0:1">
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                            From="0" To="360"
+                                        />
+                                    </Storyboard>
+                                </Style.Resources>
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard Storyboard="{StaticResource Animation0}" x:Name="Storyboard0" />
+                                        </Trigger.EnterActions>
+
+                                        <!--<Trigger.ExitActions>
+                                            <StopStoryboard BeginStoryboardName="Storyboard0"/>
+                                        </Trigger.ExitActions>-->
+                                    </Trigger>
+                                </Style.Triggers>
+
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Button>
                 <Button 
                     Content="ONGOING"
                     Style="{StaticResource ButtonStyle}"
@@ -467,10 +516,8 @@
             <Grid x:Name="buttonGrid" Grid.Column="1" Grid.Row="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="280"/>
-                    <ColumnDefinition Width="7*"/>
-                    <ColumnDefinition Width="200"/>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <!--Back-->
                 <Button
@@ -480,20 +527,53 @@
                     Width="280" 
                     VerticalAlignment="Center"
                 />
-                <!--Previous-->
-                <Button
-                    Content="PREVIOUS"
-                    Style="{StaticResource ButtonStyle}"
-                    Command="{Binding PrevPageCommand}"
-                    IsEnabled="{Binding IsPrevEnabled}" Grid.Column="2"
-                />
-                <!--Next-->
-                <Button
-                    Content="NEXT" 
-                    Style="{StaticResource ButtonStyle}"
-                    Command="{Binding NextPageCommand}"
-                    IsEnabled="{Binding IsNextEnabled}" Grid.Column="4"
-                />
+                <Grid Grid.ColumnSpan="3" Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Previous-->
+                    <Button
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding PrevPageCommand}"
+                        IsEnabled="{Binding IsPrevEnabled}"
+                        HorizontalAlignment="Stretch"
+                        Width="Auto"
+                    >
+                        <Path 
+                            Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" 
+                            Data="M 12 16 L 12 0 L -2 8 Z" 
+                        />
+                    </Button>
+                    <TextBlock
+                        Grid.Column="1"
+                        Foreground="{StaticResource AppFont}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                    >
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} / {1}">
+                                <Binding Path="PageToDisplay"/>
+                                <Binding Path="PagesCount"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <!--Next-->
+                    <Button
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding IsNextEnabled}"
+                        Width="Auto"
+                        HorizontalAlignment="Stretch"
+                        Grid.Column="2"
+                    >
+                        <Path 
+                            Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" 
+                            Data="M 0 16 L 0 0 L 14 8  Z"
+                        />
+                    </Button>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

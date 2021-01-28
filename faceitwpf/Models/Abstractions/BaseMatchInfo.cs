@@ -21,6 +21,8 @@ namespace faceitwpf.Models.Abstractions
 
         public void FillPartiesIndices()
         {
+            if (Parties == null)
+                return;
             var partiesArray = Parties.Values.ToArray();
             BasePlayerInfo player;
             int i = 0;

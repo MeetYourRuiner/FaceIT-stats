@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
         <converters:WRToColorConverter x:Key="WRtCConverter"/>
-        <sys:Double x:Key="RowHeight">60</sys:Double>
+        <sys:Double x:Key="RowHeight">63</sys:Double>
         <!-- RowHeight * (Maps.Length(8) + 1) + Maps.Length(8) * 2 -->
         <sys:Double x:Key="ColumnWidth">63.8</sys:Double>
         <sys:Double x:Key="MegaHeaderWidth">127.6</sys:Double>
@@ -218,7 +218,7 @@
                     >
                         <DataGridTemplateColumn.HeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderSmallFontStyle}">
-                                <Setter Property="BorderThickness" Value="0, 0, 1, 1"/>
+                                <Setter Property="BorderThickness" Value="0, 0, 1, 0"/>
                                 <Setter Property="BorderBrush" Value="{StaticResource AppOrange}"/>
                             </Style>
                         </DataGridTemplateColumn.HeaderStyle>

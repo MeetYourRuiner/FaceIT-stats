@@ -120,7 +120,7 @@ namespace faceitwpf.Services
             var payload = jObject["payload"];
 
             if (!payload.HasValues)
-                throw new System.Exception("No ongoing match");
+                return null;
             string ongoingMatchId = payload.First.First[0]["id"].Value<string>();
 
             stopwatch.Stop();

@@ -13,7 +13,6 @@ namespace faceitwpf.Classes
         {
             Message = message;
             timer = new Timer(timerSeconds * 1000);
-            timer.Start();
             timer.Elapsed += (sender, e) =>
             {
                 TimerElapsed?.Invoke(this, e);

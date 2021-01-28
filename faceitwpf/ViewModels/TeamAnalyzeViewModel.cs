@@ -11,7 +11,7 @@ namespace faceitwpf.ViewModels
 {
     class TeamAnalyzeViewModel : BaseViewModel
     {
-        private const int MATCHES_TO_ANALYZE = 150;
+        private const int MATCHES_TO_ANALYZE = 200;
         private readonly string[] maps = new string[]
         {
             "de_mirage",

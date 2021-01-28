@@ -39,7 +39,7 @@
                 <Setter Property="Background" Value="{StaticResource AppLightOrange}"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="Gray"/>
+                <Setter Property="TextBlock.Opacity" Value="0.75"/>
                 <Setter Property="Background" Value="{StaticResource AppLightOrange}"/>
             </Trigger>
         </Style.Triggers>
@@ -101,6 +101,9 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AppOrange}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Gray"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

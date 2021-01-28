@@ -69,7 +69,7 @@
                                                                         </Setter>
                                                                     </Style>
                                                                 </Button.Style>
-                                                                <Image Width="24" Source="/faceitwpf;component/Resources/remove.png"/>
+                                                                <Image SnapsToDevicePixels="True" Width="24" Source="/faceitwpf;component/Resources/remove.png"/>
                                                             </Button>
                                                             <TextBlock VerticalAlignment="Center" FontSize="18" Foreground="{StaticResource AppFont}" DockPanel.Dock="Left" Text="{Binding}"/>
                                                         </DockPanel>

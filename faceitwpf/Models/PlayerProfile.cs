@@ -32,7 +32,6 @@ namespace faceitwpf.Models
         public int Level { get; set; }
         [JsonProperty("games.csgo.faceit_elo")]
         public int Elo { get; set; }
-        public string OngoingMatchId { get; set; }
 
         public string ToDemote { get => Level == 1 ? "∞" : (Elo - Levels[Level] + 1).ToString(); }
 

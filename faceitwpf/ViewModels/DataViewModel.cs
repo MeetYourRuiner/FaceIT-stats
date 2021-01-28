@@ -18,7 +18,6 @@ namespace faceitwpf.ViewModels
 
         private bool _isLoaded = false;
         private string playerName;
-        private int _pagesCount = 1;
         private int _page = 0;
         private int Page
         {
@@ -26,8 +25,25 @@ namespace faceitwpf.ViewModels
             set
             {
                 _page = value;
+                OnPropertyChanged("PageToDisplay");
                 OnPropertyChanged("IsPrevEnabled");
                 OnPropertyChanged("IsNextEnabled");
+            }
+        }
+
+        public int PageToDisplay
+        {
+            get => Page + 1;
+        }
+
+        private int _pagesCount = 1;
+        public int PagesCount
+        {
+            get => _pagesCount;
+            set
+            {
+                _pagesCount = value;
+                OnPropertyChanged();
             }
         }
 
@@ -56,21 +72,7 @@ namespace faceitwpf.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        private bool _isInGame;
-        public bool IsInGame
-        {
-            get
-            {
-                return _isInGame;
-            }
-            set
-            {
-                _isInGame = value;
-                OnPropertyChanged();
-            }
-        }
-
+        
         private ChartViewModel _chartViewModel;
         public ChartViewModel ChartViewModel 
         { 
@@ -89,6 +91,32 @@ namespace faceitwpf.ViewModels
             set
             {
                 _currentPlayerProfile = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _ongoingMatchId;
+        public string OngoingMatchId
+        {
+            get { return _ongoingMatchId; }
+            private set
+            {
+                _ongoingMatchId = value;
+                OnPropertyChanged("IsInGame");
+            }
+        }
+        public bool IsInGame
+        {
+            get => OngoingMatchId != null;
+        }
+
+        private bool _isRefreshButtonEnabled = true;
+        public bool IsRefreshButtonEnabled
+        {
+            get { return _isRefreshButtonEnabled; }
+            set
+            {
+                _isRefreshButtonEnabled = value;
                 OnPropertyChanged();
             }
         }
@@ -141,7 +169,7 @@ namespace faceitwpf.ViewModels
 
         public bool IsNextEnabled
         {
-            get { return Page < _pagesCount - 1; }
+            get { return Page < PagesCount - 1; }
         }
 
         public bool IsPrevEnabled
@@ -210,7 +238,25 @@ namespace faceitwpf.ViewModels
         {
             get => _showOngoingMatchCommand ?? (_showOngoingMatchCommand = new RelayCommand((obj) =>
             {
-                navigator.Navigate(ViewTypes.OngoingMatch, CurrentPlayerProfile.OngoingMatchId);
+                navigator.Navigate(ViewTypes.OngoingMatch, OngoingMatchId);
+            }));
+        }
+
+        private RelayCommand _refreshOngoingMatchCommand;
+        public RelayCommand RefreshOngoingMatchCommand
+        {
+            get => _refreshOngoingMatchCommand ?? (_refreshOngoingMatchCommand = new RelayCommand(async (obj) =>
+            {
+                IsRefreshButtonEnabled = false;
+                try
+                {
+                    OngoingMatchId = await statsRepository.GetOngoingMatchIdAsync(CurrentPlayerProfile.PlayerId);
+                }
+                catch (Exception ex)
+                {
+                    navigator.DisplayError(ex);
+                }
+                IsRefreshButtonEnabled = true;
             }));
         }
 
@@ -227,18 +273,18 @@ namespace faceitwpf.ViewModels
                 {
                     CurrentPlayerProfile = await statsRepository.GetPlayerProfileAsync(playerName);
                     IsFavoritePlayer = Properties.Settings.Default.Favorites.Contains(CurrentPlayerProfile.Nickname);
-                    Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.PlayerId, MATCHES_ON_PAGE * 10);
+                    Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.PlayerId, MATCHES_ON_PAGE * 20);
+                    OngoingMatchId = await statsRepository.GetOngoingMatchIdAsync(CurrentPlayerProfile.PlayerId);
                 }
                 catch (Exception ex)
                 {
                     navigator.GoBack(ex);
                     return;
                 }
-                _pagesCount = CountPages(Matches);
+                PagesCount = CountPages(Matches);
                 SliceOfHistory = GetPage(Page);
                 LastMatchesPerfomance = new LastMatchesPerfomance(Matches);
                 ChartViewModel = new ChartViewModel(Matches);
-                IsInGame = CurrentPlayerProfile.OngoingMatchId != null;
 
                 _isLoaded = true;
                 IsLoading = false;
