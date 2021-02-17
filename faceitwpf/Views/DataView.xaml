@@ -527,7 +527,7 @@
                     Width="280" 
                     VerticalAlignment="Center"
                 />
-                <Grid Grid.ColumnSpan="3" Grid.Column="2">
+                <Grid Visibility="{Binding IsChartVisible, ConverterParameter=true, Converter={StaticResource BTVConverter}}" Grid.ColumnSpan="3" Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="100"/>

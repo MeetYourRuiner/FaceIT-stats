@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Windows;
 
 namespace faceitwpf
@@ -12,7 +13,12 @@ namespace faceitwpf
         {
             if (e.Args.Contains("-updated"))
             {
-                System.Diagnostics.Process.Start("CMD.exe", "/C DEL old.exe");
+                string path = e.Args[1];
+                try
+                {
+                    File.Delete(path);
+                }
+                catch { }
             }
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();

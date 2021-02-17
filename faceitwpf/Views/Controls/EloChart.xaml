@@ -19,14 +19,15 @@
             Series="{Binding MatchSeries}"
             Grid.ColumnSpan="3"
             Hoverable="False"
-            >
+        >
             <lvc:CartesianChart.Resources>
                 <Style TargetType="lvc:LineSeries">
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
                     <Setter Property="Fill" Value="Transparent"/>
                     <Setter Property="Stroke" Value="White"/>
-                    <Setter Property="PointGeometrySize" Value="10"/>
+                    <Setter Property="PointGeometrySize" Value="7"/>
                     <Setter Property="PointForeground" Value="#FFEBEFF3"/>
-                    <Setter Property="StrokeThickness" Value="1"/>
+                    <Setter Property="StrokeThickness" Value="0.5"/>
                 </Style>
             </lvc:CartesianChart.Resources>
             <lvc:CartesianChart.AxisY>

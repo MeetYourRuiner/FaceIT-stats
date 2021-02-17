@@ -157,7 +157,7 @@ namespace faceitwpf.ViewModels
 
                 IsTextboxFocused = true;
                 _isLoaded = true;
-                navigator.DisplayError(new Exception("Кушайте баги"));
+                navigator.DisplayError(new Exception("Сам удали"));
                 CheckForUpdate();
             }));
         }

@@ -68,8 +68,8 @@ namespace faceitwpf.Services
 
         public async Task UpdateAsync(Action<string> updateProgressSetter)
         {
-            string newfilename = "update.exe";
             string oldfilename = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            string newfilename = "update.exe";
             using (WebClient wc = new WebClient())
             {
                 wc.DownloadProgressChanged += (o, args) =>
@@ -82,22 +82,11 @@ namespace faceitwpf.Services
             {
                 StartInfo = new ProcessStartInfo()
                 {
-                    FileName = "cmd.exe",
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    UseShellExecute = false,
-                    RedirectStandardInput = true,
-                    CreateNoWindow = true,
+                    FileName = newfilename,
+                    Arguments = $"-updated {System.Reflection.Assembly.GetEntryAssembly().Location}"
                 }
             };
             process.Start();
-            using (StreamWriter streamWriter = new StreamWriter(process.StandardInput.BaseStream, Encoding.GetEncoding(866)))
-            {
-                streamWriter.WriteLine($"RENAME \"{oldfilename}\" \"old.exe\"");
-                streamWriter.WriteLine($"RENAME \"{newfilename}\" \"{oldfilename}\"");
-                streamWriter.WriteLine($"\"{oldfilename}\" -updated");
-            }
-            process.WaitForExit();
-            process.Close();
             System.Windows.Application.Current.Shutdown();
         }
     }
