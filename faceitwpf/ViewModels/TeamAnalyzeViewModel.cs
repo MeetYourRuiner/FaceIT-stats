@@ -73,7 +73,6 @@ namespace faceitwpf.ViewModels
             }));
         }
 
-
         private RelayCommand _loadedCommand;
         public RelayCommand LoadedCommand
         {
@@ -105,6 +104,13 @@ namespace faceitwpf.ViewModels
             }));
         }
 
+        public TeamAnalyzeViewModel(IStatsRepository statsRepository, INavigator navigator, object parameter)
+        {
+            this.statsRepository = statsRepository;
+            this.navigator = navigator;
+            Players = (List<BasePlayerInfo>)parameter;
+        }
+
         private DataTable CreateDataTable(List<MapStatistics> mapsStats)
         {
             DataTable dataTable = new DataTable();
@@ -131,13 +137,6 @@ namespace faceitwpf.ViewModels
                 dataTable.Rows.Add(row);
             }
             return dataTable;
-        }
-
-        public TeamAnalyzeViewModel(IStatsRepository statsRepository, INavigator navigator, object parameter)
-        {
-            this.statsRepository = statsRepository;
-            this.navigator = navigator;
-            Players = (List<BasePlayerInfo>)parameter;
         }
     }
 }

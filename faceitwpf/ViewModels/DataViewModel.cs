@@ -291,8 +291,8 @@ namespace faceitwpf.ViewModels
             }));
         }
 
-        private RelayCommand _openPlayerFaceit;
-        public RelayCommand OpenPlayerFaceit
+        private RelayCommand _openPlayerFaceitCommand;
+        public RelayCommand OpenPlayerFaceitCommand
         {
             get => _openPlayerFaceit ?? (_openPlayerFaceit = new RelayCommand((obj) =>
             {
@@ -311,8 +311,8 @@ namespace faceitwpf.ViewModels
             }));
         }
 
-        private RelayCommand _openPlayerSteam;
-        public RelayCommand OpenPlayerSteam
+        private RelayCommand _openPlayerSteamCommand;
+        public RelayCommand OpenPlayerSteamCommand
         {
             get => _openPlayerSteam ?? (_openPlayerSteam = new RelayCommand((obj) =>
             {

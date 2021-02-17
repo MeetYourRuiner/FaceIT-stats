@@ -338,10 +338,10 @@
                     Grid.RowSpan="3"
                     Width="141"
                 >
-                    <Button Width="45" Height="45" Style="{StaticResource LinkButton}" Margin="0,0,3,0" Command="{Binding OpenPlayerSteam}">
+                    <Button Width="45" Height="45" Style="{StaticResource LinkButton}" Margin="0,0,3,0" Command="{Binding OpenPlayerSteamCommand}">
                         <Image Width="32" Source="/faceitwpf;component/Resources/steam.png"/>
                     </Button>
-                    <Button Width="45" Height="45" Style="{StaticResource LinkButton}" Margin="0,0,3,0" Command="{Binding OpenPlayerFaceit}">
+                    <Button Width="45" Height="45" Style="{StaticResource LinkButton}" Margin="0,0,3,0" Command="{Binding OpenPlayerFaceitCommand}">
                         <Image Width="32" Source="/faceitwpf;component/Resources/faceit.png"/>
                     </Button>
                     <Button Width="45" Height="45" Style="{StaticResource LinkButton}" Command="{Binding AddToFavoritesCommand}">
