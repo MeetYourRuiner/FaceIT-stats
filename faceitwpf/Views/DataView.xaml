@@ -5,9 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:controls = "clr-namespace:faceitwpf.Views.Controls" 
-    xmlns:converters="clr-namespace:faceitwpf.Views.Converters"
-    xmlns:local="clr-namespace:faceitwpf.Views" 
+    xmlns:controls = "clr-namespace:faceitwpf.Views.Controls"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     mc:Ignorable="d" 
     d:DesignHeight="{StaticResource AppHeight}" 
@@ -19,31 +17,28 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <UserControl.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
-        <converters:KRToColorConverter x:Key="KRtCConverter"/>
-        <converters:KDToColorConverter x:Key="KDtCConverter"/>
-        <converters:WRToColorConverter x:Key="WRtCConverter"/>
-        <converters:ZeroToNullConverter x:Key="ZC"/>
         <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
         <BitmapImage x:Key='defaultMap' UriSource='/faceitwpf;component/Resources/icon-pheasant-preview-2-268x151.png'/>
     </UserControl.Resources>
     <Grid>
         <controls:LoadingAnimation
-            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}}" 
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}}" 
             Height="300" 
             Width="300"
             HorizontalAlignment="Center" 
             VerticalAlignment="Center" 
+            d:IsHidden="True"
         />
         <Grid
             x:Name="mainGrid"
-            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}, ConverterParameter=true}" 
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
         >
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="128"/>
                 <RowDefinition/>
-                <RowDefinition Height="508"/>
+                <!--height * 11 + 2 * 9-->
+                <RowDefinition Height="559"/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="32"/>
                 <RowDefinition Height="26"/>
@@ -151,18 +146,6 @@
                         </TextBlock>
                     </Label>
                 </StackPanel>
-                <!--Mode toggle button-->
-                <Button 
-                    x:Name="ChartBtn" 
-                    Content="{Binding ToggleButtonContent}"
-                    Style="{StaticResource ButtonStyle}"
-                    Command="{Binding ToggleModeCommand}" 
-                    Width="132" 
-                    Grid.Column="1" 
-                    VerticalAlignment="Bottom"
-                    HorizontalAlignment="Center"
-                    Grid.Row="4"
-                />
 
                 <!--Ongoing match button-->
                 <Button
@@ -360,159 +343,32 @@
                     </Button>
                 </StackPanel>
             </Grid>
-            <Grid x:Name="dataGrid" Grid.Row="3" Grid.ColumnSpan="3">
-                <!--Chart-->
-                <Grid
-                    Visibility="{Binding IsChartVisible, Converter={StaticResource BTVConverter}}"
-                >
-                    <controls:EloChart
-                        x:Name="EloChart"
-                        DataContext="{Binding ChartViewModel}"
-                    />
-                </Grid>
-                <!--Table-->
-                <DataGrid
-                    Visibility="{Binding IsChartVisible, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
-                    ItemsSource="{Binding SliceOfHistory}"
-                    Style="{StaticResource DGStyle}"
-                    ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
-                    RowStyle="{StaticResource DGRowStyle}"
-                >
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn 
-                            Header="Map" 
-                            Width="100"
-                        >
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border BorderThickness="0" Background="{StaticResource AppControlBackground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Border.Style>
-                                            <Style TargetType="{x:Type Border}">
-                                                <Setter Property="ToolTip" Value="{Binding Path=Round.Map}"/>
-                                            </Style>
-                                        </Border.Style>
-                                        <Image Height="49" Stretch="Fill" Source="{Binding Round.MapImage, FallbackValue={StaticResource defaultMap}}"/>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn 
-                            Header="Score" 
-                            Binding="{Binding Round.Score}" 
-                            Width="75"
-                            ElementStyle="{StaticResource ColumnElementStyle}"
-                        >
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyleWhiteFont}">
-                                    <Setter Property="ToolTip" Value="{Binding ELO}" />
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTextColumn 
-                            Header=" " 
-                            Binding="{Binding ResultELO}" 
-                            Width="75"
-                        >
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
-                                    <Setter Property="Foreground" Value="Red"/>
-                                    <Setter Property="ToolTip" Value="{Binding ELO}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Stats.Result}" Value='W'>
-                                            <Setter Property="Foreground" Value="Green"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn 
-                            Header="K" 
-                            Binding="{Binding Stats.Kills}" 
-                            Width="100"
-                            ElementStyle="{StaticResource ColumnElementStyle}"
-                        />
-                        <DataGridTextColumn 
-                            Header="D" 
-                            Binding="{Binding Stats.Deaths}" 
-                            Width="100"
-                            ElementStyle="{StaticResource ColumnElementStyle}"
-                        />
-                        <DataGridTextColumn 
-                            Header="KR" 
-                            Binding="{Binding Stats.KRRatio}" 
-                            Width="95"
-                            ElementStyle="{StaticResource ColumnElementStyle}"
-                        >
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
-                                    <Setter Property="Foreground" Value="{Binding Stats.KRRatio, Converter={StaticResource KRtCConverter}}"/>
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn 
-                            Header="KDR" 
-                            Binding="{Binding Stats.KDRatio}" 
-                            Width="95"
-                            ElementStyle="{StaticResource ColumnElementStyle}"
-                        >
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
-                                    <Setter Property="Foreground" Value="{Binding Stats.KDRatio, Converter={StaticResource KDtCConverter}}"/>
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn 
-                            Header="HS%" 
-                            Binding="{Binding Stats.HSPercentage, StringFormat={}{0}%}" 
-                            Width="70"
-                            ElementStyle="{StaticResource ColumnElementStyle}"
-                        />
-                        <DataGridTextColumn 
-                            Header="Date" 
-                            Binding="{Binding Date, StringFormat=\{0:d MMM HH:mm\}}"
-                            ElementStyle="{StaticResource ColumnElementStyle}"
-                            Width="130"
-                        />
-                        <DataGridTemplateColumn Width="50">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button 
-                                        Width="40"
-                                        Height="40"
-                                        HorizontalAlignment="Left" 
-                                        VerticalAlignment="Center"
-                                        Margin="0,0,4,0"
-                                        Command="{Binding DataContext.ShowMatchDetailsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DataView}}}" 
-                                        CommandParameter="{Binding Index}"
-                                        Focusable="False"
-                                    >
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Background" Value="Transparent" />
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="Button">
-                                                            <Border x:Name="border" Background="Transparent" CornerRadius="4" BorderBrush="White" BorderThickness="1" >
-                                                                <Image Width="20" Height="20" Source="/faceitwpf;component/Resources/details.png"/>
-                                                            </Border>
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AppOrange}"/>
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
+            <TabControl
+                BorderThickness="0" 
+                Background="Transparent" 
+                Grid.Row="3" 
+                Grid.ColumnSpan="3"
+                Padding="0"
+                Margin="0"
+                Style="{StaticResource TabControlStyle}"
+                x:Name="tabs"
+            >
+                <TabItem Header="Table">
+                    <TabItem.Content>
+                        <ContentControl Content="{Binding MatchesViewModel}"/>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Chart">
+                    <TabItem.Content>
+                        <ContentControl Content="{Binding EloChartViewModel}"/>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Maps">
+                    <TabItem.Content>
+                        <ContentControl Content="{Binding PlayerMapsStatisticsViewModel}"/>
+                    </TabItem.Content>
+                </TabItem>
+            </TabControl>
             <Grid x:Name="buttonGrid" Grid.Column="1" Grid.Row="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="280"/>
@@ -527,7 +383,18 @@
                     Width="280" 
                     VerticalAlignment="Center"
                 />
-                <Grid Visibility="{Binding IsChartVisible, ConverterParameter=true, Converter={StaticResource BTVConverter}}" Grid.ColumnSpan="3" Grid.Column="2">
+                <Grid Grid.ColumnSpan="3" Grid.Column="2">
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedItem.Header, ElementName=tabs}" Value="Table">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="100"/>

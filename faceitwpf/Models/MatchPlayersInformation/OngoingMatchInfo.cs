@@ -29,5 +29,8 @@ namespace faceitwpf.Models
 
     [JsonConverter(typeof(JsonPathConverter))]
     public class OngoingMatchTeamInfo : BaseTeamInfo<OngoingMatchPlayerInfo>
-    {    }
+    {
+        [JsonProperty("stats.winProbability")]
+        public double WinProbability { get; set; }
+    }
 }

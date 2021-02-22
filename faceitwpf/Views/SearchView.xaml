@@ -12,9 +12,6 @@
     d:DesignHeight="{StaticResource AppHeight}" 
     d:DesignWidth="{StaticResource AppWidth}"
 >
-    <UserControl.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
-    </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
@@ -32,8 +29,8 @@
             <ColumnDefinition Width="380"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <local:FavoritesView
-            Visibility="{Binding IsFavoritesOpen, Converter={StaticResource BTVConverter}}"
+        <local:Favorites
+            Visibility="{Binding IsFavoritesOpen, Converter={StaticResource BtVConverter}}"
             Grid.ColumnSpan="3" 
             Grid.RowSpan="4" 
             Panel.ZIndex="1"
@@ -67,7 +64,7 @@
             Value="{Binding UpdateProgress, Mode=OneWay}" 
             Grid.Column="1" 
             Grid.Row="1"
-            Visibility="{Binding IsUpdating, Converter={StaticResource BTVConverter}}"
+            Visibility="{Binding IsUpdating, Converter={StaticResource BtVConverter}}"
             Foreground="{StaticResource AppOrange}"
         />
         <!--Logo-->
@@ -92,7 +89,7 @@
             HorizontalAlignment="Left" 
             VerticalAlignment="Center"
             Margin="5, 0, 0, 0"
-            Visibility="{Binding IsUpdating, Converter={StaticResource BTVConverter}, ConverterParameter=true}"
+            Visibility="{Binding IsUpdating, Converter={StaticResource BtVConverter}, ConverterParameter=true}"
             Command="{Binding OpenFavoritesCommand}"
             Focusable="False"
         >
@@ -122,7 +119,7 @@
             Grid.Column="1"
             Grid.Row="1" 
             Grid.RowSpan="2"
-            Visibility="{Binding IsUpdating, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
+            Visibility="{Binding IsUpdating, ConverterParameter=true, Converter={StaticResource BtVConverter}}"
         >
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
@@ -141,7 +138,7 @@
                 GotFocus="nameTextBox_GotFocus"
                 local:FocusExtension.IsFocused="{Binding IsTextboxFocused}"
                 Text="{Binding PlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
+                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BtVConverter}}"
             >
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding SearchCommand}" Key="Enter"/>
@@ -152,7 +149,7 @@
                 Style="{StaticResource ButtonStyle}"
                 Width="Auto" 
                 Command="{Binding SearchCommand}"
-                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BTVConverter}}"
+                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BtVConverter}}"
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto"
                 Margin="40,0" Grid.Row="2"
             />

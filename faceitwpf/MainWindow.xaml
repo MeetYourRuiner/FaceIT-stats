@@ -4,10 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="clr-namespace:faceitwpf.Views" 
     xmlns:vm="clr-namespace:faceitwpf.ViewModels"
-    xmlns:classes="clr-namespace:faceitwpf.Classes" 
-    xmlns:controls="clr-namespace:faceitwpf.Views.Controls"
     mc:Ignorable="d"
     Title="Цифорки" 
     Height="{StaticResource AppHeight}" 
@@ -18,28 +15,8 @@
     Loaded="Window_Loaded"
     Style="{StaticResource WindowStyle}"
 >
-    <Window.Resources>
-        <DataTemplate DataType="{x:Type vm:SearchViewModel}">
-            <local:SearchView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:DataViewModel}">
-            <local:DataView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:MatchDetailsViewModel}">
-            <local:MatchDetailsView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:OngoingMatchViewModel}">
-            <local:OngoingMatchView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:TeamAnalyzeViewModel}">
-            <local:TeamAnalyzeView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type classes:Error}">
-            <controls:ErrorMessage/>
-        </DataTemplate>
-    </Window.Resources>
     <Window.DataContext>
-        <vm:MainWindowViewModel />
+        <vm:MainWindowViewModel/>
     </Window.DataContext>
 
     <Grid>

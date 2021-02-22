@@ -73,6 +73,16 @@ namespace faceitwpf.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap de_cbble {
+            get {
+                object obj = ResourceManager.GetObject("de_cbble", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap de_dust2 {
             get {
                 object obj = ResourceManager.GetObject("de_dust2", resourceCulture);

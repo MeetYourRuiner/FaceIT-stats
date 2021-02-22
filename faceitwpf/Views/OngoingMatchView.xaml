@@ -21,10 +21,6 @@
 
         <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
 
-        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
-        <converters:UpperCaseConverter x:Key="UpperCaseConverter"/>
-        <converters:PartyColorConverter x:Key="PartyConverter"/>
-
         <Style x:Key="DGLabelHeader" TargetType="{x:Type Label}" BasedOn="{StaticResource InfoLabel}">
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -46,14 +42,14 @@
     </i:Interaction.Triggers>
     <Grid>
         <controls:LoadingAnimation
-            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}}" 
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}}" 
             Height="300" 
             Width="300"
             HorizontalAlignment="Center" 
             VerticalAlignment="Center" 
         />
         <Grid x:Name="mainGrid"
-            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}, ConverterParameter=true}" 
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
         >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -88,12 +84,12 @@
                     Content="{Binding CurrentMatchInfo.TeamAScore}"
                     Style="{StaticResource FinalScoreLabel}"
                     Foreground="{StaticResource AppFont}"
-                    Visibility="{Binding IsRefreshing, Converter={StaticResource BTVConverter}, ConverterParameter=true}"
+                    Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}, ConverterParameter=true}"
                     Height="Auto"
                 />
                 <controls:SmallLoadingAnimation
                     Grid.Column="2"
-                    Visibility="{Binding IsRefreshing, Converter={StaticResource BTVConverter}}" 
+                    Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}}" 
                     Background="{StaticResource AppControlBackground}"
                 />
                 <Label
@@ -101,12 +97,12 @@
                     Content="{Binding CurrentMatchInfo.TeamBScore}"
                     Style="{StaticResource FinalScoreLabel}"
                     Foreground="{StaticResource AppFont}"
-                    Visibility="{Binding IsRefreshing, Converter={StaticResource BTVConverter}, ConverterParameter=true}" 
+                    Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
                     Height="Auto"
                 />
                 <controls:SmallLoadingAnimation
                     Grid.Column="4"
-                    Visibility="{Binding IsRefreshing, Converter={StaticResource BTVConverter}}" 
+                    Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}}" 
                     Background="{StaticResource AppControlBackground}"
                 />
                 <Label
@@ -183,29 +179,8 @@
                 HorizontalAlignment="Left" 
                 Grid.Column="1"
             />
-            <controls:OngoingMatchDataGrid TeamSource="{Binding CurrentMatchInfo.TeamA}" Grid.Row="2" Grid.ColumnSpan="2">
-                <controls:OngoingMatchDataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem 
-                            Header="Open player stats"
-                            CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                            Command="{Binding OpenPlayerStatsCommand}" 
-                        />
-                    </ContextMenu>
-                </controls:OngoingMatchDataGrid.ContextMenu>
-            </controls:OngoingMatchDataGrid>
-
-            <controls:OngoingMatchDataGrid TeamSource="{Binding CurrentMatchInfo.TeamB}" HorizontalContentAlignment="Right" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="3">
-                <controls:OngoingMatchDataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem 
-                            Header="Open player stats"
-                            CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                            Command="{Binding OpenPlayerStatsCommand}" 
-                        />
-                    </ContextMenu>
-                </controls:OngoingMatchDataGrid.ContextMenu>
-            </controls:OngoingMatchDataGrid>
+            <ContentControl Content="{Binding TeamAViewModel}" Grid.Row="2" Grid.ColumnSpan="2"/>
+            <ContentControl Content="{Binding TeamBViewModel}" HorizontalContentAlignment="Right" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="3"/>
             <Label
                 Style="{StaticResource InfoLabel}" 
                 Content="{Binding CurrentMatchInfo.State}" 
@@ -218,11 +193,11 @@
                 BorderBrush="{StaticResource DGLine}"
                 Background="{StaticResource DGRowBackground}"
                 Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5"
-                Visibility="{Binding IsRefreshing, Converter={StaticResource BTVConverter}, ConverterParameter=true}" 
+                Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
             />
             <controls:SmallLoadingAnimation
                 Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5"
-                Visibility="{Binding IsRefreshing, Converter={StaticResource BTVConverter}}" 
+                Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}}" 
                 Background="{StaticResource DGRowBackground}"
             />
             <Button

@@ -1,0 +1,136 @@
+﻿<UserControl x:Class="faceitwpf.Views.Controls.PlayerMapsStatisticsDataGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:controls="clr-namespace:faceitwpf.Views.Controls"
+             mc:Ignorable="d" 
+             x:Name="Control"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BitmapImage x:Key='defaultMap' UriSource='/faceitwpf;component/Resources/icon-pheasant-preview-2-268x151.png'/>
+    </UserControl.Resources>
+    <Grid>
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+        <controls:SmallLoadingAnimation
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}}" />
+        <DataGrid
+            ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
+            RowStyle="{StaticResource DGRowStyle}"
+            ItemsSource="{Binding CurrentPlayerStats.MapOverallStats}"
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}, ConverterParameter=true}"
+        >
+            <DataGrid.Style>
+                <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
+                    <Setter Property="RowHeight" Value="49"/>
+                </Style>
+            </DataGrid.Style>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn
+                    Width="100" 
+                    Header="Map"
+                >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border BorderThickness="0" Background="{StaticResource AppControlBackground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="ToolTip" Value="{Binding Path=MapName}"/>
+                                    </Style>
+                                </Border.Style>
+                                <Image Height="49" Stretch="Fill" Source="{Binding MapImage, FallbackValue={StaticResource defaultMap}}"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn 
+                    Header="#" 
+                    Binding="{Binding MatchesCount}" 
+                    Width="80"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header="WR" 
+                    Binding="{Binding WinRate, StringFormat={}{0}%}" 
+                    Width="84"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                >
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
+                            <Setter Property="Foreground" Value="{Binding WinRateDouble, Converter={StaticResource WRtCConverter}}"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn 
+                    Header="K" 
+                    Binding="{Binding Kills}" 
+                    Width="75"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header="D" 
+                    Binding="{Binding Deaths}" 
+                    Width="75"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header="A" 
+                    Binding="{Binding Assists}" 
+                    Width="75"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header="KDR" 
+                    Binding="{Binding KDRatio}" 
+                    Width="75"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                >
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
+                            <Setter Property="Foreground" Value="{Binding KDRatio, Converter={StaticResource KDtCConverter}}"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn 
+                    Header="KR" 
+                    Binding="{Binding KRRatio}" 
+                    Width="75"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                >
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
+                            <Setter Property="Foreground" Value="{Binding KRRatio, Converter={StaticResource KRtCConverter}}"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn 
+                    Header="HS%" 
+                    Binding="{Binding AverageHS, StringFormat={}{0}%}" 
+                    Width="75"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header="3K" 
+                    Binding="{Binding TriplePerMatch}" 
+                    Width="60"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header="4K" 
+                    Binding="{Binding QuadroPerMatch}" 
+                    Width="60"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+                <DataGridTextColumn 
+                    Header="5K" 
+                    Binding="{Binding AcePerMatch}" 
+                    Width="60"
+                    ElementStyle="{StaticResource ColumnElementStyle}"
+                />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

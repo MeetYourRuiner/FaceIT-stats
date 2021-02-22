@@ -1,5 +1,4 @@
-﻿using faceitwpf.Models;
-using faceitwpf.Views.Converters;
+﻿using faceitwpf.Views.Converters;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -7,19 +6,9 @@ using System.Windows.Shapes;
 
 namespace faceitwpf.Views.Controls
 {
-    public partial class OngoingMatchDataGrid : UserControl
+    public partial class OngoingMatchTeamInfoDataGrid : UserControl
     {
-        public OngoingMatchTeamInfo TeamSource
-        {
-            get { return (OngoingMatchTeamInfo)GetValue(TeamSourceProperty); }
-            set { SetValue(TeamSourceProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for TeamSource.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TeamSourceProperty =
-            DependencyProperty.Register("TeamSource", typeof(OngoingMatchTeamInfo), typeof(OngoingMatchDataGrid), new PropertyMetadata(null));
-
-        public OngoingMatchDataGrid()
+        public OngoingMatchTeamInfoDataGrid()
         {
             InitializeComponent();
         }

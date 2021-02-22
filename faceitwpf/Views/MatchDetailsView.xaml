@@ -3,26 +3,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:local="clr-namespace:faceitwpf.Views" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:controls="clr-namespace:faceitwpf.Views.Controls" xmlns:converters="clr-namespace:faceitwpf.Views.Converters" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:local="clr-namespace:faceitwpf.Views" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:controls="clr-namespace:faceitwpf.Views.Controls"
              mc:Ignorable="d" 
     d:DesignHeight="{StaticResource AppHeight}" 
     d:DesignWidth="{StaticResource AppWidth}">
 
     <UserControl.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
-        <converters:KRToColorConverter x:Key="KRtCConverter"/>
-        <converters:KDToColorConverter x:Key="KDtCConverter"/>
-        <converters:PartyColorConverter x:Key="PartyConverter"/>
-
         <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
 
         <Style x:Key="MatchDetailsDGStyle" TargetType="DataGrid" BasedOn="{StaticResource DGStyle}">
-            <Setter Property="RowHeight" Value="45"/>
+            <Setter Property="RowHeight" Value="49"/>
         </Style>
         <Style x:Key="MatchDetailsDGColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}">
-            <Setter Property="Height" Value="45"/>
+            <Setter Property="Height" Value="51"/>
         </Style>
-        
+
     </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -31,15 +26,16 @@
     </i:Interaction.Triggers>
     <Grid>
         <controls:LoadingAnimation
-            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}}" 
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}}" 
             Height="300" 
             Width="300"
             HorizontalAlignment="Center" 
             VerticalAlignment="Center" 
+            d:IsHidden="True"
         />
         <Grid
             x:Name="mainGrid"
-            Visibility="{Binding IsLoading, Converter={StaticResource BTVConverter}, ConverterParameter=true}" 
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
         >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -48,9 +44,9 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="85"/>
-                <RowDefinition Height="280"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="280"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="32"/>
                 <RowDefinition Height="26"/>
@@ -79,7 +75,7 @@
                     >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="{StaticResource AppLightOrange}" Height="40" Width="40" BorderThickness="1" Background="{StaticResource AppControlBackground}">
+                                <Border BorderBrush="{StaticResource AppLightOrange}" Height="45" Width="45" BorderThickness="1" Background="{StaticResource AppControlBackground}">
                                     <Image Source="{Binding PlayerInfo.Avatar, FallbackValue={StaticResource defaultAvatar}, TargetNullValue={StaticResource defaultAvatar}}" Stretch="Fill"/>
                                 </Border>
                             </DataTemplate>
@@ -134,7 +130,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Margin="0, 0, 10, 0" HorizontalAlignment="Left" Text="{Binding Nickname}"/>
-                                    <Ellipse Width="8" Height="8" Fill="{Binding PlayerInfo.PartyIndex, Converter={StaticResource PartyConverter}}"/>
+                                    <Ellipse Width="8" Height="8" Fill="{Binding PlayerInfo.PartyIndex, Converter={StaticResource PartyColorConverter}}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -237,7 +233,7 @@
                     >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="{StaticResource AppLightOrange}" Height="40" Width="40" BorderThickness="1" Background="{StaticResource AppControlBackground}">
+                                <Border BorderBrush="{StaticResource AppLightOrange}" Height="45" Width="45" BorderThickness="1" Background="{StaticResource AppControlBackground}">
                                     <Image Source="{Binding PlayerInfo.Avatar, FallbackValue={StaticResource defaultAvatar}, TargetNullValue={StaticResource defaultAvatar}}" Stretch="Fill"/>
                                 </Border>
                             </DataTemplate>
@@ -292,7 +288,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Margin="0, 0, 10, 0" HorizontalAlignment="Left" Text="{Binding Nickname}"/>
-                                    <Ellipse Width="8" Height="8" Fill="{Binding PlayerInfo.PartyIndex, Converter={StaticResource PartyConverter}}"/>
+                                    <Ellipse Width="8" Height="8" Fill="{Binding PlayerInfo.PartyIndex, Converter={StaticResource PartyColorConverter}}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

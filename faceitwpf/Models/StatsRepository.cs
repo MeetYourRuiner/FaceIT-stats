@@ -97,6 +97,21 @@ namespace faceitwpf.Models
             }
             return player;
         }
+
+        public async Task<PlayerOverallStats> GetPlayerStatsAsync(string playerId)
+        {
+            PlayerOverallStats playerStats;
+            try
+            {
+                playerStats = await apiService.FetchPlayerStatsAsync(playerId);
+            }
+            catch
+            {
+                throw;
+            }
+            return playerStats;
+        }
+
         public async Task<string> GetOngoingMatchIdAsync(string playerId)
         {
             string ongoingMatchId;

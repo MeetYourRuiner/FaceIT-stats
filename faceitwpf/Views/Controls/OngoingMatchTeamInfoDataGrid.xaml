@@ -1,13 +1,13 @@
-﻿<UserControl x:Class="faceitwpf.Views.Controls.OngoingMatchDataGrid"
+﻿<UserControl x:Class="faceitwpf.Views.Controls.OngoingMatchTeamInfoDataGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:faceitwpf.Views.Controls" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib" 
-             xmlns:converters="clr-namespace:faceitwpf.Views.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="446" Loaded="UserControl_Loaded" x:Name="ongoingMatchDataGrid">
+             HorizontalContentAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentControl}}}"
+             d:DesignHeight="450" d:DesignWidth="446" Loaded="UserControl_Loaded" x:Name="control">
     <UserControl.Resources>
         <sys:Double x:Key="RowHeight">75</sys:Double>
         <!--RowHeight * 5 + 10-->
@@ -17,9 +17,6 @@
 
         <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
 
-        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
-        <converters:PartyColorConverter x:Key="PartyConverter"/>
-
         <Style x:Key="DGLabelHeader" TargetType="{x:Type Label}" BasedOn="{StaticResource InfoLabel}">
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -27,9 +24,11 @@
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="FontSize" Value="16"/>
         </Style>
+        
         <Style x:Key="MatchDetailsDGStyle" TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
             <Setter Property="RowHeight" Value="{StaticResource RowHeight}"/>
         </Style>
+        
         <Style x:Key="MatchDetailsDGColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}">
             <Setter Property="Height" Value="45"/>
         </Style>
@@ -50,7 +49,7 @@
                     Content="Avg Elo:"/>
                 <Label
                     Style="{StaticResource DGLabelHeader}"
-                    Content="{Binding TeamSource.AverageElo, ElementName=ongoingMatchDataGrid}"/>
+                    Content="{Binding OngoingMatchTeamInfo.AverageElo}"/>
             </StackPanel>
             <StackPanel x:Name="spAverageLevel"
                 Width="125"
@@ -59,22 +58,30 @@
                 <Label
                     Style="{StaticResource DGLabelHeader}"
                     Content="Avg Level:"/>
-                <Image Source="{Binding TeamSource.AverageLevelImage, ElementName=ongoingMatchDataGrid}" Height="32" Width="32"/>
+                <Image Source="{Binding OngoingMatchTeamInfo.AverageLevelImage}" Height="32" Width="32"/>
             </StackPanel>
             <Label x:Name="lTeamName"
                 Width="194"
                 DockPanel.Dock="Left"
                 Style="{StaticResource DGLabelHeader}"
-                Content="{Binding TeamSource.Name, ElementName=ongoingMatchDataGrid}"/>
+                Content="{Binding OngoingMatchTeamInfo.Name}"/>
         </DockPanel>
         <DataGrid x:Name="TeamDG"
             Style="{StaticResource MatchDetailsDGStyle}"
             HeadersVisibility="None"
             RowStyle="{StaticResource DGRowStyle}"
-            ItemsSource="{Binding TeamSource.Players, ElementName=ongoingMatchDataGrid}"
+            ItemsSource="{Binding OngoingMatchTeamInfo.Players}"
             Grid.Row="1"
-            ContextMenu="{Binding ContextMenu, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OngoingMatchDataGrid}}}"
         >
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem 
+                            Header="Open player stats"
+                            CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                            Command="{Binding OpenPlayerStatsCommand}" 
+                        />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTemplateColumn x:Name="colAvatar"
                     Width="{Binding Source={StaticResource RowHeight}}"

@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace faceitwpf.Views
+namespace faceitwpf.Views.Controls
 {
     /// <summary>
-    /// Interaction logic for FavoritesView.xaml
+    /// Interaction logic for PlayerMapStatistics.xaml
     /// </summary>
-    public partial class FavoritesView : UserControl
+    public partial class PlayerMapsStatisticsDataGrid : UserControl
     {
-        public FavoritesView()
+        public PlayerMapsStatisticsDataGrid()
         {
             InitializeComponent();
         }

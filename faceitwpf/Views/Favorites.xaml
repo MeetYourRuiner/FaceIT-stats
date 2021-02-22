@@ -1,14 +1,11 @@
-﻿<UserControl x:Class="faceitwpf.Views.FavoritesView"
+﻿<UserControl x:Class="faceitwpf.Views.Favorites"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:faceitwpf.Views" xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:converters="clr-namespace:faceitwpf.Views.Converters"
+             xmlns:local="clr-namespace:faceitwpf.Views"
              mc:Ignorable="d" 
              d:DesignHeight="{StaticResource AppHeight}" d:DesignWidth="{StaticResource AppWidth}">
-    <UserControl.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="BTVConverter"/>
-    </UserControl.Resources>
     <Grid>
         <Border Background="Black" Opacity="0.5">
             <Border.InputBindings>
@@ -19,21 +16,21 @@
             Background="{StaticResource AppWindowBackground}"
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Disabled"
-            Height="500"
-            Width="400"
+            Height="600"
+            Width="500"
             Padding="10"
         >
             <Grid>
                 <ItemsControl
-                x:Name="itemsControl"
-                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SearchView}}, Path=DataContext.Favorites}"    
-            >
+                    x:Name="itemsControl"
+                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SearchView}}, Path=DataContext.Favorites}"    
+                >
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button
-                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SearchView}}, Path=DataContext.SearchCommand}"
-                            CommandParameter="{Binding}"
-                        >
+                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SearchView}}, Path=DataContext.SearchCommand}"
+                                CommandParameter="{Binding}"
+                            >
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}">
                                         <Setter Property="Template">
@@ -93,7 +90,7 @@
                     x:Name="placeholder"
                     Text="No favorites"
                     IsHitTestVisible="False"
-                    Visibility="{Binding HasItems, ElementName=itemsControl, Converter={StaticResource BTVConverter}, ConverterParameter=true}"
+                    Visibility="{Binding HasItems, ElementName=itemsControl, Converter={StaticResource BtVConverter}, ConverterParameter=true}"
                     Foreground="Gray"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"

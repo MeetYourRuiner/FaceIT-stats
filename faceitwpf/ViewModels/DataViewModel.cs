@@ -2,6 +2,7 @@
 using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
 using faceitwpf.ViewModels.Commands;
+using faceitwpf.ViewModels.Controls;
 using faceitwpf.Views.Enums;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,10 @@ namespace faceitwpf.ViewModels
         private const int MATCHES_ON_PAGE = 9;
 
         private bool _isLoaded = false;
-        private string playerName;
+        private readonly string playerName;
+
+        #region ObservableProperties
+
         private int _page = 0;
         private int Page
         {
@@ -30,7 +34,6 @@ namespace faceitwpf.ViewModels
                 OnPropertyChanged("IsNextEnabled");
             }
         }
-
         public int PageToDisplay
         {
             get => Page + 1;
@@ -62,24 +65,13 @@ namespace faceitwpf.ViewModels
         private bool _isFavoritePlayer;
         public bool IsFavoritePlayer
         {
-            get 
+            get
             {
                 return _isFavoritePlayer;
             }
             set
             {
                 _isFavoritePlayer = value;
-                OnPropertyChanged();
-            }
-        }
-        
-        private ChartViewModel _chartViewModel;
-        public ChartViewModel ChartViewModel 
-        { 
-            get { return _chartViewModel; }
-            set
-            {
-                _chartViewModel = value;
                 OnPropertyChanged();
             }
         }
@@ -121,7 +113,17 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        public List<Match> Matches { get; set; }
+        private List<Match> _matches;
+        public List<Match> Matches
+        {
+            get => _matches;
+            set
+            {
+                _matches = value;
+                PagesCount = CountPages(_matches);
+                OnPropertyChanged();
+            }
+        }
 
         private LastMatchesPerfomance _lastMatchesPerfomance;
         public LastMatchesPerfomance LastMatchesPerfomance
@@ -145,28 +147,6 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private bool _isChartVisible = false;
-        public bool IsChartVisible
-        {
-            get { return _isChartVisible; }
-            set
-            {
-                _isChartVisible = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _toggleButtonContent = "Chart";
-        public string ToggleButtonContent
-        {
-            get { return _toggleButtonContent; }
-            set
-            {
-                _toggleButtonContent = value;
-                OnPropertyChanged();
-            }
-        }
-
         public bool IsNextEnabled
         {
             get { return Page < PagesCount - 1; }
@@ -177,6 +157,42 @@ namespace faceitwpf.ViewModels
             get { return Page > 0; }
         }
 
+        private EloChartViewModel _eloChartViewModel;
+        public EloChartViewModel EloChartViewModel
+        {
+            get { return _eloChartViewModel; }
+            private set
+            {
+                _eloChartViewModel= value;
+                OnPropertyChanged();
+            }
+        }
+
+        private MatchesViewModel _matchesViewModel;
+        public MatchesViewModel MatchesViewModel
+        {
+            get { return _matchesViewModel; }
+            private set
+            {
+                _matchesViewModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private PlayerMapsStatisticsViewModel _playerMapsStatisticsViewModel;
+        public PlayerMapsStatisticsViewModel PlayerMapsStatisticsViewModel
+        {
+            get { return _playerMapsStatisticsViewModel; }
+            private set
+            {
+                _playerMapsStatisticsViewModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region Commands
         private RelayCommand _backCommand;
         public RelayCommand BackCommand
         {
@@ -209,16 +225,6 @@ namespace faceitwpf.ViewModels
                     SliceOfHistory = GetPage(--Page);
                 }
                 catch { }
-            }));
-        }
-
-        private RelayCommand _toggleModeCommand;
-        public RelayCommand ToggleModeCommand
-        {
-            get => _toggleModeCommand ?? (_toggleModeCommand = new RelayCommand((obj) =>
-            {
-                IsChartVisible = !IsChartVisible;
-                ToggleButtonContent = IsChartVisible ? "Table" : "Chart";
             }));
         }
 
@@ -281,10 +287,19 @@ namespace faceitwpf.ViewModels
                     navigator.GoBack(ex);
                     return;
                 }
-                PagesCount = CountPages(Matches);
+                PlayerMapsStatisticsViewModel = new PlayerMapsStatisticsViewModel(statsRepository, CurrentPlayerProfile.PlayerId);
                 SliceOfHistory = GetPage(Page);
                 LastMatchesPerfomance = new LastMatchesPerfomance(Matches);
-                ChartViewModel = new ChartViewModel(Matches);
+                EloChartViewModel = new EloChartViewModel(Matches);
+
+                MatchesViewModel = new MatchesViewModel(SliceOfHistory);
+                PropertyChanged += (s, args) => 
+                { 
+                    if (args.PropertyName == "SliceOfHistory")
+                    {
+                        MatchesViewModel.Matches = SliceOfHistory;
+                    }
+                };
 
                 _isLoaded = true;
                 IsLoading = false;
@@ -294,7 +309,7 @@ namespace faceitwpf.ViewModels
         private RelayCommand _openPlayerFaceitCommand;
         public RelayCommand OpenPlayerFaceitCommand
         {
-            get => _openPlayerFaceit ?? (_openPlayerFaceit = new RelayCommand((obj) =>
+            get => _openPlayerFaceitCommand ?? (_openPlayerFaceitCommand = new RelayCommand((obj) =>
             {
                 try
                 {
@@ -314,7 +329,7 @@ namespace faceitwpf.ViewModels
         private RelayCommand _openPlayerSteamCommand;
         public RelayCommand OpenPlayerSteamCommand
         {
-            get => _openPlayerSteam ?? (_openPlayerSteam = new RelayCommand((obj) =>
+            get => _openPlayerSteamCommand ?? (_openPlayerSteamCommand = new RelayCommand((obj) =>
             {
                 try
                 {
@@ -354,7 +369,8 @@ namespace faceitwpf.ViewModels
                 OnPropertyChanged("IsFavoritePlayer");
             }));
         }
-
+        #endregion
+        
         public DataViewModel(IStatsRepository statsRepository, INavigator navigator, object parameter)
         {
             this.statsRepository = statsRepository;

@@ -2,6 +2,7 @@
 using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
 using faceitwpf.ViewModels.Commands;
+using faceitwpf.ViewModels.Controls;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,7 +15,6 @@ namespace faceitwpf.ViewModels
         private readonly INavigator navigator;
 
         private string currentMatchId;
-
         private bool _isLoaded = false;
 
         public bool _isLoading = false;
@@ -49,13 +49,16 @@ namespace faceitwpf.ViewModels
                 IsLoading = true;
                 try
                 {
-                    await UpdateMatchInfo();
+                    CurrentMatchInfo = await UpdateMatchInfo();
                 }
                 catch (Exception ex)
                 {
                     navigator.GoBack(ex);
                     return;
                 }
+                TeamAViewModel = new OngoingMatchTeamInfoViewModel(navigator, CurrentMatchInfo.TeamA);
+                TeamBViewModel = new OngoingMatchTeamInfoViewModel(navigator, CurrentMatchInfo.TeamB);
+
                 IsLoading = false;
                 _isLoaded = true;
             }));
@@ -81,6 +84,28 @@ namespace faceitwpf.ViewModels
             }
         }
 
+        private OngoingMatchTeamInfoViewModel _teamAViewModel;
+        public OngoingMatchTeamInfoViewModel TeamAViewModel
+        {
+            get => _teamAViewModel;
+            set
+            {
+                _teamAViewModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private OngoingMatchTeamInfoViewModel _teamBViewModel;
+        public OngoingMatchTeamInfoViewModel TeamBViewModel
+        {
+            get => _teamBViewModel;
+            set
+            {
+                _teamBViewModel = value;
+                OnPropertyChanged();
+            }
+        }
+
         private RelayCommand _refreshCommand;
         public RelayCommand RefreshCommand
         {
@@ -89,7 +114,7 @@ namespace faceitwpf.ViewModels
                 IsRefreshing = true;
                 try
                 {
-                    await UpdateMatchInfo();
+                    CurrentMatchInfo = await UpdateMatchInfo();
                 }
                 catch(Exception ex)
                 {
@@ -150,9 +175,9 @@ namespace faceitwpf.ViewModels
             currentMatchId = (string)parameter;
         }
     
-        private async Task UpdateMatchInfo()
+        private async Task<OngoingMatchInfo> UpdateMatchInfo()
         {
-            CurrentMatchInfo = await statsRepository.GetOngoingMatchAsync(currentMatchId);
+            return await statsRepository.GetOngoingMatchAsync(currentMatchId);
         }
     }
 }
