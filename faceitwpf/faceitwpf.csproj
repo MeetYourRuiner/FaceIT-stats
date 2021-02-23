@@ -111,14 +111,11 @@
     <Compile Include="Classes\Error.cs" />
     <Compile Include="Classes\Utils.cs" />
     <Compile Include="Classes\VMStore.cs" />
-    <Compile Include="Models\Abstractions\BaseMatchInfo.cs" />
+    <Compile Include="Models\MatchInfo.cs" />
     <Compile Include="Models\Abstractions\IStatsRepository.cs" />
     <Compile Include="Models\LastMatchesPerfomance.cs" />
-    <Compile Include="Models\Abstractions\BaseMatch.cs" />
     <Compile Include="Models\MapStatistics.cs" />
     <Compile Include="Models\MatchStats\MatchStats.cs" />
-    <Compile Include="Models\MatchPlayersInformation\MatchInfo.cs" />
-    <Compile Include="Models\MatchPlayersInformation\OngoingMatchInfo.cs" />
     <Compile Include="Models\MatchStats\PlayerStats.cs" />
     <Compile Include="Models\MatchStats\RoundStats.cs" />
     <Compile Include="Models\PlayerOverallStats.cs" />

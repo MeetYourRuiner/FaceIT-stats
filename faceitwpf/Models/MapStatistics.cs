@@ -14,10 +14,10 @@ namespace faceitwpf.Models
             public PlayerMapStatistics(string mapName, TeamAnalyzeObject player)
             {
                 PlayerName = player.Player.Nickname;
-                Match[] matches = player.Matches.Where(m => m.Round.Map == mapName).ToArray();
+                Match[] matches = player.Matches.Where(m => m.RoundStats.Map == mapName).ToArray();
                 Matches = matches.Length;
                 if (Matches > 0)
-                    Winrate = (double)matches.Where(m => m.Stats.Result == 'W').Count() / Matches;
+                    Winrate = (double)matches.Where(m => m.PlayerStats.Result == 'W').Count() / Matches;
             }
 
             public PlayerMapStatistics(string playerName, int matches, double winrate)

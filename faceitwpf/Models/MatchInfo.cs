@@ -1,21 +1,35 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace faceitwpf.Models.Abstractions
+namespace faceitwpf.Models
 {
-    public abstract class BaseMatchInfo<PlayerInfoType, TeamInfoType> 
-        where PlayerInfoType : BasePlayerInfo 
-        where TeamInfoType : BaseTeamInfo<PlayerInfoType>
+    [JsonConverter(typeof(JsonPathConverter))]
+    public class MatchInfo
     {
         [JsonProperty("id")]
         public string Id { get; set; }
         [JsonProperty("entity.name")]
         public string CompetitionName { get; set; }
         [JsonProperty("teams.faction1")]
-        public TeamInfoType TeamA { get; set; }
+        public TeamInfo TeamA { get; set; }
         [JsonProperty("teams.faction2")]
-        public TeamInfoType TeamB { get; set; }
+        public TeamInfo TeamB { get; set; }
+
+        [JsonProperty("results[0].factions.faction1.score")]
+        public int TeamAScore { get; set; }
+        [JsonProperty("results[0].factions.faction2.score")]
+        public int TeamBScore { get; set; }
+        [JsonProperty("state")]
+        public string State { get; set; }
+        [JsonProperty("voting.map.pick[0]")]
+        public string Map { get; set; }
+        public string MapImage { get => $"/faceitwpf;component/Resources/{Map}.jpeg"; }
+
+        private DateTime date;
+        [JsonProperty("createdAt")]
+        public DateTime Date { get => date; set => date = value.ToLocalTime(); }
         [JsonProperty("entityCustom.parties")]
         public Dictionary<string, string[]> Parties { get; set; }
 
@@ -24,7 +38,7 @@ namespace faceitwpf.Models.Abstractions
             if (Parties == null)
                 return;
             var partiesArray = Parties.Values.ToArray();
-            BasePlayerInfo player;
+            PlayerInfo player;
             int i = 0;
             foreach(var party in partiesArray)
             {
@@ -50,7 +64,7 @@ namespace faceitwpf.Models.Abstractions
     }
 
     [JsonConverter(typeof(JsonPathConverter))]
-    public abstract class BasePlayerInfo
+    public class PlayerInfo
     {
         [JsonProperty("id")]
         public string Id { get; set; }
@@ -67,18 +81,19 @@ namespace faceitwpf.Models.Abstractions
     }
 
     [JsonConverter(typeof(JsonPathConverter))]
-    public abstract class BaseTeamInfo<PlayerInfoType>
-        where PlayerInfoType : BasePlayerInfo
+    public class TeamInfo
     {
         private string name;
         [JsonProperty("name")]
         public string Name { get => name; set => name = value.Replace("_", "__"); }
         [JsonProperty("roster")]
-        public List<PlayerInfoType> Players { get; set; }
+        public List<PlayerInfo> Players { get; set; }
         [JsonProperty("stats.skillLevel.average")]
         public int AverageLevel { get; set; }
         [JsonProperty("stats.rating")]
         public int AverageElo { get; set; }
         public string AverageLevelImage { get => $"/faceitwpf;component/Resources/lvl{AverageLevel}.png"; }
+        [JsonProperty("stats.winProbability")]
+        public double WinProbability { get; set; }
     }
 }

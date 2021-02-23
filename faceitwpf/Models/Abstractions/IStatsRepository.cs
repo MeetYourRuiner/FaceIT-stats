@@ -10,7 +10,6 @@ namespace faceitwpf.Models.Abstractions
         Task<MatchInfo> GetMatchInfoAsync(string matchId);
         Task<PlayerProfile> GetPlayerProfileAsync(string playerName);
         Task<string> GetOngoingMatchIdAsync(string playerId);
-        Task<OngoingMatchInfo> GetOngoingMatchAsync(string matchId);
         Task<PlayerOverallStats> GetPlayerStatsAsync(string playerId);
     }
 }

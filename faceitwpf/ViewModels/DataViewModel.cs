@@ -21,7 +21,6 @@ namespace faceitwpf.ViewModels
         private readonly string playerName;
 
         #region ObservableProperties
-
         private int _page = 0;
         private int Page
         {
@@ -189,7 +188,6 @@ namespace faceitwpf.ViewModels
                 OnPropertyChanged();
             }
         }
-
         #endregion
 
         #region Commands

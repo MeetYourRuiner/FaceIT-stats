@@ -13,14 +13,14 @@ namespace faceitwpf.ViewModels.Controls
         {
             get => _openPlayerStatsCommand ?? (_openPlayerStatsCommand = new RelayCommand((obj) =>
             {
-                OngoingMatchPlayerInfo player = (OngoingMatchPlayerInfo)obj;
+                PlayerInfo player = (PlayerInfo)obj;
                 navigator.Navigate(Views.Enums.ViewTypes.Data, player.Nickname);
             }));
         }
 
-        private OngoingMatchTeamInfo _ongoingMatchTeamInfo;
+        private TeamInfo _ongoingMatchTeamInfo;
 
-        public OngoingMatchTeamInfo OngoingMatchTeamInfo
+        public TeamInfo OngoingMatchTeamInfo
         {
             get { return _ongoingMatchTeamInfo; }
             set 
@@ -30,7 +30,7 @@ namespace faceitwpf.ViewModels.Controls
             }
         }
 
-        public OngoingMatchTeamInfoViewModel(INavigator navigator, OngoingMatchTeamInfo ongoingMatchTeamInfo)
+        public OngoingMatchTeamInfoViewModel(INavigator navigator, TeamInfo ongoingMatchTeamInfo)
         {
             this.navigator = navigator;
             OngoingMatchTeamInfo = ongoingMatchTeamInfo;

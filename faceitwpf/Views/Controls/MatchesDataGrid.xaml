@@ -27,17 +27,17 @@
                         <Border BorderThickness="0" Background="{StaticResource AppControlBackground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
-                                    <Setter Property="ToolTip" Value="{Binding Path=Round.Map}"/>
+                                    <Setter Property="ToolTip" Value="{Binding Path=RoundStats.Map}"/>
                                 </Style>
                             </Border.Style>
-                            <Image Height="49" Stretch="Fill" Source="{Binding Round.MapImage, FallbackValue={StaticResource defaultMap}}"/>
+                            <Image Height="49" Stretch="Fill" Source="{Binding RoundStats.MapImage, FallbackValue={StaticResource defaultMap}}"/>
                         </Border>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
             <DataGridTextColumn 
                 Header="Score" 
-                Binding="{Binding Round.Score}" 
+                Binding="{Binding RoundStats.Score}" 
                 Width="75"
                 ElementStyle="{StaticResource ColumnElementStyle}"
             >
@@ -58,7 +58,7 @@
                         <Setter Property="Foreground" Value="Red"/>
                         <Setter Property="ToolTip" Value="{Binding ELO}" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Stats.Result}" Value='W'>
+                            <DataTrigger Binding="{Binding PlayerStats.Result}" Value='W'>
                                 <Setter Property="Foreground" Value="Green"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -67,43 +67,43 @@
             </DataGridTextColumn>
             <DataGridTextColumn 
                 Header="K" 
-                Binding="{Binding Stats.Kills}" 
+                Binding="{Binding PlayerStats.Kills}" 
                 Width="100"
                 ElementStyle="{StaticResource ColumnElementStyle}"
             />
             <DataGridTextColumn 
                 Header="D" 
-                Binding="{Binding Stats.Deaths}" 
+                Binding="{Binding PlayerStats.Deaths}" 
                 Width="100"
                 ElementStyle="{StaticResource ColumnElementStyle}"
             />
             <DataGridTextColumn 
                 Header="KR" 
-                Binding="{Binding Stats.KRRatio}" 
+                Binding="{Binding PlayerStats.KRRatio}" 
                 Width="95"
                 ElementStyle="{StaticResource ColumnElementStyle}"
             >
                 <DataGridTextColumn.CellStyle>
                     <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
-                        <Setter Property="Foreground" Value="{Binding Stats.KRRatio, Converter={StaticResource KRtCConverter}}"/>
+                        <Setter Property="Foreground" Value="{Binding PlayerStats.KRRatio, Converter={StaticResource KRtCConverter}}"/>
                     </Style>
                 </DataGridTextColumn.CellStyle>
             </DataGridTextColumn>
             <DataGridTextColumn 
                 Header="KDR" 
-                Binding="{Binding Stats.KDRatio}" 
+                Binding="{Binding PlayerStats.KDRatio}" 
                 Width="95"
                 ElementStyle="{StaticResource ColumnElementStyle}"
             >
                 <DataGridTextColumn.CellStyle>
                     <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellStyle}">
-                        <Setter Property="Foreground" Value="{Binding Stats.KDRatio, Converter={StaticResource KDtCConverter}}"/>
+                        <Setter Property="Foreground" Value="{Binding PlayerStats.KDRatio, Converter={StaticResource KDtCConverter}}"/>
                     </Style>
                 </DataGridTextColumn.CellStyle>
             </DataGridTextColumn>
             <DataGridTextColumn 
                 Header="HS%" 
-                Binding="{Binding Stats.HSPercentage, StringFormat={}{0}%}" 
+                Binding="{Binding PlayerStats.HSPercentage, StringFormat={}{0}%}" 
                 Width="70"
                 ElementStyle="{StaticResource ColumnElementStyle}"
             />

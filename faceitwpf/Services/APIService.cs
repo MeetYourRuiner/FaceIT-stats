@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -35,6 +34,22 @@ namespace faceitwpf.Services
             return JObject.Parse(json).ToObject<PlayerProfile>();
         }
 
+        public async Task<PlayerProfile> FetchPlayerProfileByIdAsync(string playerId)
+        {
+            var response = await _v1Client.GetAsync($"https://api.faceit.com/core/v1/users/{playerId}");
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception("Player is not found");
+            string json = await response.Content.ReadAsStringAsync();
+            JObject jObject = JObject.Parse(json);
+
+            var payload = jObject["payload"];
+            var playerProfile = payload.ToObject<PlayerProfile>();
+            playerProfile.PlayerId = playerId;
+
+            return playerProfile;
+        }
+
+
         public async Task<PlayerOverallStats> FetchPlayerStatsAsync(string playerId)
         {
             var response = await _v1Client.GetAsync($"https://api.faceit.com/stats/v1/stats/users/{playerId}/games/csgo");
@@ -55,11 +70,6 @@ namespace faceitwpf.Services
             return pos;
         }
 
-
-        //public async Task<PlayerProfile> FetchPlayerProfileByIdAsync(string playerId)
-        //{
-        // https://api.faceit.com/core/v1/users/11fc14fa-092c-4960-a99d-3fad119b124e
-        //}
         public async Task<List<Match>> FetchMatchesAsync(string playerId, int size)
         {
             var response = await _v1Client.GetAsync($"https://api.faceit.com/stats/v1/stats/time/users/{playerId}/games/csgo?&size={size}");
@@ -84,9 +94,13 @@ namespace faceitwpf.Services
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
 
-            var mo = jObject["payload"].ToObject<MatchInfo>();
+            var payload = jObject["payload"];
 
-            return mo;
+            if (!payload.HasValues)
+                throw new System.Exception("No match");
+            var mi = payload.ToObject<MatchInfo>();
+
+            return mi;
         }
 
         public async Task<MatchStats> FetchMatchStatsAsync(string matchId)
@@ -111,6 +125,7 @@ namespace faceitwpf.Services
 
             return md;
         }
+
         public async Task<string> FetchOngoingMatchIdAsync(string playerId)
         {
             var response = await _v1Client.GetAsync($"https://api.faceit.com/match/v1/matches/groupByState?userId={playerId}");
@@ -120,6 +135,7 @@ namespace faceitwpf.Services
             JObject jObject = JObject.Parse(json);
 
             var payload = jObject["payload"];
+
             if (!payload.HasValues)
                 return null;
             var dict = payload.ToObject<Dictionary<string, JArray>>();
@@ -129,22 +145,6 @@ namespace faceitwpf.Services
                     return pair.Value.First["id"].Value<string>();
             }
             return null;
-        }
-
-        public async Task<OngoingMatchInfo> FetchOngoingMatchAsync(string matchId)
-        {
-            var response = await _v1Client.GetAsync($"https://api.faceit.com/match/v2/match/{matchId}");
-            if (response.StatusCode != HttpStatusCode.OK)
-                throw new System.Exception("Failed to get ongoing match");
-            string json = await response.Content.ReadAsStringAsync();
-            JObject jObject = JObject.Parse(json);
-
-            var payload = jObject["payload"];
-
-            if (!payload.HasValues)
-                throw new System.Exception("No ongoing match");
-            var ongoingMatch = payload.ToObject<OngoingMatchInfo>();
-            return ongoingMatch;
         }
     }
 }

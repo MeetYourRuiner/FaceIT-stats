@@ -17,7 +17,7 @@
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Disabled"
             Height="600"
-            Width="500"
+            Width="400"
             Padding="10"
         >
             <Grid>

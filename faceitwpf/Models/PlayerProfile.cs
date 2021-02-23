@@ -14,6 +14,8 @@ namespace faceitwpf.Models
         public string Nickname { get; set; }
         [JsonProperty("player_id")]
         public string PlayerId { get; set; }
+        [JsonProperty("country")]
+        public string Country { get; set; }
         private string _faceitURL;
         [JsonProperty("faceit_url")]
         public string FaceitURL 

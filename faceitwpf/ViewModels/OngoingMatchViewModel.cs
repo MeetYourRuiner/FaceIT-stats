@@ -73,8 +73,8 @@ namespace faceitwpf.ViewModels
             }));
         }
 
-        private OngoingMatchInfo _currentMatchInfo;
-        public OngoingMatchInfo CurrentMatchInfo
+        private MatchInfo _currentMatchInfo;
+        public MatchInfo CurrentMatchInfo
         {
             get => _currentMatchInfo;
             set
@@ -129,7 +129,7 @@ namespace faceitwpf.ViewModels
         {
             get => _openPlayerStatsCommand ?? (_openPlayerStatsCommand = new RelayCommand((obj) =>
             {
-                OngoingMatchPlayerInfo player = (OngoingMatchPlayerInfo)obj;
+                PlayerInfo player = (PlayerInfo)obj;
                 navigator.Navigate(Views.Enums.ViewTypes.Data, player.Nickname);
             }));
         }
@@ -140,11 +140,11 @@ namespace faceitwpf.ViewModels
             get => _analyzeCommand ?? (_analyzeCommand = new RelayCommand((obj) =>
             {
                 string team = (string)obj;
-                List<BasePlayerInfo> players;
+                List<PlayerInfo> players;
                 if (team == "A")
-                    players = CurrentMatchInfo.TeamA.Players.ConvertAll(p => (BasePlayerInfo)p);
+                    players = CurrentMatchInfo.TeamA.Players;
                 else
-                    players = CurrentMatchInfo.TeamB.Players.ConvertAll(p => (BasePlayerInfo)p);
+                    players = CurrentMatchInfo.TeamB.Players;
                 navigator.Navigate(Views.Enums.ViewTypes.TeamAnalyze, players);
             }));
         }
@@ -175,9 +175,9 @@ namespace faceitwpf.ViewModels
             currentMatchId = (string)parameter;
         }
     
-        private async Task<OngoingMatchInfo> UpdateMatchInfo()
+        private async Task<MatchInfo> UpdateMatchInfo()
         {
-            return await statsRepository.GetOngoingMatchAsync(currentMatchId);
+            return await statsRepository.GetMatchInfoAsync(currentMatchId);
         }
     }
 }

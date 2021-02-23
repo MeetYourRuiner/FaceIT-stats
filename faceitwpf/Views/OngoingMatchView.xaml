@@ -12,29 +12,6 @@
     d:DesignHeight="{StaticResource AppHeight}" 
     d:DesignWidth="{StaticResource AppWidth}"
 >
-    <UserControl.Resources>
-        <sys:Double x:Key="RowHeight">75</sys:Double>
-        <!--RowHeight * 5 + 10-->
-        <sys:Double x:Key="DGHeight">385</sys:Double>
-        <!--RowHeight(Header) + DGHeight-->
-        <sys:Double x:Key="GridHeight">460</sys:Double>
-
-        <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
-
-        <Style x:Key="DGLabelHeader" TargetType="{x:Type Label}" BasedOn="{StaticResource InfoLabel}">
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="FontSize" Value="16"/>
-        </Style>
-        <Style x:Key="MatchDetailsDGStyle" TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
-            <Setter Property="RowHeight" Value="{StaticResource RowHeight}"/>
-        </Style>
-        <Style x:Key="MatchDetailsDGColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}">
-            <Setter Property="Height" Value="45"/>
-        </Style>
-    </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
@@ -47,6 +24,7 @@
             Width="300"
             HorizontalAlignment="Center" 
             VerticalAlignment="Center" 
+            d:IsHidden="True"
         />
         <Grid x:Name="mainGrid"
             Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
@@ -61,10 +39,9 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="85"/>
                 <RowDefinition Height="42"/>
-                <RowDefinition Height="{Binding Source={StaticResource GridHeight}}"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="15"/>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="47*"/>
+                <RowDefinition/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="32"/>
                 <RowDefinition Height="26"/>
@@ -91,6 +68,7 @@
                     Grid.Column="2"
                     Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}}" 
                     Background="{StaticResource AppControlBackground}"
+                    d:IsHidden="True"
                 />
                 <Label
                     Grid.Column="4"
@@ -104,6 +82,7 @@
                     Grid.Column="4"
                     Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}}" 
                     Background="{StaticResource AppControlBackground}"
+                    d:IsHidden="True"
                 />
                 <Label
                     Style="{StaticResource FinalScoreLabel}"
@@ -173,7 +152,7 @@
                 Content="BACK"
                 Style="{StaticResource ButtonStyle}"
                 Command="{Binding BackCommand}"
-                Grid.Row="7" 
+                Grid.Row="6" 
                 Width="280" 
                 VerticalAlignment="Center" 
                 HorizontalAlignment="Left" 
@@ -199,8 +178,9 @@
                 Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5"
                 Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}}" 
                 Background="{StaticResource DGRowBackground}"
+                d:IsHidden="True"
             />
-            <Button
+            <!--<Button
                 Style="{StaticResource TransparentButton}"
                 Command="{Binding AnalyzeCommand}"
                 CommandParameter="A"
@@ -232,7 +212,7 @@
                     ContentStringFormat="{}{0} MAPS"
                     Foreground="{StaticResource AppFont}" 
                     Content="{Binding CurrentMatchInfo.TeamB.Name, Converter={StaticResource UpperCaseConverter}}"/>
-            </Button>
+            </Button>-->
         </Grid>
     </Grid>
 </UserControl>

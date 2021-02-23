@@ -3,7 +3,6 @@ using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
 using faceitwpf.ViewModels.Commands;
 using System;
-using System.Linq;
 
 namespace faceitwpf.ViewModels
 {

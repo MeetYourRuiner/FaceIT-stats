@@ -53,8 +53,8 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private List<BasePlayerInfo> _players;
-        public List<BasePlayerInfo> Players
+        private List<PlayerInfo> _players;
+        public List<PlayerInfo> Players
         {
             get => _players;
             set
@@ -108,7 +108,7 @@ namespace faceitwpf.ViewModels
         {
             this.statsRepository = statsRepository;
             this.navigator = navigator;
-            Players = (List<BasePlayerInfo>)parameter;
+            Players = (List<PlayerInfo>)parameter;
         }
 
         private DataTable CreateDataTable(List<MapStatistics> mapsStats)

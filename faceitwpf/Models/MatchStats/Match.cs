@@ -1,14 +1,24 @@
-﻿using faceitwpf.Models.Abstractions;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace faceitwpf.Models
 {
-    public class Match : BaseMatch
+    [JsonConverter(typeof(JsonPathConverter))]
+    public class Match
     {
+        [JsonProperty("matchId")]
+        public string Id { get; set; }
         public int Index { get; set; }
 
         [JsonProperty]
-        public PlayerStats Stats { get; set; }
+        public RoundStats RoundStats { get; set; }
+
+        [JsonProperty]
+        public PlayerStats PlayerStats { get; set; }
+
+        [JsonProperty("date")]
+        public long _Date { set => Date = DateTimeOffset.FromUnixTimeMilliseconds(value).ToLocalTime(); }
+        public DateTimeOffset Date { get; set; }
 
         [JsonProperty("elo")]
         public int ELO { get; set; }
@@ -18,7 +28,7 @@ namespace faceitwpf.Models
             get
             {
                 var sign = ChangeELO >= 0 ? "+" : string.Empty;
-                return $"{Stats.Result}({sign}{ChangeELO})";
+                return $"{PlayerStats.Result}({sign}{ChangeELO})";
             }
         }
     }

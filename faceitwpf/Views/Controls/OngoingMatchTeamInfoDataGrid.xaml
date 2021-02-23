@@ -7,14 +7,9 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib" 
              mc:Ignorable="d" 
              HorizontalContentAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentControl}}}"
-             d:DesignHeight="450" d:DesignWidth="446" Loaded="UserControl_Loaded" x:Name="control">
+             d:DesignHeight="450" d:DesignWidth="446" x:Name="control">
     <UserControl.Resources>
-        <sys:Double x:Key="RowHeight">75</sys:Double>
-        <!--RowHeight * 5 + 10-->
-        <sys:Double x:Key="DGHeight">385</sys:Double>
-        <!--RowHeight + DGHeight-->
-        <sys:Double x:Key="GridHeight">460</sys:Double>
-
+        <sys:Double x:Key="RowHeight">90</sys:Double>
         <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
 
         <Style x:Key="DGLabelHeader" TargetType="{x:Type Label}" BasedOn="{StaticResource InfoLabel}">
@@ -24,11 +19,9 @@
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="FontSize" Value="16"/>
         </Style>
-        
         <Style x:Key="MatchDetailsDGStyle" TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
             <Setter Property="RowHeight" Value="{StaticResource RowHeight}"/>
         </Style>
-        
         <Style x:Key="MatchDetailsDGColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}">
             <Setter Property="Height" Value="45"/>
         </Style>
@@ -36,7 +29,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="{Binding Source={StaticResource RowHeight}}"/>
-            <RowDefinition Height="{Binding Source={StaticResource DGHeight}}"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <DockPanel x:Name="dpHeader"
             Background="{StaticResource AppControlBackground}">
@@ -99,19 +92,29 @@
                 >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding LevelImage}" Height="32" Width="32">
-                                <Image.Style>
-                                    <Style TargetType="{x:Type Image}">
-                                        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
-                                        <Setter Property="ToolTip" Value="{Binding Path=Elo}"/>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
+                            <StackPanel>
+                                <Image Source="{Binding LevelImage}" Height="32" Width="32"/>
+                                <TextBlock Margin="0, 5, 0, 0" HorizontalAlignment="Center" Text="{Binding Elo}" Foreground="Gray" FontSize="10"/>
+                            </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn x:Name="colNickname"
-                    Width="*"/>
+                <DataGridTemplateColumn
+                    Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Nickname}"/>
+                                <Ellipse
+                                    Width="10" 
+                                    Height="10" 
+                                    Fill="{Binding PartyIndex, Converter={StaticResource PartyColorConverter}}"
+                                    Margin="10, 0, 0, 0"
+                                />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -461,7 +461,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" Height="Auto" 
                 >
-                    <Image Stretch="Fill" Source="{Binding CurrentMatchStats.Round.MapImage}"/>
+                    <Image Stretch="Fill" Source="{Binding CurrentMatchStats.RoundStats.MapImage}"/>
                 </Label>
                 <StackPanel
                     Grid.ColumnSpan="2"

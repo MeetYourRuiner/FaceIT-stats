@@ -11,7 +11,7 @@ namespace faceitwpf.Services
         Task<MatchStats> FetchMatchStatsAsync(string matchId);
         Task<MatchInfo> FetchMatchInfoAsync(string matchId);
         Task<string> FetchOngoingMatchIdAsync(string playerId);
-        Task<OngoingMatchInfo> FetchOngoingMatchAsync(string matchId);
         Task<PlayerOverallStats> FetchPlayerStatsAsync(string playerId);
+        Task<PlayerProfile> FetchPlayerProfileByIdAsync(string playerId);
     }
 }

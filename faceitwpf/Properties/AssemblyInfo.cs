@@ -43,11 +43,11 @@ using System.Windows;
 //
 //      Основной номер версии
 //      Дополнительный номер версии
-//   Номер сборки
+//      Номер сборки
 //      Редакция
 //
 // Можно задать все значения или принять номер сборки и номер редакции по умолчанию.
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.3")]
+[assembly: AssemblyFileVersion("1.1.0.4")]

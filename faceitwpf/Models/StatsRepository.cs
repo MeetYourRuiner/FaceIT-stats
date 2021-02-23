@@ -1,6 +1,5 @@
 ﻿using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -98,6 +97,20 @@ namespace faceitwpf.Models
             return player;
         }
 
+        public async Task<PlayerProfile> GetPlayerProfileByIdAsync(string playerId)
+        {
+            PlayerProfile player;
+            try
+            {
+                player = await apiService.FetchPlayerProfileByIdAsync(playerId);
+            }
+            catch
+            {
+                throw;
+            }
+            return player;
+        }
+
         public async Task<PlayerOverallStats> GetPlayerStatsAsync(string playerId)
         {
             PlayerOverallStats playerStats;
@@ -124,21 +137,6 @@ namespace faceitwpf.Models
                 throw;
             }
             return ongoingMatchId;
-        }
-
-        public async Task<OngoingMatchInfo> GetOngoingMatchAsync(string matchId)
-        {
-            OngoingMatchInfo ongoingMatch;
-            try
-            {
-                ongoingMatch = await apiService.FetchOngoingMatchAsync(matchId);
-                ongoingMatch.FillPartiesIndices();
-            }
-            catch
-            {
-                throw;
-            }
-            return ongoingMatch;
         }
     }
 }

@@ -1,17 +1,12 @@
-﻿using faceitwpf.Models.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace faceitwpf.Models
 {
     public class TeamAnalyzeObject
     {
-        public BasePlayerInfo Player { get; set; }
+        public PlayerInfo Player { get; set; }
         public List<Match> Matches { get; set; }
-        public TeamAnalyzeObject(BasePlayerInfo player, List<Match> matches)
+        public TeamAnalyzeObject(PlayerInfo player, List<Match> matches)
         {
             Player = player;
             Matches = matches;
