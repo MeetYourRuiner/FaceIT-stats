@@ -113,7 +113,7 @@
     <Compile Include="Classes\VMStore.cs" />
     <Compile Include="Models\MatchInfo.cs" />
     <Compile Include="Models\Abstractions\IStatsRepository.cs" />
-    <Compile Include="Models\LastMatchesPerfomance.cs" />
+    <Compile Include="Models\AveragePerfomance.cs" />
     <Compile Include="Models\MapStatistics.cs" />
     <Compile Include="Models\MatchStats\MatchStats.cs" />
     <Compile Include="Models\MatchStats\PlayerStats.cs" />
@@ -122,6 +122,8 @@
     <Compile Include="Models\StatsRepository.cs" />
     <Compile Include="Models\TeamAnalyzeObject.cs" />
     <Compile Include="Services\INavigator.cs" />
+    <Compile Include="ViewModels\Abstractions\LoadableViewModel.cs" />
+    <Compile Include="ViewModels\Commands\LoadedCommand.cs" />
     <Compile Include="ViewModels\Controls\EloChartViewModel.cs" />
     <Compile Include="ViewModels\Controls\MatchesViewModel.cs" />
     <Compile Include="ViewModels\Controls\OngoingMatchTeamInfoViewModel.cs" />
@@ -251,7 +253,7 @@
     <Compile Include="Services\UpdateService.cs" />
     <Compile Include="Models\MatchStats\Match.cs" />
     <Compile Include="Models\PlayerProfile.cs" />
-    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Abstractions\BaseViewModel.cs" />
     <Compile Include="ViewModels\Commands\RelayCommand.cs" />
     <Compile Include="ViewModels\DataViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

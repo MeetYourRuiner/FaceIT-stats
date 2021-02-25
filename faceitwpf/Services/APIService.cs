@@ -44,7 +44,7 @@ namespace faceitwpf.Services
 
             var payload = jObject["payload"];
             var playerProfile = payload.ToObject<PlayerProfile>();
-            playerProfile.PlayerId = playerId;
+            playerProfile.Id = playerId;
 
             return playerProfile;
         }

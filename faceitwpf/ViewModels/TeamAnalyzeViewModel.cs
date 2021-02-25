@@ -1,15 +1,17 @@
 ﻿using faceitwpf.Models;
 using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
+using faceitwpf.ViewModels.Abstractions;
 using faceitwpf.ViewModels.Commands;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace faceitwpf.ViewModels
 {
-    class TeamAnalyzeViewModel : BaseViewModel
+    class TeamAnalyzeViewModel : LoadableViewModel
     {
         private const int MATCHES_TO_ANALYZE = 200;
         private readonly string[] maps = new string[]
@@ -29,18 +31,6 @@ namespace faceitwpf.ViewModels
 
         private List<TeamAnalyzeObject> playersStats = new List<TeamAnalyzeObject>();
         private List<MapStatistics> mapsStatistics = new List<MapStatistics>();
-
-        private bool _isLoaded = false;
-        private bool _isLoading = false;
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set
-            {
-                _isLoading = value;
-                OnPropertyChanged();
-            }
-        }
 
         private DataTable _dataTable;
         public DataTable DataTable
@@ -73,35 +63,25 @@ namespace faceitwpf.ViewModels
             }));
         }
 
-        private RelayCommand _loadedCommand;
-        public RelayCommand LoadedCommand
+        public override async Task LoadedMethod(object obj)
         {
-            get => _loadedCommand ?? (_loadedCommand = new RelayCommand(async (obj) =>
+            try
             {
-                if (_isLoaded)
-                    return;
-                IsLoading = true;
-                try
+                foreach (var player in Players)
                 {
-                    foreach (var player in Players)
-                    {
-                        List<Match> matches = await statsRepository.GetMatchesAsync(player.Id, MATCHES_TO_ANALYZE);
-                        playersStats.Add(new TeamAnalyzeObject(player, matches));
-                    }
+                    List<Match> matches = await statsRepository.GetMatchesAsync(player.Id, MATCHES_TO_ANALYZE);
+                    playersStats.Add(new TeamAnalyzeObject(player, matches));
                 }
-                catch (Exception ex)
-                {
-                    navigator.GoBack(ex);
-                    return;
-                }
-                mapsStatistics = MapStatistics.CreateList(maps, playersStats);
-                double matchesCount = mapsStatistics.Select(m => m.Average.Matches).Sum();
-                mapsStatistics.Sort((m1, m2) => (m2.Average.Winrate * m2.Average.Matches / matchesCount).CompareTo(m1.Average.Winrate * m1.Average.Matches / matchesCount));
-                DataTable = CreateDataTable(mapsStatistics);
-
-                IsLoading = false;
-                _isLoaded = true;
-            }));
+            }
+            catch (Exception ex)
+            {
+                navigator.GoBack(ex);
+                return;
+            }
+            mapsStatistics = MapStatistics.CreateList(maps, playersStats);
+            double matchesCount = mapsStatistics.Select(m => m.Average.Matches).Sum();
+            mapsStatistics.Sort((m1, m2) => (m2.Average.Winrate * m2.Average.Matches / matchesCount).CompareTo(m1.Average.Winrate * m1.Average.Matches / matchesCount));
+            DataTable = CreateDataTable(mapsStatistics);
         }
 
         public TeamAnalyzeViewModel(IStatsRepository statsRepository, INavigator navigator, object parameter)

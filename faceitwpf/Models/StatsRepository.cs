@@ -30,12 +30,12 @@ namespace faceitwpf.Models
                 matchStats.Teams[0].Players.ForEach(p =>
                 {
                     p.PlayerInfo = matchInfo.TeamA.Players
-                        .FirstOrDefault((po) => po.Id == p.PlayerId);
+                        .FirstOrDefault((po) => po.Id == p.Id);
                 });
                 matchStats.Teams[1].Players.ForEach(p =>
                 {
                     p.PlayerInfo = matchInfo.TeamB.Players
-                        .FirstOrDefault((po) => po.Id == p.PlayerId);
+                        .FirstOrDefault((po) => po.Id == p.Id);
                 });
             }
             else

@@ -1,4 +1,5 @@
 ﻿using faceitwpf.Services;
+using faceitwpf.ViewModels.Abstractions;
 using faceitwpf.ViewModels.Commands;
 using faceitwpf.Views.Enums;
 using System;

@@ -1,6 +1,4 @@
-﻿using faceitwpf.Services;
-using System.Windows;
-using System.Windows.Navigation;
+﻿using System.Windows;
 
 namespace faceitwpf
 {

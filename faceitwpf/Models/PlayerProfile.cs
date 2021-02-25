@@ -13,9 +13,24 @@ namespace faceitwpf.Models
         [JsonProperty("nickname")]
         public string Nickname { get; set; }
         [JsonProperty("player_id")]
-        public string PlayerId { get; set; }
+        public string Id { get; set; }
         [JsonProperty("country")]
         public string Country { get; set; }
+        [JsonProperty("settings.language")]
+        public string FaceitLanguage { get; set; }
+        public string CountryImage { get => $"https://flagcdn.com/h20/{Country}.png"; }
+        public string FaceitLanguageImage 
+        {
+            get 
+            { 
+                if (FaceitLanguage == "en")
+                    return $"https://flagcdn.com/h20/gb.png";
+                if (FaceitLanguage == "zh")
+                    return $"https://flagcdn.com/h20/cn.png";
+                else
+                    return $"https://flagcdn.com/h20/{FaceitLanguage}.png"; 
+            }
+        }
         private string _faceitURL;
         [JsonProperty("faceit_url")]
         public string FaceitURL 

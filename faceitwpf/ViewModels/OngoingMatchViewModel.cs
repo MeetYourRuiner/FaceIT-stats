@@ -1,6 +1,7 @@
 ﻿using faceitwpf.Models;
 using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
+using faceitwpf.ViewModels.Abstractions;
 using faceitwpf.ViewModels.Commands;
 using faceitwpf.ViewModels.Controls;
 using System;
@@ -9,24 +10,12 @@ using System.Threading.Tasks;
 
 namespace faceitwpf.ViewModels
 {
-    class OngoingMatchViewModel : BaseViewModel
+    class OngoingMatchViewModel : LoadableViewModel
     {
         private readonly IStatsRepository statsRepository;
         private readonly INavigator navigator;
 
         private string currentMatchId;
-        private bool _isLoaded = false;
-
-        public bool _isLoading = false;
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set
-            {
-                _isLoading = value;
-                OnPropertyChanged();
-            }
-        }
 
         public bool _isRefreshing = false;
         public bool IsRefreshing 
@@ -39,29 +28,19 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private RelayCommand _loadedCommand;
-        public RelayCommand LoadedCommand
+        public override async Task LoadedMethod(object obj)
         {
-            get => _loadedCommand ?? (_loadedCommand = new RelayCommand(async (obj) =>
+            try
             {
-                if (_isLoaded)
-                    return;
-                IsLoading = true;
-                try
-                {
-                    CurrentMatchInfo = await UpdateMatchInfo();
-                }
-                catch (Exception ex)
-                {
-                    navigator.GoBack(ex);
-                    return;
-                }
-                TeamAViewModel = new OngoingMatchTeamInfoViewModel(navigator, CurrentMatchInfo.TeamA);
-                TeamBViewModel = new OngoingMatchTeamInfoViewModel(navigator, CurrentMatchInfo.TeamB);
-
-                IsLoading = false;
-                _isLoaded = true;
-            }));
+                CurrentMatchInfo = await UpdateMatchInfo();
+            }
+            catch (Exception ex)
+            {
+                navigator.GoBack(ex);
+                return;
+            }
+            TeamAViewModel = new OngoingMatchTeamInfoViewModel(navigator, statsRepository, CurrentMatchInfo.TeamA);
+            TeamBViewModel = new OngoingMatchTeamInfoViewModel(navigator, statsRepository, CurrentMatchInfo.TeamB);
         }
 
         private RelayCommand _backCommand;
@@ -131,21 +110,6 @@ namespace faceitwpf.ViewModels
             {
                 PlayerInfo player = (PlayerInfo)obj;
                 navigator.Navigate(Views.Enums.ViewTypes.Data, player.Nickname);
-            }));
-        }
-
-        private RelayCommand _analyzeCommand;
-        public RelayCommand AnalyzeCommand
-        {
-            get => _analyzeCommand ?? (_analyzeCommand = new RelayCommand((obj) =>
-            {
-                string team = (string)obj;
-                List<PlayerInfo> players;
-                if (team == "A")
-                    players = CurrentMatchInfo.TeamA.Players;
-                else
-                    players = CurrentMatchInfo.TeamB.Players;
-                navigator.Navigate(Views.Enums.ViewTypes.TeamAnalyze, players);
             }));
         }
 

@@ -1,24 +1,27 @@
 ﻿using faceitwpf.Models;
 using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
+using faceitwpf.ViewModels.Abstractions;
 using faceitwpf.ViewModels.Commands;
 using faceitwpf.ViewModels.Controls;
 using faceitwpf.Views.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace faceitwpf.ViewModels
 {
-    class DataViewModel : BaseViewModel
+    class DataViewModel : LoadableViewModel
     {
         private readonly IStatsRepository statsRepository;
         private readonly INavigator navigator;
 
         private const int MATCHES_ON_PAGE = 9;
 
-        private bool _isLoaded = false;
         private readonly string playerName;
+        private AveragePerfomance LastMatchesPerfomance { get; set; }
+        private AveragePerfomance OverallPerfomance { get; set; }
 
         #region ObservableProperties
         private int _page = 0;
@@ -46,17 +49,7 @@ namespace faceitwpf.ViewModels
             {
                 _pagesCount = value;
                 OnPropertyChanged();
-            }
-        }
-
-        public bool _isLoading = false;
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set
-            {
-                _isLoading = value;
-                OnPropertyChanged();
+                OnPropertyChanged("IsPrevEnabled");
                 OnPropertyChanged("IsNextEnabled");
             }
         }
@@ -124,13 +117,13 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private LastMatchesPerfomance _lastMatchesPerfomance;
-        public LastMatchesPerfomance LastMatchesPerfomance
+        private AveragePerfomance _displayablePerfomance;
+        public AveragePerfomance DisplayablePerfomance
         {
-            get { return _lastMatchesPerfomance; }
+            get { return _displayablePerfomance; }
             set
             {
-                _lastMatchesPerfomance = value;
+                _displayablePerfomance = value;
                 OnPropertyChanged();
             }
         }
@@ -254,7 +247,7 @@ namespace faceitwpf.ViewModels
                 IsRefreshButtonEnabled = false;
                 try
                 {
-                    OngoingMatchId = await statsRepository.GetOngoingMatchIdAsync(CurrentPlayerProfile.PlayerId);
+                    OngoingMatchId = await statsRepository.GetOngoingMatchIdAsync(CurrentPlayerProfile.Id);
                 }
                 catch (Exception ex)
                 {
@@ -264,43 +257,26 @@ namespace faceitwpf.ViewModels
             }));
         }
 
-        private RelayCommand _loadedCommand;
-        public RelayCommand LoadedCommand
+        private RelayCommand _changeDisplayablePerfomanceCommand;
+        public RelayCommand ChangeDisplayablePerfomanceCommand
         {
-            get => _loadedCommand ?? (_loadedCommand = new RelayCommand(async (obj) =>
+            get => _changeDisplayablePerfomanceCommand ?? (_changeDisplayablePerfomanceCommand = new RelayCommand((obj) =>
             {
-                if (_isLoaded)
-                    return;
-                IsLoading = true;
-
-                try
+                if (DisplayablePerfomance == LastMatchesPerfomance)
                 {
-                    CurrentPlayerProfile = await statsRepository.GetPlayerProfileAsync(playerName);
-                    IsFavoritePlayer = Properties.Settings.Default.Favorites.Contains(CurrentPlayerProfile.Nickname);
-                    Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.PlayerId, MATCHES_ON_PAGE * 20);
-                    OngoingMatchId = await statsRepository.GetOngoingMatchIdAsync(CurrentPlayerProfile.PlayerId);
-                }
-                catch (Exception ex)
-                {
-                    navigator.GoBack(ex);
-                    return;
-                }
-                PlayerMapsStatisticsViewModel = new PlayerMapsStatisticsViewModel(statsRepository, CurrentPlayerProfile.PlayerId);
-                SliceOfHistory = GetPage(Page);
-                LastMatchesPerfomance = new LastMatchesPerfomance(Matches);
-                EloChartViewModel = new EloChartViewModel(Matches);
-
-                MatchesViewModel = new MatchesViewModel(SliceOfHistory);
-                PropertyChanged += (s, args) => 
-                { 
-                    if (args.PropertyName == "SliceOfHistory")
+                    if (OverallPerfomance != null)
                     {
-                        MatchesViewModel.Matches = SliceOfHistory;
+                        DisplayablePerfomance = OverallPerfomance;
                     }
-                };
-
-                _isLoaded = true;
-                IsLoading = false;
+                    else
+                    {
+                        navigator.DisplayError(new Exception("Overall perfomance is unavailable"));
+                    }
+                }
+                else
+                {
+                    DisplayablePerfomance = LastMatchesPerfomance;
+                }
             }));
         }
 
@@ -405,5 +381,55 @@ namespace faceitwpf.ViewModels
                 ++pagesCount;
             return pagesCount;
         }
+
+        public override async Task LoadedMethod(object obj)
+        {
+            try
+            {
+                CurrentPlayerProfile = await statsRepository.GetPlayerProfileAsync(playerName);
+                Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.Id, MATCHES_ON_PAGE * 20);
+                OngoingMatchId = await statsRepository.GetOngoingMatchIdAsync(CurrentPlayerProfile.Id);
+            }
+            catch (Exception ex)
+            {
+                navigator.GoBack(ex);
+                return;
+            }
+
+            try
+            {
+                var playerOverallStats = await statsRepository.GetPlayerStatsAsync(CurrentPlayerProfile.Id);
+                playerOverallStats.MapOverallStats
+                .Sort((m1, m2) =>
+                    (m2.WinrateDouble * m2.Matches / playerOverallStats.Matches)
+                        .CompareTo(m1.WinrateDouble * m1.Matches / playerOverallStats.Matches)
+                );
+                PlayerMapsStatisticsViewModel = new PlayerMapsStatisticsViewModel(playerOverallStats);
+                OverallPerfomance = new AveragePerfomance(playerOverallStats);
+            }
+            catch
+            {
+                PlayerMapsStatisticsViewModel = new PlayerMapsStatisticsViewModel(new PlayerOverallStats());
+            }
+
+            IsFavoritePlayer = Properties.Settings.Default.Favorites.Contains(CurrentPlayerProfile.Nickname);
+            SliceOfHistory = GetPage(Page);
+            LastMatchesPerfomance = new AveragePerfomance(Matches, 20);
+            EloChartViewModel = new EloChartViewModel(Matches);
+            if (OverallPerfomance != null)
+                DisplayablePerfomance = OverallPerfomance;
+            else
+                DisplayablePerfomance = LastMatchesPerfomance;
+
+            MatchesViewModel = new MatchesViewModel(SliceOfHistory);
+            PropertyChanged += (s, args) =>
+            {
+                if (args.PropertyName == "SliceOfHistory")
+                {
+                    MatchesViewModel.Matches = SliceOfHistory;
+                }
+            };
+        }
+
     }
 }

@@ -153,7 +153,7 @@
                     Height="32" 
                     Grid.Column="4"
                     Grid.Row="4"
-                    Margin="20, 0, 0, 0"
+                    Margin="0,0,10,0"
                     HorizontalAlignment="Right" 
                     VerticalAlignment="Bottom"
                     Command="{Binding RefreshOngoingMatchCommand}"
@@ -175,9 +175,9 @@
                             <Style TargetType="Image">
                                 <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
                                 <Style.Resources>
-                                    <Storyboard x:Key="Animation0" BeginTime="00:00:00.0" RepeatBehavior="0:0:1">
+                                    <Storyboard x:Key="Animation0" BeginTime="00:00:00.0">
                                         <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                            From="0" To="360"
+                                            From="0" To="180" Duration="0:0:0.5"
                                         />
                                     </Storyboard>
                                 </Style.Resources>
@@ -200,28 +200,44 @@
                 <Button 
                     Content="ONGOING"
                     Style="{StaticResource ButtonStyle}"
-                    Command="{Binding ShowOngoingMatchCommand}" 
-                    Width="132" 
+                    Command="{Binding ShowOngoingMatchCommand}"
                     Grid.Column="5" 
                     VerticalAlignment="Bottom"
-                    HorizontalAlignment="Center"
+                    HorizontalAlignment="Right"
                     Grid.Row="4"
-                    IsEnabled="{Binding IsInGame}"
+                    IsEnabled="{Binding IsInGame}" Width="141"
                 />
                 <!--Last matches perfomance-->
-                <DockPanel Grid.Column="3" Grid.RowSpan="5"
-                        Opacity="0.95"
+                <DockPanel 
+                    Grid.Column="3" 
+                    Grid.RowSpan="5"
+                    Opacity="0.95"
                 >
                     <Label
-                        Style="{StaticResource InfoLabel}"
-                        Content="Last 20 matches" 
+                        Content="{Binding DisplayablePerfomance.Matches}" 
+                        ContentStringFormat="{}{0} matches"
                         BorderBrush="{StaticResource AppOrange}" 
                         BorderThickness="0,0,0,1" 
                         HorizontalAlignment="Stretch" 
                         DockPanel.Dock="Top" 
                         HorizontalContentAlignment="Center"
                         Height="32"
-                    />
+                    >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding ChangeDisplayablePerfomanceCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource InfoLabel}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource FaceitBackground}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
                     <StackPanel 
                         HorizontalAlignment="Stretch" 
                         DockPanel.Dock="Bottom" 
@@ -238,12 +254,12 @@
                         <Label 
                             x:Name="WRLabel"
                             Style="{StaticResource InfoLabel}"
-                            Content="{Binding LastMatchesPerfomance.Winrate}"
+                            Content="{Binding DisplayablePerfomance.Winrate}"
                             HorizontalAlignment="Stretch"
                             Width="50"
                             ContentStringFormat="{}{0:#0#%}"
                             Height="32"
-                            Foreground="{Binding LastMatchesPerfomance.Winrate, Converter={StaticResource WRtCConverter}}"
+                            Foreground="{Binding DisplayablePerfomance.Winrate, Converter={StaticResource WRtCConverter}}"
                         />
                     </StackPanel>
                     <StackPanel Height="Auto">
@@ -256,7 +272,7 @@
                             />
                             <Label x:Name="KillsLabel"
                                 Style="{StaticResource InfoLabel}"
-                                Content="{Binding LastMatchesPerfomance.Kills}"
+                                Content="{Binding DisplayablePerfomance.Kills}"
                                 Width="50"
                                 ContentStringFormat="{}{0:0.0}"
                                 Height="32"
@@ -271,7 +287,7 @@
                             />
                             <Label x:Name="HSLabel"
                                 Style="{StaticResource InfoLabel}"
-                                Content="{Binding LastMatchesPerfomance.HS}"
+                                Content="{Binding DisplayablePerfomance.HSPercentage}"
                                 Width="50"
                                 ContentStringFormat="{}{0:0\%}"
                                 Height="32"
@@ -289,11 +305,11 @@
                             <Label 
                                 x:Name="KRLabel"
                                 Style="{StaticResource InfoLabel}"
-                                Content="{Binding LastMatchesPerfomance.KR}"
+                                Content="{Binding DisplayablePerfomance.KRRatio}"
                                 Width="50"
                                 ContentStringFormat="{}{0:0.00}"
                                 Height="32"
-                                Foreground="{Binding LastMatchesPerfomance.KR, Converter={StaticResource KRtCConverter}}"
+                                Foreground="{Binding DisplayablePerfomance.KRRatio, Converter={StaticResource KRtCConverter}}"
                             />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
@@ -305,11 +321,11 @@
                             />
                             <Label x:Name="KDLabel"
                                 Style="{StaticResource InfoLabel}"
-                                Content="{Binding LastMatchesPerfomance.KD}"
+                                Content="{Binding DisplayablePerfomance.KDRatio}"
                                 Width="50"
                                 ContentStringFormat="{}{0:0.00}"
                                 Height="32"
-                                Foreground="{Binding LastMatchesPerfomance.KD, Converter={StaticResource KDtCConverter}}"
+                                Foreground="{Binding DisplayablePerfomance.KDRatio, Converter={StaticResource KDtCConverter}}"
                             />
                         </StackPanel>
                     </StackPanel>
@@ -353,17 +369,17 @@
                 Style="{StaticResource TabControlStyle}"
                 x:Name="tabs"
             >
-                <TabItem Header="Table">
+                <TabItem Margin="20, 0, 10, 0" Header="TABLE">
                     <TabItem.Content>
                         <ContentControl Content="{Binding MatchesViewModel}"/>
                     </TabItem.Content>
                 </TabItem>
-                <TabItem Header="Chart">
+                <TabItem Margin="10, 0, 10, 0" Header="CHART">
                     <TabItem.Content>
                         <ContentControl Content="{Binding EloChartViewModel}"/>
                     </TabItem.Content>
                 </TabItem>
-                <TabItem Header="Maps">
+                <TabItem Margin="10, 0, 20, 0" Header="MAPS">
                     <TabItem.Content>
                         <ContentControl Content="{Binding PlayerMapsStatisticsViewModel}"/>
                     </TabItem.Content>
@@ -388,13 +404,13 @@
                         <Style TargetType="{x:Type Grid}">
                             <Setter Property="Visibility" Value="Hidden"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedItem.Header, ElementName=tabs}" Value="Table">
+                                <DataTrigger Binding="{Binding SelectedItem.Header, ElementName=tabs}" Value="TABLE">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Grid.Style>
-                    
+
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="100"/>

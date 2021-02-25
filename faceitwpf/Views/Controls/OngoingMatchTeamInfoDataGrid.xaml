@@ -2,12 +2,16 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:faceitwpf.Views.Controls" 
-             xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:controls="clr-namespace:faceitwpf.Views.Controls"
              mc:Ignorable="d" 
              HorizontalContentAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentControl}}}"
-             d:DesignHeight="450" d:DesignWidth="446" x:Name="control">
+             d:DesignHeight="450" d:DesignWidth="429" x:Name="control">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <UserControl.Resources>
         <sys:Double x:Key="RowHeight">90</sys:Double>
         <BitmapImage x:Key='defaultAvatar' UriSource='/faceitwpf;component/Resources/defaultAvatar.png'/>
@@ -31,39 +35,69 @@
             <RowDefinition Height="{Binding Source={StaticResource RowHeight}}"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <DockPanel x:Name="dpHeader"
-            Background="{StaticResource AppControlBackground}">
-            <StackPanel x:Name="spAverageElo"
-                Width="125"
-                Orientation="Horizontal" 
-                DockPanel.Dock="Right">
-                <Label
-                    Style="{StaticResource DGLabelHeader}"
-                    Content="Avg Elo:"/>
-                <Label
-                    Style="{StaticResource DGLabelHeader}"
-                    Content="{Binding OngoingMatchTeamInfo.AverageElo}"/>
-            </StackPanel>
-            <StackPanel x:Name="spAverageLevel"
-                Width="125"
-                Orientation="Horizontal" 
-                DockPanel.Dock="Right">
-                <Label
-                    Style="{StaticResource DGLabelHeader}"
-                    Content="Avg Level:"/>
-                <Image Source="{Binding OngoingMatchTeamInfo.AverageLevelImage}" Height="32" Width="32"/>
-            </StackPanel>
-            <Label x:Name="lTeamName"
-                Width="194"
+        <DockPanel 
+            x:Name="dpHeader"
+            Background="{StaticResource AppControlBackground}"
+        >
+            <DockPanel LastChildFill="False" DockPanel.Dock="Right">
+                <StackPanel 
+                    x:Name="spAverageLevel"
+                    Width="125"
+                    Orientation="Horizontal" 
+                    DockPanel.Dock="Top"
+                    Height="45"
+                >
+                    <Label
+                        Style="{StaticResource DGLabelHeader}"
+                        Content="Avg Level:"/>
+                    <Image Source="{Binding OngoingMatchTeamInfo.AverageLevelImage}" Height="32" Width="32"/>
+                </StackPanel>
+                <StackPanel 
+                    x:Name="spAverageElo"
+                    Width="125"
+                    Orientation="Horizontal" 
+                    DockPanel.Dock="Top"
+                    Height="45"
+                >
+                    <Label
+                        Style="{StaticResource DGLabelHeader}"
+                        Content="Avg Elo:"
+                    />
+                    <Label
+                        Style="{StaticResource DGLabelHeader}"
+                        Content="{Binding OngoingMatchTeamInfo.AverageElo}"
+                     />
+                </StackPanel>
+            </DockPanel>
+            <Label 
+                x:Name="lTeamName"
                 DockPanel.Dock="Left"
                 Style="{StaticResource DGLabelHeader}"
-                Content="{Binding OngoingMatchTeamInfo.Name}"/>
+                Content="{Binding OngoingMatchTeamInfo.Name}"
+                HorizontalAlignment="Left"
+            />
+            <Button
+                Style="{StaticResource TransparentButton}"
+                Command="{Binding AnalyzeCommand}"
+                CommandParameter="A"
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Right" 
+                Height="32"
+                DockPanel.Dock="Right"
+                Margin="0, 0, 15, 0"
+                SnapsToDevicePixels="True"
+            >
+                <Label 
+                    Foreground="{StaticResource AppFont}" 
+                    Content="MAPS"/>
+            </Button>
         </DockPanel>
-        <DataGrid x:Name="TeamDG"
+        <DataGrid 
+            x:Name="TeamDG"
             Style="{StaticResource MatchDetailsDGStyle}"
             HeadersVisibility="None"
             RowStyle="{StaticResource DGRowStyle}"
-            ItemsSource="{Binding OngoingMatchTeamInfo.Players}"
+            ItemsSource="{Binding OngoingMatchPlayers}"
             Grid.Row="1"
         >
             <DataGrid.ContextMenu>
@@ -76,42 +110,142 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTemplateColumn x:Name="colAvatar"
+                <DataGridTemplateColumn 
+                    x:Name="colAvatar"
                     Width="{Binding Source={StaticResource RowHeight}}"
                 >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border BorderBrush="{StaticResource AppLightOrange}" BorderThickness="1" Background="{StaticResource AppControlBackground}">
-                                <Image Source="{Binding Avatar, FallbackValue={StaticResource defaultAvatar}, TargetNullValue={StaticResource defaultAvatar}}" Stretch="Fill"/>
+                                <Image Source="{Binding PlayerInfo.Avatar, FallbackValue={StaticResource defaultAvatar}, TargetNullValue={StaticResource defaultAvatar}}" Stretch="Fill"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn x:Name="colLevel"
-                    Width="45"
+                <DataGridTemplateColumn 
+                    x:Name="colLevel"
+                    Width="45"               
                 >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <Image Source="{Binding LevelImage}" Height="32" Width="32"/>
-                                <TextBlock Margin="0, 5, 0, 0" HorizontalAlignment="Center" Text="{Binding Elo}" Foreground="Gray" FontSize="10"/>
+                                <Image Source="{Binding PlayerInfo.LevelImage}" Height="32" Width="32"/>
+                                <Label Padding="0, 2, 0, 0" VerticalAlignment="Bottom" Height="14" Margin="0, 5, 0, 0" HorizontalAlignment="Center" Content="{Binding PlayerInfo.Elo}" Foreground="Gray" FontSize="10"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn
-                    Width="*">
+                    Width="160">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Nickname}"/>
-                                <Ellipse
+                            <StackPanel>
+                                <StackPanel Height="32" Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding PlayerInfo.Nickname}"/>
+                                    <Ellipse
                                     Width="10" 
                                     Height="10" 
-                                    Fill="{Binding PartyIndex, Converter={StaticResource PartyColorConverter}}"
+                                    Fill="{Binding PlayerInfo.PartyIndex, Converter={StaticResource PartyColorConverter}}"
                                     Margin="10, 0, 0, 0"
                                 />
+                                </StackPanel>
+                                <StackPanel Height="14" Margin="0, 5, 0, 0" Orientation="Horizontal">
+                                    <Image Width="20" Height="14" Stretch="Fill" Source="{Binding PlayerProfile.CountryImage}">
+                                        <Image.ToolTip>
+                                            <ToolTip 
+                                                Content="{Binding PlayerProfile.Country}"
+                                                ContentStringFormat="{}Country: {0}"
+                                            />
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image Margin="5, 0, 0, 0" Width="20"  Stretch="Fill" Source="{Binding PlayerProfile.FaceitLanguageImage}">
+                                        <Image.ToolTip>
+                                            <ToolTip 
+                                                Content="{Binding PlayerProfile.FaceitLanguage}"
+                                                ContentStringFormat="{}Faceit language: {0}"
+                                            />
+                                        </Image.ToolTip>
+                                    </Image>
+                                </StackPanel>
                             </StackPanel>
+
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn
+                    Width="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DataTemplate.Resources>
+                                <sys:Double x:Key="FirstColumnWidth">50</sys:Double>
+                                <sys:Double x:Key="ColumnWidth">30</sys:Double>
+                                <sys:Double x:Key="MegaHeaderWidth">90</sys:Double>
+                                <Style TargetType="{x:Type Label}" BasedOn="{StaticResource InfoLabel}">
+                                    <Setter Property="FontSize" Value="10"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="ContentStringFormat" Value="{}{0:#,0.##}"/>
+                                </Style>
+                            </DataTemplate.Resources>
+                            <Grid>
+                                <controls:SmallLoadingAnimation
+                                    Visibility="{Binding DataContext.IsLoading, Converter={StaticResource BtVConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:OngoingMatchTeamInfoDataGrid}}}"
+                                />
+                                <StackPanel
+                                    Orientation="Vertical"
+                                    Visibility="{Binding DataContext.IsLoading, Converter={StaticResource BtVConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:OngoingMatchTeamInfoDataGrid}}, ConverterParameter=true}"
+                                >
+                                    <DockPanel>
+                                        <Label 
+                                            BorderThickness="0, 0, 1, 1" 
+                                            BorderBrush="{StaticResource AppOrange}" 
+                                            Width="{StaticResource FirstColumnWidth}" 
+                                            Content="Overall"
+                                        />
+                                        <Label 
+                                            BorderThickness="0, 0, 0, 1" 
+                                            BorderBrush="{StaticResource AppOrange}" 
+                                            Width="{StaticResource MegaHeaderWidth}"
+                                            Content="Last 20 Matches"
+                                        />
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <Label 
+                                            BorderThickness="0, 0, 1, 0" 
+                                            BorderBrush="{StaticResource AppOrange}"
+                                            Width="{StaticResource FirstColumnWidth}" 
+                                            Content="Matches"
+                                        />
+                                        <Label Width="{StaticResource ColumnWidth}" Content="KD"/>
+                                        <Label Width="{StaticResource ColumnWidth}" Content="KR"/>
+                                        <Label Width="{StaticResource ColumnWidth}" Content="WR"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <Label 
+                                            BorderThickness="0, 0, 1, 0" 
+                                            BorderBrush="{StaticResource AppOrange}"
+                                            Width="{StaticResource FirstColumnWidth}" 
+                                            Content="{Binding PlayerOverallStats.MatchesCount}"
+                                        />
+                                        <Label
+                                            Width="{StaticResource ColumnWidth}" 
+                                            Content="{Binding LastMatchesPerfomance.KDRatio}"
+                                            Foreground="{Binding LastMatchesPerfomance.KDRatio, Converter={StaticResource KDtCConverter}}"
+                                        />
+                                        <Label
+                                            Width="{StaticResource ColumnWidth}" 
+                                            Content="{Binding LastMatchesPerfomance.KRRatio}"
+                                            Foreground="{Binding LastMatchesPerfomance.KRRatio, Converter={StaticResource KRtCConverter}}"
+                                        />
+                                        <Label
+                                            Width="{StaticResource ColumnWidth}"
+                                            ContentStringFormat="{}{0:#0#%}"
+                                            Content="{Binding LastMatchesPerfomance.Winrate}"
+                                            Foreground="{Binding LastMatchesPerfomance.Winrate, Converter={StaticResource WRtCConverter}}"
+                                        />
+                                    </DockPanel>
+                                </StackPanel>
+                            </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

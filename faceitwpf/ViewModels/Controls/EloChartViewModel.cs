@@ -1,4 +1,5 @@
 ﻿using faceitwpf.Models;
+using faceitwpf.ViewModels.Abstractions;
 using faceitwpf.ViewModels.Commands;
 using LiveCharts;
 using LiveCharts.Configurations;
@@ -7,25 +8,14 @@ using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace faceitwpf.ViewModels.Controls
 {
-    class EloChartViewModel : BaseViewModel
+    class EloChartViewModel : LoadableViewModel
     {
         private readonly List<Match> matches;
-        private bool _isLoaded;
-
-        public bool _isLoading = false;
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set
-            {
-                _isLoading = value;
-                OnPropertyChanged();
-            }
-        }
 
         private SeriesCollection _matchSeries;
         public SeriesCollection MatchSeries
@@ -38,21 +28,10 @@ namespace faceitwpf.ViewModels.Controls
             }
         }
 
-        private RelayCommand _loadedCommand;
 
-        public RelayCommand LoadedCommand
+        public override async Task LoadedMethod(object obj)
         {
-            get => _loadedCommand ?? (_loadedCommand = new RelayCommand((obj) =>
-            {
-                if (_isLoaded)
-                    return;
-
-                IsLoading = true;
-                UpdateSource(matches);
-                IsLoading = false;
-
-                _isLoaded = true;
-            }));
+            UpdateSource(matches);
         }
 
         public EloChartViewModel(List<Match> matches)

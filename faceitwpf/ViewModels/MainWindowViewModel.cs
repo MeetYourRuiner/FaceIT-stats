@@ -2,6 +2,7 @@
 using faceitwpf.Models;
 using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
+using faceitwpf.ViewModels.Abstractions;
 using faceitwpf.Views.Enums;
 using System;
 using System.Collections.Generic;

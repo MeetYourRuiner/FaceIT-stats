@@ -1,4 +1,5 @@
 ﻿using faceitwpf.Models;
+using faceitwpf.ViewModels.Abstractions;
 using System.Collections.Generic;
 
 namespace faceitwpf.ViewModels.Controls

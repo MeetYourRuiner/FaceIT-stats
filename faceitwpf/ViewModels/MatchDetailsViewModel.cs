@@ -1,17 +1,17 @@
 ﻿using faceitwpf.Models;
 using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
+using faceitwpf.ViewModels.Abstractions;
 using faceitwpf.ViewModels.Commands;
 using System;
+using System.Threading.Tasks;
 
 namespace faceitwpf.ViewModels
 {
-    class MatchDetailsViewModel : BaseViewModel
+    class MatchDetailsViewModel : LoadableViewModel
     {
         private readonly IStatsRepository statsRepository;
         private readonly INavigator navigator;
-
-        private bool _isLoaded = false;
 
         public MatchDetailsViewModel(IStatsRepository statsRepository, INavigator navigator, object parameter)
         {
@@ -21,17 +21,6 @@ namespace faceitwpf.ViewModels
         }
 
         public Match Match { get; private set; }
-
-        public bool _isLoading = false;
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set
-            {
-                _isLoading = value;
-                OnPropertyChanged();
-            }
-        }
 
         public Team TeamA
         {
@@ -76,43 +65,33 @@ namespace faceitwpf.ViewModels
                 OnPropertyChanged("TeamB");
             }
         }
-
-        private RelayCommand _loadedCommand;
-        public RelayCommand LoadedCommand
+        public override async Task LoadedMethod(object obj)
         {
-            get => _loadedCommand ?? (_loadedCommand = new RelayCommand(async (obj) =>
+            try
             {
-                if (_isLoaded)
-                    return;
-                IsLoading = true;
-                try
-                {
-                    CurrentMatchStats = await statsRepository.GetMatchStatsAsync(Match.Id);
+                CurrentMatchStats = await statsRepository.GetMatchStatsAsync(Match.Id);
 
-                    if (Match.ChangeELO > 0 && Match.ChangeELO < 50)
-                    {
-                        PlusElo = Match.ChangeELO;
-                        MinusElo = Match.ChangeELO - 50;
-                    }
-                    else if (Match.ChangeELO < 0 && Match.ChangeELO > -50)
-                    {
-                        MinusElo = Match.ChangeELO;
-                        PlusElo = Match.ChangeELO + 50;
-                    }
-                    else
-                    {
-                        MinusElo = 0;
-                        PlusElo = 0;
-                    }
-                }
-                catch (Exception ex)
+                if (Match.ChangeELO > 0 && Match.ChangeELO < 50)
                 {
-                    navigator.GoBack(ex);
-                    return;
+                    PlusElo = Match.ChangeELO;
+                    MinusElo = Match.ChangeELO - 50;
                 }
-                _isLoaded = true;
-                IsLoading = false;
-            }));
+                else if (Match.ChangeELO < 0 && Match.ChangeELO > -50)
+                {
+                    MinusElo = Match.ChangeELO;
+                    PlusElo = Match.ChangeELO + 50;
+                }
+                else
+                {
+                    MinusElo = 0;
+                    PlusElo = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                navigator.GoBack(ex);
+                return;
+            }
         }
 
         private RelayCommand _backCommand;

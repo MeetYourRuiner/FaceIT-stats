@@ -23,7 +23,7 @@ namespace faceitwpf.Models
     public class Team
     {
         [JsonProperty("teamId")]
-        public string TeamId { get; set; }
+        public string Id { get; set; }
         [JsonProperty("i5")]
         public string Name { get; set; }
         [JsonProperty("premade")]
@@ -51,7 +51,7 @@ namespace faceitwpf.Models
     public class PlayerDetails
     {
         [JsonProperty("playerId")]
-        public string PlayerId { get; set; }
+        public string Id { get; set; }
         [JsonProperty("nickname")]
         public string Nickname { get; set; }
         [JsonProperty]
