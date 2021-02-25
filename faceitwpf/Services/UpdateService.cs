@@ -14,9 +14,9 @@ namespace faceitwpf.Services
         private static string URL = "https://api.github.com/repos/MeetYourRuiner/FaceIT-stats/releases/latest";
         private static string updateLink;
 
-        public string CurrentVersion 
-        { 
-            get 
+        public string CurrentVersion
+        {
+            get
             {
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -68,8 +68,9 @@ namespace faceitwpf.Services
 
         public async Task UpdateAsync(Action<string> updateProgressSetter)
         {
-            string oldfilename = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
+
             string newfilename = "update.exe";
+            string oldfilename = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
             using (WebClient wc = new WebClient())
             {
                 wc.DownloadProgressChanged += (o, args) =>
@@ -82,11 +83,22 @@ namespace faceitwpf.Services
             {
                 StartInfo = new ProcessStartInfo()
                 {
-                    FileName = newfilename,
-                    Arguments = $"-updated {System.Reflection.Assembly.GetEntryAssembly().Location}"
+                    FileName = "cmd.exe",
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    UseShellExecute = false,
+                    RedirectStandardInput = true,
+                    CreateNoWindow = true,
                 }
             };
             process.Start();
+            using (StreamWriter streamWriter = new StreamWriter(process.StandardInput.BaseStream, Encoding.GetEncoding(866)))
+            {
+                streamWriter.WriteLine($"RENAME \"{oldfilename}\" \"old.exe\"");
+                streamWriter.WriteLine($"RENAME \"{newfilename}\" \"{oldfilename}\"");
+                streamWriter.WriteLine($"\"{oldfilename}\" -updated");
+            }
+            process.WaitForExit();
+            process.Close();
             System.Windows.Application.Current.Shutdown();
         }
     }

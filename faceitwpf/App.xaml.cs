@@ -13,10 +13,9 @@ namespace faceitwpf
         {
             if (e.Args.Contains("-updated"))
             {
-                string path = e.Args[1];
                 try
                 {
-                    File.Delete(path);
+                    File.Delete("old.exe");
                 }
                 catch { }
             }
