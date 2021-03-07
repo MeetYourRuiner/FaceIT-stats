@@ -29,7 +29,7 @@
             <ColumnDefinition Width="380"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <local:Favorites
+        <Controls:FavoritesOverlay
             Visibility="{Binding IsFavoritesOpen, Converter={StaticResource BtVConverter}}"
             Grid.ColumnSpan="3" 
             Grid.RowSpan="4" 

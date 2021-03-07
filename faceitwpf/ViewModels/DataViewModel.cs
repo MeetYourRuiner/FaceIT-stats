@@ -235,7 +235,7 @@ namespace faceitwpf.ViewModels
         {
             get => _showOngoingMatchCommand ?? (_showOngoingMatchCommand = new RelayCommand((obj) =>
             {
-                navigator.Navigate(ViewTypes.OngoingMatch, OngoingMatchId);
+                navigator.Navigate(ViewTypes.Lobby, OngoingMatchId);
             }));
         }
 
@@ -388,6 +388,7 @@ namespace faceitwpf.ViewModels
             {
                 CurrentPlayerProfile = await statsRepository.GetPlayerProfileAsync(playerName);
                 Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.Id, MATCHES_ON_PAGE * 20);
+                //Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.Id, DateTimeOffset.Now, DateTimeOffset.Now);
                 OngoingMatchId = await statsRepository.GetOngoingMatchIdAsync(CurrentPlayerProfile.Id);
             }
             catch (Exception ex)

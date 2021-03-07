@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace faceitwpf.ViewModels.Controls
 {
-    class OngoingMatchTeamInfoViewModel : LoadableViewModel
+    class LobbyTeamInfoViewModel : LoadableViewModel
     {
-        public class OngoingMatchPlayerObject
+        public class LobbyPlayer
         {
-            public OngoingMatchPlayerObject(PlayerInfo playerInfo)
+            public LobbyPlayer(PlayerInfo playerInfo)
             {
                 PlayerInfo = playerInfo;
             }
@@ -29,24 +29,24 @@ namespace faceitwpf.ViewModels.Controls
         private readonly INavigator navigator;
         private readonly IStatsRepository statsRepository;
 
-        private TeamInfo _ongoingMatchTeamInfo;
-        public TeamInfo OngoingMatchTeamInfo
+        private TeamInfo _lobbyTeamInfo;
+        public TeamInfo LobbyTeamInfo
         {
-            get { return _ongoingMatchTeamInfo; }
+            get { return _lobbyTeamInfo; }
             set
             {
-                _ongoingMatchTeamInfo = value;
+                _lobbyTeamInfo = value;
                 OnPropertyChanged();
             }
         }
 
-        private List<OngoingMatchPlayerObject> _ongoingMatchPlayers;
-        public List<OngoingMatchPlayerObject> OngoingMatchPlayers
+        private List<LobbyPlayer> _lobbyPlayers;
+        public List<LobbyPlayer> LobbyPlayers
         {
-            get { return _ongoingMatchPlayers; }
+            get { return _lobbyPlayers; }
             set
             {
-                _ongoingMatchPlayers = value;
+                _lobbyPlayers = value;
                 OnPropertyChanged();
             }
         }
@@ -56,7 +56,7 @@ namespace faceitwpf.ViewModels.Controls
         {
             get => _openPlayerStatsCommand ?? (_openPlayerStatsCommand = new RelayCommand((obj) =>
             {
-                OngoingMatchPlayerObject player = (OngoingMatchPlayerObject)obj;
+                LobbyPlayer player = (LobbyPlayer)obj;
                 navigator.Navigate(Views.Enums.ViewTypes.Data, player.PlayerInfo.Nickname);
             }));
         }
@@ -66,28 +66,28 @@ namespace faceitwpf.ViewModels.Controls
         {
             get => _analyzeCommand ?? (_analyzeCommand = new RelayCommand((obj) =>
             {
-                navigator.Navigate(Views.Enums.ViewTypes.TeamAnalyze, OngoingMatchTeamInfo.Players);
+                navigator.Navigate(Views.Enums.ViewTypes.TeamAnalyze, LobbyTeamInfo.Players);
             }));
         }
 
-        public OngoingMatchTeamInfoViewModel(INavigator navigator, IStatsRepository statsRepository, TeamInfo ongoingMatchTeamInfo)
+        public LobbyTeamInfoViewModel(INavigator navigator, IStatsRepository statsRepository, TeamInfo lobbyTeamInfo)
         {
             this.navigator = navigator;
             this.statsRepository = statsRepository;
-            OngoingMatchTeamInfo = ongoingMatchTeamInfo;
+            LobbyTeamInfo = lobbyTeamInfo;
         }
 
         public override async Task LoadedMethod(object obj)
         {
-            List<OngoingMatchPlayerObject> ongoingMatchPlayers = new List<OngoingMatchPlayerObject>();
-            foreach (var playerInfo in OngoingMatchTeamInfo.Players)
+            List<LobbyPlayer> lobbyPlayers = new List<LobbyPlayer>();
+            foreach (var playerInfo in LobbyTeamInfo.Players)
             {
-                ongoingMatchPlayers.Add(new OngoingMatchPlayerObject(playerInfo));
+                lobbyPlayers.Add(new LobbyPlayer(playerInfo));
             }
-            OngoingMatchPlayers = ongoingMatchPlayers;
+            LobbyPlayers = lobbyPlayers;
 
             var tasks = new List<Task>();
-            foreach (var playerInfo in OngoingMatchTeamInfo.Players)
+            foreach (var playerInfo in LobbyTeamInfo.Players)
             {
                 tasks.Add(
                     Task.Run(
@@ -123,7 +123,7 @@ namespace faceitwpf.ViewModels.Controls
                                 playerLastMatches = new List<Match>();
                             }
 
-                            var omp = ongoingMatchPlayers?.FirstOrDefault((player) => player.PlayerInfo.Id == playerInfo.Id);
+                            var omp = lobbyPlayers.FirstOrDefault((player) => player.PlayerInfo.Id == playerInfo.Id);
                             omp.PlayerProfile = playerProfile;
                             omp.PlayerOverallStats = playerStats;
                             omp.LastMatches = playerLastMatches;
@@ -139,12 +139,12 @@ namespace faceitwpf.ViewModels.Controls
             {
                 navigator.DisplayError(ex);
             }
-            foreach (var playerInfo in ongoingMatchPlayers)
+            foreach (var playerInfo in lobbyPlayers)
             {
                 playerInfo.LastMatchesPerfomance = new AveragePerfomance(playerInfo.LastMatches, 20);
             }
-            OngoingMatchPlayers = null;
-            OngoingMatchPlayers = ongoingMatchPlayers;
+            LobbyPlayers = null;
+            LobbyPlayers = lobbyPlayers;
         }
     }
 }

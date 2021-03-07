@@ -2,9 +2,9 @@
 
 namespace faceitwpf.Views.Controls
 {
-    public partial class OngoingMatchTeamInfoDataGrid : UserControl
+    public partial class LobbyTeamInfoDataGrid : UserControl
     {
-        public OngoingMatchTeamInfoDataGrid()
+        public LobbyTeamInfoDataGrid()
         {
             InitializeComponent();
         }

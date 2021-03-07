@@ -50,7 +50,7 @@ namespace faceitwpf.ViewModels
             _vmStore.Add<SearchViewModel>((parameter) => new SearchViewModel(_updateService, this, parameter));
             _vmStore.Add<DataViewModel>((parameter) => new DataViewModel(_statsRepository, this, parameter));
             _vmStore.Add<MatchDetailsViewModel>((parameter) => new MatchDetailsViewModel(_statsRepository, this, parameter));
-            _vmStore.Add<OngoingMatchViewModel>((parameter) => new OngoingMatchViewModel(_statsRepository, this, parameter));
+            _vmStore.Add<LobbyViewModel>((parameter) => new LobbyViewModel(_statsRepository, this, parameter));
             _vmStore.Add<TeamAnalyzeViewModel>((parameter) => new TeamAnalyzeViewModel(_statsRepository, this, parameter));
 
             Navigate(ViewTypes.Search);
@@ -71,8 +71,8 @@ namespace faceitwpf.ViewModels
                 case ViewTypes.Match:
                     CurrentViewModel = _vmStore.Get<MatchDetailsViewModel>(parameter);
                     break;
-                case ViewTypes.OngoingMatch:
-                    CurrentViewModel = _vmStore.Get<OngoingMatchViewModel>(parameter);
+                case ViewTypes.Lobby:
+                    CurrentViewModel = _vmStore.Get<LobbyViewModel>(parameter);
                     break;
                 case ViewTypes.TeamAnalyze:
                     CurrentViewModel = _vmStore.Get<TeamAnalyzeViewModel>(parameter);

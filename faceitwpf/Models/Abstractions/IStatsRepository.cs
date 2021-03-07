@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace faceitwpf.Models.Abstractions
@@ -12,5 +13,6 @@ namespace faceitwpf.Models.Abstractions
         Task<string> GetOngoingMatchIdAsync(string playerId);
         Task<PlayerOverallStats> GetPlayerStatsAsync(string playerId);
         Task<PlayerProfile> GetPlayerProfileByIdAsync(string playerId);
+        Task<List<Match>> GetMatchesAsync(string playerId, DateTimeOffset from, DateTimeOffset to);
     }
 }

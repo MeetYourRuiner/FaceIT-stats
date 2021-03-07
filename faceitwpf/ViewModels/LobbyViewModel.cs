@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace faceitwpf.ViewModels
 {
-    class OngoingMatchViewModel : LoadableViewModel
+    class LobbyViewModel : LoadableViewModel
     {
         private readonly IStatsRepository statsRepository;
         private readonly INavigator navigator;
@@ -39,8 +39,8 @@ namespace faceitwpf.ViewModels
                 navigator.GoBack(ex);
                 return;
             }
-            TeamAViewModel = new OngoingMatchTeamInfoViewModel(navigator, statsRepository, CurrentMatchInfo.TeamA);
-            TeamBViewModel = new OngoingMatchTeamInfoViewModel(navigator, statsRepository, CurrentMatchInfo.TeamB);
+            TeamAViewModel = new LobbyTeamInfoViewModel(navigator, statsRepository, CurrentMatchInfo.TeamA);
+            TeamBViewModel = new LobbyTeamInfoViewModel(navigator, statsRepository, CurrentMatchInfo.TeamB);
         }
 
         private RelayCommand _backCommand;
@@ -63,8 +63,8 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private OngoingMatchTeamInfoViewModel _teamAViewModel;
-        public OngoingMatchTeamInfoViewModel TeamAViewModel
+        private LobbyTeamInfoViewModel _teamAViewModel;
+        public LobbyTeamInfoViewModel TeamAViewModel
         {
             get => _teamAViewModel;
             set
@@ -74,8 +74,8 @@ namespace faceitwpf.ViewModels
             }
         }
 
-        private OngoingMatchTeamInfoViewModel _teamBViewModel;
-        public OngoingMatchTeamInfoViewModel TeamBViewModel
+        private LobbyTeamInfoViewModel _teamBViewModel;
+        public LobbyTeamInfoViewModel TeamBViewModel
         {
             get => _teamBViewModel;
             set
@@ -132,7 +132,7 @@ namespace faceitwpf.ViewModels
                 }
             }));
         }
-        public OngoingMatchViewModel(IStatsRepository statsRepository, INavigator navigator, object parameter)
+        public LobbyViewModel(IStatsRepository statsRepository, INavigator navigator, object parameter)
         {
             this.statsRepository = statsRepository;
             this.navigator = navigator;

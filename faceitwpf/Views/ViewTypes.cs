@@ -1,12 +1,11 @@
-﻿
-namespace faceitwpf.Views.Enums
+﻿namespace faceitwpf.Views.Enums
 {
     enum ViewTypes
     {
         Search,
         Data,
         Match,
-        OngoingMatch,
+        Lobby,
         TeamAnalyze
     }
 }

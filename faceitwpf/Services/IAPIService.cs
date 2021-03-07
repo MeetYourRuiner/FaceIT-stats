@@ -1,4 +1,5 @@
 ﻿using faceitwpf.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,5 +14,6 @@ namespace faceitwpf.Services
         Task<string> FetchOngoingMatchIdAsync(string playerId);
         Task<PlayerOverallStats> FetchPlayerStatsAsync(string playerId);
         Task<PlayerProfile> FetchPlayerProfileByIdAsync(string playerId);
+        Task<List<Match>> FetchMatchesAsync(string playerId, DateTimeOffset from, DateTimeOffset to);
     }
 }

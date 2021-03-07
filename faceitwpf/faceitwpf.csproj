@@ -126,10 +126,10 @@
     <Compile Include="ViewModels\Commands\LoadedCommand.cs" />
     <Compile Include="ViewModels\Controls\EloChartViewModel.cs" />
     <Compile Include="ViewModels\Controls\MatchesViewModel.cs" />
-    <Compile Include="ViewModels\Controls\OngoingMatchTeamInfoViewModel.cs" />
+    <Compile Include="ViewModels\Controls\LobbyTeamInfoViewModel.cs" />
     <Compile Include="ViewModels\Controls\PlayerMapsStatisticsViewModel.cs" />
     <Compile Include="ViewModels\MatchDetailsViewModel.cs" />
-    <Compile Include="ViewModels\OngoingMatchViewModel.cs" />
+    <Compile Include="ViewModels\LobbyViewModel.cs" />
     <Compile Include="ViewModels\TeamAnalyzeViewModel.cs" />
     <Compile Include="Views\Controls\ChartToolTip.xaml.cs">
       <DependentUpon>ChartToolTip.xaml</DependentUpon>
@@ -148,8 +148,8 @@
     <Compile Include="Views\Controls\MatchesDataGrid.xaml.cs">
       <DependentUpon>MatchesDataGrid.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\OngoingMatchTeamInfoDataGrid.xaml.cs">
-      <DependentUpon>OngoingMatchTeamInfoDataGrid.xaml</DependentUpon>
+    <Compile Include="Views\Controls\LobbyTeamInfoDataGrid.xaml.cs">
+      <DependentUpon>LobbyTeamInfoDataGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\PlayerMapsStatisticsDataGrid.xaml.cs">
       <DependentUpon>PlayerMapsStatisticsDataGrid.xaml</DependentUpon>
@@ -165,15 +165,15 @@
     <Compile Include="Views\Converters\WRToColorConverter.cs" />
     <Compile Include="Views\Converters\KDToColorConverter.cs" />
     <Compile Include="Views\Converters\KRToColorConverter.cs" />
-    <Compile Include="Views\Favorites.xaml.cs">
-      <DependentUpon>Favorites.xaml</DependentUpon>
+    <Compile Include="Views\Controls\FavoritesOverlay.xaml.cs">
+      <DependentUpon>FavoritesOverlay.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FocusExtension.cs" />
     <Compile Include="Views\MatchDetailsView.xaml.cs">
       <DependentUpon>MatchDetailsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\OngoingMatchView.xaml.cs">
-      <DependentUpon>OngoingMatchView.xaml</DependentUpon>
+    <Compile Include="Views\LobbyView.xaml.cs">
+      <DependentUpon>LobbyView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TeamAnalyzeView.xaml.cs">
       <DependentUpon>TeamAnalyzeView.xaml</DependentUpon>
@@ -203,7 +203,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\OngoingMatchTeamInfoDataGrid.xaml">
+    <Page Include="Views\Controls\LobbyTeamInfoDataGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -219,7 +219,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Favorites.xaml">
+    <Page Include="Views\Controls\FavoritesOverlay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -227,7 +227,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\OngoingMatchView.xaml">
+    <Page Include="Views\LobbyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

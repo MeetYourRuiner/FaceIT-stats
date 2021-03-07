@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="faceitwpf.Views.Controls.OngoingMatchTeamInfoDataGrid"
+﻿<UserControl x:Class="faceitwpf.Views.Controls.LobbyTeamInfoDataGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -50,7 +50,7 @@
                     <Label
                         Style="{StaticResource DGLabelHeader}"
                         Content="Avg Level:"/>
-                    <Image Source="{Binding OngoingMatchTeamInfo.AverageLevelImage}" Height="32" Width="32"/>
+                    <Image Source="{Binding LobbyTeamInfo.AverageLevelImage}" Height="32" Width="32"/>
                 </StackPanel>
                 <StackPanel 
                     x:Name="spAverageElo"
@@ -65,7 +65,7 @@
                     />
                     <Label
                         Style="{StaticResource DGLabelHeader}"
-                        Content="{Binding OngoingMatchTeamInfo.AverageElo}"
+                        Content="{Binding LobbyTeamInfo.AverageElo}"
                      />
                 </StackPanel>
             </DockPanel>
@@ -73,7 +73,7 @@
                 x:Name="lTeamName"
                 DockPanel.Dock="Left"
                 Style="{StaticResource DGLabelHeader}"
-                Content="{Binding OngoingMatchTeamInfo.Name}"
+                Content="{Binding LobbyTeamInfo.Name}"
                 HorizontalAlignment="Left"
             />
             <Button
@@ -97,7 +97,7 @@
             Style="{StaticResource MatchDetailsDGStyle}"
             HeadersVisibility="None"
             RowStyle="{StaticResource DGRowStyle}"
-            ItemsSource="{Binding OngoingMatchPlayers}"
+            ItemsSource="{Binding LobbyPlayers}"
             Grid.Row="1"
         >
             <DataGrid.ContextMenu>
@@ -189,11 +189,11 @@
                             </DataTemplate.Resources>
                             <Grid>
                                 <controls:SmallLoadingAnimation
-                                    Visibility="{Binding DataContext.IsLoading, Converter={StaticResource BtVConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:OngoingMatchTeamInfoDataGrid}}}"
+                                    Visibility="{Binding DataContext.IsLoading, Converter={StaticResource BtVConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:LobbyTeamInfoDataGrid}}}"
                                 />
                                 <StackPanel
                                     Orientation="Vertical"
-                                    Visibility="{Binding DataContext.IsLoading, Converter={StaticResource BtVConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:OngoingMatchTeamInfoDataGrid}}, ConverterParameter=true}"
+                                    Visibility="{Binding DataContext.IsLoading, Converter={StaticResource BtVConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:LobbyTeamInfoDataGrid}}, ConverterParameter=true}"
                                 >
                                     <DockPanel>
                                         <Label 
@@ -225,7 +225,7 @@
                                             BorderThickness="0, 0, 1, 0" 
                                             BorderBrush="{StaticResource AppOrange}"
                                             Width="{StaticResource FirstColumnWidth}" 
-                                            Content="{Binding PlayerOverallStats.MatchesCount}"
+                                            Content="{Binding PlayerOverallStats.Matches}"
                                         />
                                         <Label
                                             Width="{StaticResource ColumnWidth}" 

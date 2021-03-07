@@ -1,5 +1,6 @@
 ﻿using faceitwpf.Models.Abstractions;
 using faceitwpf.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,6 +70,26 @@ namespace faceitwpf.Models
             try
             {
                 matches = await apiService.FetchMatchesAsync(playerId, size);
+            }
+            catch { throw; }
+            for (int i = 0; i < matches.Count - 1; ++i)
+            {
+                if (matches[i].ELO != 0)
+                {
+                    Match nextMatchWithElo = matches.FirstOrDefault(m => m.Index > i && m.ELO != 0);
+                    matches[i].ChangeELO = nextMatchWithElo != null ? matches[i].ELO - nextMatchWithElo.ELO : 0;
+                }
+            }
+
+            return matches;
+        }
+
+        public async Task<List<Match>> GetMatchesAsync(string playerId, DateTimeOffset from, DateTimeOffset to)
+        {
+            List<Match> matches;
+            try
+            {
+                matches = await apiService.FetchMatchesAsync(playerId, from, to);
             }
             catch { throw; }
             for (int i = 0; i < matches.Count - 1; ++i)
