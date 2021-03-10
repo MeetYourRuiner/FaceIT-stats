@@ -1,0 +1,158 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:FaceitStats.WPF.Views"
+    xmlns:converters="clr-namespace:FaceitStats.WPF.Views.Converters" 
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:Controls="clr-namespace:FaceitStats.WPF.Views.Controls" 
+    x:Class="FaceitStats.WPF.Views.SearchView"
+    mc:Ignorable="d"
+    d:DesignHeight="{StaticResource AppHeight}" 
+    d:DesignWidth="{StaticResource AppWidth}"
+>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="320*"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="83*"/>
+            <RowDefinition Height="307*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="380"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Controls:FavoritesOverlay
+            Visibility="{Binding IsFavoritesOpen, Converter={StaticResource BtVConverter}}"
+            Grid.ColumnSpan="3" 
+            Grid.RowSpan="4" 
+            Panel.ZIndex="1"
+        />
+        <!--Update-->
+        <Button
+            Content="UPDATE"
+            Grid.Column="2" 
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Command="{Binding UpdateCommand}" Margin="30,10,30,0"
+        >
+            <Button.Style>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonStyle}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsUpdating}" Value="False" />
+                                <Condition Binding="{Binding IsUpdateAvailable}" Value="True" />
+                                <Condition Binding="{Binding IsLoading}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <!--Update download progress bar-->
+        <ProgressBar
+            Value="{Binding UpdateProgress, Mode=OneWay}" 
+            Grid.Column="1" 
+            Grid.Row="1"
+            Visibility="{Binding IsUpdating, Converter={StaticResource BtVConverter}}"
+            Foreground="{StaticResource AppOrange}"
+        />
+        <!--Logo-->
+        <Rectangle 
+            HorizontalAlignment="Center" 
+            Height="94" 
+            Margin="140,108,140,105" 
+            Width="100" 
+            VerticalAlignment="Center"
+            Grid.Row="3" 
+            Grid.Column="1">
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="/FaceitStats.WPF;component/Resources/icon-pheasant-preview-2-268x151.png" Stretch="None"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <!--Favorites-->
+        <Button 
+            Width="32"
+            Height="32" 
+            Grid.Column="2"
+            Grid.Row="1" 
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Center"
+            Margin="5, 0, 0, 0"
+            Visibility="{Binding IsUpdating, Converter={StaticResource BtVConverter}, ConverterParameter=true}"
+            Command="{Binding OpenFavoritesCommand}"
+            Focusable="False"
+        >
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border" Background="Transparent" CornerRadius="4" BorderBrush="Gray" BorderThickness="1" >
+                                    <Image x:Name="image" Width="24" Source="/FaceitStats.WPF;component/Resources/emptyheart.png"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AppOrange}"/>
+                                        <Setter TargetName="image" Property="Source" Value="/FaceitStats.WPF;component/Resources/heart.png"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+        </Button>
+        <!--Search form-->
+        <Grid 
+            Grid.Column="1"
+            Grid.Row="1" 
+            Grid.RowSpan="2"
+            Visibility="{Binding IsUpdating, ConverterParameter=true, Converter={StaticResource BtVConverter}}"
+        >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="32"/>
+            </Grid.RowDefinitions>
+            <TextBox 
+                x:Name="nameTextBox"
+                MaxLength="30" 
+                FontSize="26" 
+                Background="#FF2B2B2B" 
+                BorderThickness="0" 
+                Foreground="#FFEBEFF3" 
+                Padding="0,4" 
+                VerticalContentAlignment="Center"
+                GotFocus="nameTextBox_GotFocus"
+                local:FocusExtension.IsFocused="{Binding IsTextboxFocused}"
+                Text="{Binding PlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BtVConverter}}"
+            >
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding SearchCommand}" Key="Enter"/>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Button
+                Content="SEARCH"
+                Style="{StaticResource ButtonStyle}"
+                Width="Auto" 
+                Command="{Binding SearchCommand}"
+                Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BtVConverter}}"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto"
+                Margin="40,0" Grid.Row="2"
+            />
+        </Grid>
+    </Grid>
+</UserControl>

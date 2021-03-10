@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="FaceitStats.WPF.Views.Controls.FavoritesOverlay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FaceitStats.WPF.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="{StaticResource AppHeight}" d:DesignWidth="{StaticResource AppWidth}">
+    <Grid>
+        <Border Background="Black" Opacity="0.5">
+            <Border.InputBindings>
+                <MouseBinding Command="{Binding CloseFavoritesCommand}" MouseAction="LeftClick" />
+            </Border.InputBindings>
+        </Border>
+        <ScrollViewer
+            Background="{StaticResource AppWindowBackground}"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Disabled"
+            Height="600"
+            Width="400"
+            Padding="10"
+        >
+            <Grid>
+                <ItemsControl
+                    x:Name="itemsControl"
+                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SearchView}}, Path=DataContext.Favorites}"    
+                >
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SearchView}}, Path=DataContext.SearchCommand}"
+                                CommandParameter="{Binding}"
+                            >
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <Border x:Name="border" Background="Transparent" BorderBrush="{StaticResource AppOrange}" BorderThickness="0, 0, 0, 1">
+                                                        <DockPanel Margin="8" Grid.Row="0" LastChildFill="True">
+                                                            <Button
+                                                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SearchView}}, Path=DataContext.RemoveFromFavoritesCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            DockPanel.Dock="Right"
+                                                            Width="32" 
+                                                            Height="32"
+                                                        >
+                                                                <Button.Style>
+                                                                    <Style TargetType="{x:Type Button}">
+                                                                        <Setter Property="Background" Value="Transparent" />
+                                                                        <Setter Property="Opacity" Value="0.75" />
+                                                                        <Setter Property="Template">
+                                                                            <Setter.Value>
+                                                                                <ControlTemplate TargetType="Button">
+                                                                                    <Border x:Name="border" Background="{StaticResource AppWindowBackground}" CornerRadius="4" BorderBrush="Gray" BorderThickness="1" >
+                                                                                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                                                    </Border>
+                                                                                    <ControlTemplate.Triggers>
+                                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                                            <Setter Property="Opacity" Value="1"/>
+                                                                                            <Setter TargetName="border" Property="BorderBrush" Value="Red"/>
+                                                                                        </Trigger>
+                                                                                    </ControlTemplate.Triggers>
+                                                                                </ControlTemplate>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                    </Style>
+                                                                </Button.Style>
+                                                                <Image SnapsToDevicePixels="True" Width="24" Source="/FaceitStats.WPF;component/Resources/remove.png"/>
+                                                            </Button>
+                                                            <TextBlock VerticalAlignment="Center" FontSize="18" Foreground="{StaticResource AppFont}" DockPanel.Dock="Left" Text="{Binding}"/>
+                                                        </DockPanel>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="{StaticResource AppItemBackground}"/>
+                                                            <Setter Property="Cursor" Value="Hand"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock 
+                    x:Name="placeholder"
+                    Text="No favorites"
+                    IsHitTestVisible="False"
+                    Visibility="{Binding HasItems, ElementName=itemsControl, Converter={StaticResource BtVConverter}, ConverterParameter=true}"
+                    Foreground="Gray"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    FontSize="16"
+                />
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

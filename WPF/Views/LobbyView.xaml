@@ -1,0 +1,185 @@
+﻿<UserControl 
+    x:Class="FaceitStats.WPF.Views.LobbyView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:FaceitStats.WPF.Views" 
+    xmlns:controls="clr-namespace:FaceitStats.WPF.Views.Controls" 
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+    xmlns:converters="clr-namespace:FaceitStats.WPF.Views.Converters" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    mc:Ignorable="d" 
+    d:DesignHeight="{StaticResource AppHeight}" 
+    d:DesignWidth="{StaticResource AppWidth}"
+>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <controls:LoadingAnimation
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}}" 
+            Height="300" 
+            Width="300"
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center" 
+            d:IsHidden="True"
+        />
+        <Grid x:Name="mainGrid"
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
+        >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="429"/>
+                <ColumnDefinition Width="2"/>
+                <ColumnDefinition Width="429"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="85"/>
+                <RowDefinition Height="42"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="26"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.ColumnSpan="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="245"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="245"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Column="2"
+                    Content="{Binding CurrentMatchInfo.TeamAScore}"
+                    Style="{StaticResource FinalScoreLabel}"
+                    Foreground="{StaticResource AppFont}"
+                    Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}, ConverterParameter=true}"
+                    Height="Auto"
+                />
+                <controls:SmallLoadingAnimation
+                    Grid.Column="2"
+                    Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}}" 
+                    Background="{StaticResource AppControlBackground}"
+                    d:IsHidden="True"
+                />
+                <Label
+                    Grid.Column="4"
+                    Content="{Binding CurrentMatchInfo.TeamBScore}"
+                    Style="{StaticResource FinalScoreLabel}"
+                    Foreground="{StaticResource AppFont}"
+                    Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
+                    Height="Auto"
+                />
+                <controls:SmallLoadingAnimation
+                    Grid.Column="4"
+                    Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}}" 
+                    Background="{StaticResource AppControlBackground}"
+                    d:IsHidden="True"
+                />
+                <Label
+                    Style="{StaticResource FinalScoreLabel}"
+                    Grid.Column="3" 
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch" Height="Auto" 
+                >
+                    <Image Stretch="Fill" Source="{Binding CurrentMatchInfo.MapImage}"/>
+                </Label>
+                <StackPanel
+                    Grid.ColumnSpan="2"
+                    Height="85"
+                >
+                    <Label
+                        Style="{StaticResource InfoLabel}" 
+                        Content="{Binding CurrentMatchInfo.CompetitionName}" 
+                        ContentStringFormat="{}{0:d MMMM yyyy, HH:mm }"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        BorderThickness="0,0,2,2" 
+                        BorderBrush="{StaticResource DGLine}"
+                        Background="{StaticResource DGRowBackground}"
+                        Height="42"
+                    />
+                    <Label
+                        Style="{StaticResource InfoLabel}" 
+                        Content="{Binding CurrentMatchInfo.Date}" 
+                        ContentStringFormat="{}{0:d MMMM yyyy, HH:mm }"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        BorderThickness="0,0,2,2" 
+                        BorderBrush="{StaticResource DGLine}"
+                        Background="{StaticResource DGRowBackground}"
+                        Height="42"
+                    />
+                </StackPanel>
+                <Button
+                    Width="40"
+                    Height="40" 
+                    Grid.Column="5"
+                    Grid.Row="0"
+                    Margin="20, 0, 0, 0"
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center"
+                    Command="{Binding RefreshCommand}"
+                    Focusable="False"
+                    Style="{StaticResource TransparentButton}"
+                >
+                    <Image Width="20" Height="20" Source="/FaceitStats.WPF;component/Resources/refresh.png"/>
+                </Button>
+                <Button
+                    Width="45"
+                    Height="45"
+                    Style="{StaticResource LinkButton}"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Right" 
+                    Command="{Binding OpenMatchFaceitCommand}" 
+                    Grid.Column="5"
+                >
+                    <Image Width="32" Source="/FaceitStats.WPF;component/Resources/faceit.png"/>
+                </Button>
+            </Grid>
+            <!--Back-->
+            <Button
+                Content="BACK"
+                Style="{StaticResource ButtonStyle}"
+                Command="{Binding BackCommand}"
+                Grid.Row="6" 
+                Width="280" 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Left" 
+                Grid.Column="1"
+            />
+            <ContentControl Content="{Binding TeamAViewModel}" Grid.Row="2" Grid.ColumnSpan="2"/>
+            <ContentControl Content="{Binding TeamBViewModel}" HorizontalContentAlignment="Right" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="3"/>
+            <Label
+                Style="{StaticResource InfoLabel}" 
+                Content="{Binding CurrentMatchInfo.State}" 
+                ContentStringFormat="{}{0:d MMMM yyyy, HH:mm }"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                BorderThickness="0,0,2,2" 
+                BorderBrush="{StaticResource DGLine}"
+                Background="{StaticResource DGRowBackground}"
+                Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5"
+                Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
+            />
+            <controls:SmallLoadingAnimation
+                Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5"
+                Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}}" 
+                Background="{StaticResource DGRowBackground}"
+                d:IsHidden="True"
+            />
+        </Grid>
+    </Grid>
+</UserControl>

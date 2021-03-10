@@ -1,0 +1,44 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:v="clr-namespace:FaceitStats.WPF.Views" 
+    xmlns:controls="clr-namespace:FaceitStats.WPF.Views.Controls"
+    xmlns:vm="clr-namespace:FaceitStats.WPF.ViewModels"
+    xmlns:vmc="clr-namespace:FaceitStats.WPF.ViewModels.Controls"
+    xmlns:classes="clr-namespace:FaceitStats.WPF.Classes">
+    
+    <!--Pages-->
+    <DataTemplate DataType="{x:Type vm:SearchViewModel}">
+        <v:SearchView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:DataViewModel}">
+        <v:DataView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:MatchDetailsViewModel}">
+        <v:MatchDetailsView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:LobbyViewModel}">
+        <v:LobbyView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:TeamAnalyzeViewModel}">
+        <v:TeamAnalyzeView/>
+    </DataTemplate>
+
+    <!--Controls-->
+    <DataTemplate DataType="{x:Type vmc:EloChartViewModel}">
+        <controls:EloChart/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmc:MatchesViewModel}">
+        <controls:MatchesDataGrid/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmc:LobbyTeamInfoViewModel}">
+        <controls:LobbyTeamInfoDataGrid/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmc:PlayerMapsStatisticsViewModel}">
+        <controls:PlayerMapsStatisticsDataGrid/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type classes:Error}">
+        <controls:ErrorMessage/>
+    </DataTemplate>
+</ResourceDictionary>

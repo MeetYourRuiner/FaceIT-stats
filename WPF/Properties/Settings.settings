@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="FaceitStats.WPF.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="API_Key" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">a847d087-70da-4dd0-992d-cc000f257839</Value>
+    </Setting>
+    <Setting Name="LastNickname" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="User_API_Key" Type="System.String" Scope="User">
+      <Value Profile="(Default)">bb80bcc7-6363-4c71-bfcc-36560948710a</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
