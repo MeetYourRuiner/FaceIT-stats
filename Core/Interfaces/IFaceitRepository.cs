@@ -10,7 +10,7 @@ namespace FaceitStats.Core.Interfaces
         Task<List<Match>> GetMatchesAsync(string playerId, int size);
         Task<List<Match>> GetMatchesAsync(string playerId, DateTimeOffset from, DateTimeOffset to);
         Task<MatchStats> GetMatchStatsAsync(string matchId);
-        Task<MatchInfo> GetMatchInfoAsync(string matchId);
+        Task<MatchInfo> GetMatchInfoAsync(string matchId); 
         Task<string> GetOngoingMatchIdAsync(string playerId);
         Task<PlayerProfile> GetProfileByNameAsync(string playerName);
         Task<PlayerProfile> GetProfileByIdAsync(string playerId);
