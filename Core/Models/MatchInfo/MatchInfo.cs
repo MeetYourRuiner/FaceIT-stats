@@ -10,13 +10,11 @@ namespace FaceitStats.Core.Models
         public string CompetitionName { get; set; }
         public TeamInfo TeamA { get; set; }
         public TeamInfo TeamB { get; set; }
-
         public int TeamAScore { get; set; }
         public int TeamBScore { get; set; }
         public string State { get; set; }
         public string Map { get; set; }
         public string MapImage { get => $"/faceitwpf;component/Resources/{Map}.jpeg"; }
-
         private DateTime date;
         public DateTime Date { get => date; set => date = value.ToLocalTime(); }
         public Dictionary<string, string[]> Parties { get; set; }
@@ -28,7 +26,7 @@ namespace FaceitStats.Core.Models
             var partiesArray = Parties.Values.ToArray();
             PlayerInfo player;
             int i = 0;
-            foreach(var party in partiesArray)
+            foreach (var party in partiesArray)
             {
                 if (party.Length == 1)
                     continue;

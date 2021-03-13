@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace FaceitStats.WPF.Services
+namespace FaceitStats.WPF.Interfaces
 {
     interface IUpdateService
     {

@@ -6,11 +6,9 @@ namespace FaceitStats.Core.Models
     {
         public string Id { get; set; }
         public int Index { get; set; }
-
         public RoundStats RoundStats { get; set; }
-
         public PlayerStats PlayerStats { get; set; }
-
+        public TeamStats TeamStats { get; set; }
         public long _Date { set => Date = DateTimeOffset.FromUnixTimeMilliseconds(value).ToLocalTime(); }
         public DateTimeOffset Date { get; set; }
 

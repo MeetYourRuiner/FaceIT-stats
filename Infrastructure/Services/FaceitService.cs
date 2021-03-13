@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace FaceitStats.Infrastructure.Data
 {
-    public class FaceitRepository : IFaceitRepository
+    public class FaceitService : IFaceitService
     {
         private readonly FaceitAPIClient _apiClient;
 
-        public FaceitRepository(FaceitAPIClient apiClient)
+        public FaceitService(FaceitAPIClient apiClient)
         {
             this._apiClient = apiClient;
         }

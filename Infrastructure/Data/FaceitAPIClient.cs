@@ -1,5 +1,5 @@
 ﻿using FaceitStats.Core.Models;
-using Newtonsoft.Json;
+using FaceitStats.Infrastructure.Extensions;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace FaceitStats.Infrastructure.Data
         /// </summary>
         private readonly HttpClient _clientWithBearer;
         private readonly HttpClient _client;
-        public FaceitAPIClient(string apikey)
+        public FaceitAPIClient(string apikey, string userApikey)
         {
             _client = new HttpClient();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -34,8 +34,9 @@ namespace FaceitStats.Infrastructure.Data
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception($"Player \"{playerName}\" is not found");
             string json = await response.Content.ReadAsStringAsync();
-
-            return JObject.Parse(json).ToObject<PlayerProfile>();
+            JObject jObject = JObject.Parse(json);
+            var playerProfile = jObject.ToPlayerProfile();
+            return playerProfile;
         }
 
         public async Task<PlayerProfile> FetchPlayerProfileByIdAsync(string playerId)
@@ -45,11 +46,8 @@ namespace FaceitStats.Infrastructure.Data
                 throw new Exception($"Player \"{playerId}\" is not found");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
-
             var payload = jObject["payload"];
             var playerProfile = payload.ToObject<PlayerProfile>();
-            playerProfile.Id = playerId;
-
             return playerProfile;
         }
 
@@ -60,16 +58,7 @@ namespace FaceitStats.Infrastructure.Data
                 throw new Exception("Failed to get player stats");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
-
-            var pos = jObject["lifetime"].ToObject<PlayerOverallStats>();
-            pos.MapOverallStats = new List<MapOverallStats>();
-            var maps = jObject.SelectToken("$.segments[?(@._id.segmentId == 'csgo_map' && @._id.gameMode == '5v5')].segments");
-            foreach (JToken map in maps)
-            {
-                var mapStats = map.First.ToObject<MapOverallStats>();
-                mapStats.MapName = ((JProperty)map).Name;
-                pos.MapOverallStats.Add(mapStats);
-            }
+            var pos = jObject.ToPlayerOverallStats();
             return pos;
         }
 
@@ -79,13 +68,12 @@ namespace FaceitStats.Infrastructure.Data
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception("Failed to get match history");
             string json = await response.Content.ReadAsStringAsync();
-            var matchList = JsonConvert.DeserializeObject<List<Match>>(json);
-
+            JObject jObject = JObject.Parse(json);
+            var matchList = jObject.ToMatchList();
             for (int i = 0; i < matchList.Count; ++i)
             {
                 matchList[i].Index = i;
             }
-
             return matchList;
         }
 
@@ -95,13 +83,14 @@ namespace FaceitStats.Infrastructure.Data
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception("Failed to get match history");
             string json = await response.Content.ReadAsStringAsync();
-            var matchList = JsonConvert.DeserializeObject<List<Match>>(json);
+            JObject jObject = JObject.Parse(json);
+            var matchList = jObject.ToMatchList();
+            //var matchList = JsonConvert.DeserializeObject<List<Match>>(json);
 
-            for (int i = 0; i < matchList.Count; ++i)
-            {
-                matchList[i].Index = i;
-            }
-
+            //for (int i = 0; i < matchList.Count; ++i)
+            //{
+            //    matchList[i].Index = i;
+            //}
             return matchList;
         }
 
@@ -112,13 +101,10 @@ namespace FaceitStats.Infrastructure.Data
                 throw new System.Exception("Failed to get match overview info");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
-
             var payload = jObject["payload"];
-
             if (!payload.HasValues)
                 throw new System.Exception("No match");
-            var mi = payload.ToObject<MatchInfo>();
-
+            var mi = payload.ToMatchInfo();
             return mi;
         }
 
@@ -140,9 +126,8 @@ namespace FaceitStats.Infrastructure.Data
             {
                 throw new System.Exception("Only BO1 match stats is available");
             }
-            var md = jObject.ToObject<MatchStats>();
-
-            return md;
+            var ms = jObject.ToMatchStats();
+            return ms;
         }
 
         public async Task<string> FetchOngoingMatchIdAsync(string playerId)
@@ -152,9 +137,7 @@ namespace FaceitStats.Infrastructure.Data
                 throw new System.Exception("Failed to get ongoing match id");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
-
             var payload = jObject["payload"];
-
             if (!payload.HasValues)
                 return null;
             var dict = payload.ToObject<Dictionary<string, JArray>>();

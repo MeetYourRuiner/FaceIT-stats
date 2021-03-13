@@ -1,6 +1,6 @@
 ﻿using FaceitStats.Core.Interfaces;
 using FaceitStats.Core.Models;
-using FaceitStats.WPF.Services;
+using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.ViewModels.Abstractions;
 using FaceitStats.WPF.ViewModels.Commands;
 using System;
@@ -26,7 +26,7 @@ namespace FaceitStats.WPF.ViewModels
             "de_vertigo"
         };
 
-        private readonly IFaceitRepository _faceitRepository;
+        private readonly IFaceitService _faceitRepository;
         private readonly INavigator _navigator;
 
         private List<TeamAnalyzeObject> playersStats = new List<TeamAnalyzeObject>();
@@ -84,7 +84,7 @@ namespace FaceitStats.WPF.ViewModels
             DataTable = CreateDataTable(mapsStatistics);
         }
 
-        public TeamAnalyzeViewModel(IFaceitRepository faceitRepository, INavigator navigator, object parameter)
+        public TeamAnalyzeViewModel(IFaceitService faceitRepository, INavigator navigator, object parameter)
         {
             this._faceitRepository = faceitRepository;
             this._navigator = navigator;

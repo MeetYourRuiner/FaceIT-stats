@@ -1,6 +1,6 @@
 ﻿using FaceitStats.Core.Interfaces;
 using FaceitStats.Core.Models;
-using FaceitStats.WPF.Services;
+using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.ViewModels.Abstractions;
 using FaceitStats.WPF.ViewModels.Commands;
 using System;
@@ -27,7 +27,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
         }
 
         private readonly INavigator _navigator;
-        private readonly IFaceitRepository _faceitRepository;
+        private readonly IFaceitService _faceitRepository;
 
         private TeamInfo _lobbyTeamInfo;
         public TeamInfo LobbyTeamInfo
@@ -70,7 +70,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
             }));
         }
 
-        public LobbyTeamInfoViewModel(IFaceitRepository faceitRepository, INavigator navigator, TeamInfo lobbyTeamInfo)
+        public LobbyTeamInfoViewModel(IFaceitService faceitRepository, INavigator navigator, TeamInfo lobbyTeamInfo)
         {
             this._navigator = navigator;
             LobbyTeamInfo = lobbyTeamInfo;

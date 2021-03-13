@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using FaceitStats.WPF.Interfaces;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.IO;

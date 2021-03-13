@@ -9,22 +9,22 @@ namespace FaceitStats.Core.Models
         public string Country { get; set; }
         public string FaceitLanguage { get; set; }
         public string CountryImage { get => $"https://flagcdn.com/h20/{Country}.png"; }
-        public string FaceitLanguageImage 
+        public string FaceitLanguageImage
         {
-            get 
-            { 
+            get
+            {
                 if (FaceitLanguage == "en")
                     return $"https://flagcdn.com/h20/gb.png";
                 if (FaceitLanguage == "zh")
                     return $"https://flagcdn.com/h20/cn.png";
                 else
-                    return $"https://flagcdn.com/h20/{FaceitLanguage}.png"; 
+                    return $"https://flagcdn.com/h20/{FaceitLanguage}.png";
             }
         }
         private string _faceitURL;
-        public string FaceitURL 
+        public string FaceitURL
         {
-            get => _faceitURL; 
+            get => _faceitURL;
             set => _faceitURL = value.Replace("{lang}", "en");
         }
         public string SteamID64 { get; set; }

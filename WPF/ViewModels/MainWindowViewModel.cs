@@ -1,6 +1,7 @@
-﻿using FaceitStats.WPF.Classes;
-using FaceitStats.Core.Interfaces;
+﻿using FaceitStats.Core.Interfaces;
 using FaceitStats.Infrastructure.Data;
+using FaceitStats.WPF.Classes;
+using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.Services;
 using FaceitStats.WPF.ViewModels.Abstractions;
 using FaceitStats.WPF.Views.Enums;
@@ -14,7 +15,7 @@ namespace FaceitStats.WPF.ViewModels
         private readonly VMStore _vmStore;
         private readonly FaceitAPIClient _apiClient;
         private readonly IUpdateService _updateService;
-        private readonly IFaceitRepository _faceitRepository;
+        private readonly IFaceitService _faceitRepository;
 
         private BaseViewModel _currentViewModel;
         public BaseViewModel CurrentViewModel
@@ -42,9 +43,9 @@ namespace FaceitStats.WPF.ViewModels
 
         public MainWindowViewModel()
         {
-            _apiClient = new FaceitAPIClient("a");
+            _apiClient = new FaceitAPIClient(Properties.Settings.Default.API_Key, Properties.Settings.Default.User_API_Key);
             _updateService = new UpdateService();
-            _faceitRepository = new FaceitRepository(_apiClient);
+            _faceitRepository = new FaceitService(_apiClient);
 
             _vmStore = new VMStore();
             _vmStore.Add<SearchViewModel>((parameter) => new SearchViewModel(_updateService, this, parameter));

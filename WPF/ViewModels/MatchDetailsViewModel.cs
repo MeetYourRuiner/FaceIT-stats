@@ -1,6 +1,6 @@
 ﻿using FaceitStats.Core.Interfaces;
 using FaceitStats.Core.Models;
-using FaceitStats.WPF.Services;
+using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.ViewModels.Abstractions;
 using FaceitStats.WPF.ViewModels.Commands;
 using System;
@@ -10,10 +10,10 @@ namespace FaceitStats.WPF.ViewModels
 {
     class MatchDetailsViewModel : LoadableViewModel
     {
-        private readonly IFaceitRepository _faceitRepository;
+        private readonly IFaceitService _faceitRepository;
         private readonly INavigator _navigator;
 
-        public MatchDetailsViewModel(IFaceitRepository faceitRepository, INavigator navigator, object parameter)
+        public MatchDetailsViewModel(IFaceitService faceitRepository, INavigator navigator, object parameter)
         {
             this._faceitRepository = faceitRepository;
             this._navigator = navigator;

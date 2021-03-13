@@ -35,7 +35,7 @@ namespace FaceitStats
                         prop.SetValue(targetObj, value, null);
                     }
                 }
-                
+
             }
 
             return targetObj;

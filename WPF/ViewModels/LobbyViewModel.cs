@@ -1,6 +1,6 @@
 ﻿using FaceitStats.Core.Interfaces;
 using FaceitStats.Core.Models;
-using FaceitStats.WPF.Services;
+using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.ViewModels.Abstractions;
 using FaceitStats.WPF.ViewModels.Commands;
 using FaceitStats.WPF.ViewModels.Controls;
@@ -11,7 +11,7 @@ namespace FaceitStats.WPF.ViewModels
 {
     class LobbyViewModel : LoadableViewModel
     {
-        private readonly IFaceitRepository _faceitRepository;
+        private readonly IFaceitService _faceitRepository;
         private readonly INavigator _navigator;
 
         private string currentMatchId;
@@ -131,7 +131,7 @@ namespace FaceitStats.WPF.ViewModels
                 }
             }));
         }
-        public LobbyViewModel(IFaceitRepository faceitRepository, INavigator navigator, object parameter)
+        public LobbyViewModel(IFaceitService faceitRepository, INavigator navigator, object parameter)
         {
             this._faceitRepository = faceitRepository;
             this._navigator = navigator;

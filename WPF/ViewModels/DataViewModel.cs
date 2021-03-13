@@ -1,6 +1,6 @@
 ﻿using FaceitStats.Core.Interfaces;
 using FaceitStats.Core.Models;
-using FaceitStats.WPF.Services;
+using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.ViewModels.Abstractions;
 using FaceitStats.WPF.ViewModels.Commands;
 using FaceitStats.WPF.ViewModels.Controls;
@@ -14,7 +14,7 @@ namespace FaceitStats.WPF.ViewModels
 {
     class DataViewModel : LoadableViewModel
     {
-        private readonly IFaceitRepository _faceitRepository;
+        private readonly IFaceitService _faceitRepository;
         private readonly INavigator _navigator;
 
         private const int MATCHES_ON_PAGE = 9;
@@ -345,7 +345,7 @@ namespace FaceitStats.WPF.ViewModels
         }
         #endregion
 
-        public DataViewModel(IFaceitRepository faceitRepository, INavigator navigator, object parameter)
+        public DataViewModel(IFaceitService faceitRepository, INavigator navigator, object parameter)
         {
             this._navigator = navigator;
             _playerName = (string)parameter;

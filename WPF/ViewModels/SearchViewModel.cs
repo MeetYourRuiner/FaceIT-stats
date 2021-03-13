@@ -1,4 +1,4 @@
-﻿using FaceitStats.WPF.Services;
+﻿using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.ViewModels.Abstractions;
 using FaceitStats.WPF.ViewModels.Commands;
 using FaceitStats.WPF.Views.Enums;

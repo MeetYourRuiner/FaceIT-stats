@@ -2,11 +2,11 @@
 {
     public class PlayerStats
     {
+        public string Id { get; set; }
+        public string Nickname { get; set; }
         public int TripleKills { get; set; }
-
         public int QuadroKills { get; set; }
-
-        public string PentaKills { get; set; }
+        public int PentaKills { get; set; }
 
         public double KDRatio { get; set; }
 
@@ -20,11 +20,11 @@
 
         public int Deaths { get; set; }
 
-        public int Headshot { get; set; }
+        public int Headshots { get; set; }
 
         public int HSPercentage { get; set; }
 
-        public short _Result { set => Result = value == 1 ? 'W' : 'L'; }
+        public int _Result { set => Result = value == 1 ? 'W' : 'L'; }
         public char Result { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using FaceitStats.WPF.Views.Enums;
 using System;
 
-namespace FaceitStats.WPF.Services
+namespace FaceitStats.WPF.Interfaces
 {
     interface INavigator
     {

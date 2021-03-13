@@ -9,7 +9,7 @@ namespace FaceitStats.WPF.Views
             "IsFocused",
             typeof(bool?),
             typeof(FocusExtension),
-            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender, OnIsFocusedPropertyChanged) { BindsTwoWayByDefault = true}
+            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender, OnIsFocusedPropertyChanged) { BindsTwoWayByDefault = true }
         );
         public static void SetIsFocused(UIElement element, Boolean value)
         {
