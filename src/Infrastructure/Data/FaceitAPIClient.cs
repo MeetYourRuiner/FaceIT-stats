@@ -3,6 +3,7 @@ using FaceitStats.Infrastructure.Extensions;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FaceitStats.Infrastructure.Data
 {
-    public class FaceitAPIClient
+    class FaceitAPIClient
     {
         /// <summary>
         /// Faceit API v4 client
@@ -47,7 +48,7 @@ namespace FaceitStats.Infrastructure.Data
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
             var payload = jObject["payload"];
-            var playerProfile = payload.ToObject<PlayerProfile>();
+            var playerProfile = payload.ToPlayerProfile();
             return playerProfile;
         }
 
@@ -68,8 +69,8 @@ namespace FaceitStats.Infrastructure.Data
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception("Failed to get match history");
             string json = await response.Content.ReadAsStringAsync();
-            JObject jObject = JObject.Parse(json);
-            var matchList = jObject.ToMatchList();
+            JArray jArray = JArray.Parse(json);
+            var matchList = jArray.ToMatchList();
             for (int i = 0; i < matchList.Count; ++i)
             {
                 matchList[i].Index = i;
@@ -108,7 +109,7 @@ namespace FaceitStats.Infrastructure.Data
             return mi;
         }
 
-        public async Task<MatchStats> FetchMatchStatsAsync(string matchId)
+        public async Task<List<MatchStats>> FetchMatchStatsAsync(string matchId)
         {
             // V4 https://open.faceit.com/data/v4/matches/{matchId}/stats
             // V1 https://api.faceit.com/stats/v1/stats/matches/{matchId}
@@ -116,17 +117,8 @@ namespace FaceitStats.Infrastructure.Data
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new System.Exception("Failed to get match details");
             string json = await response.Content.ReadAsStringAsync();
-            json = json.Trim(new char[] { '[', ']' });
-            JObject jObject;
-            try
-            {
-                jObject = JObject.Parse(json);
-            }
-            catch
-            {
-                throw new System.Exception("Only BO1 match stats is available");
-            }
-            var ms = jObject.ToMatchStats();
+            JArray jArray = JArray.Parse(json);
+            var ms = jArray.ToMatchStatsList();
             return ms;
         }
 
@@ -140,13 +132,13 @@ namespace FaceitStats.Infrastructure.Data
             var payload = jObject["payload"];
             if (!payload.HasValues)
                 return null;
-            var dict = payload.ToObject<Dictionary<string, JArray>>();
-            foreach (var pair in dict)
-            {
-                if (pair.Key != "CANCELLED" && pair.Key != "ABORTED")
-                    return pair.Value.First["id"].Value<string>();
-            }
-            return null;
+
+            var ongoingMatch = jObject.SelectToken("payload").Where(j =>
+                {
+                    var tokenName = ((JProperty)j).Name;
+                    return tokenName != "CANCELLED" && tokenName != "ABORTED";
+                }).FirstOrDefault();
+            return ongoingMatch?.First.First.Value<string>("id");
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace FaceitStats.WPF.Classes
+namespace FaceitStats.Core.Utils
 {
-    class Utils
+    class EloCalculator
     {
         public static int CalculateElo(int diff, double winProbability)
         {

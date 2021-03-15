@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{5149BAEC-26C0-4A1A-B29F-250820775D9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "src\Core\Core.csproj", "{5149BAEC-26C0-4A1A-B29F-250820775D9A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{EF81F74D-D2AD-4E88-8D2E-3866EA760920}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{EF81F74D-D2AD-4E88-8D2E-3866EA760920}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E92C799A-8F6C-4C8D-90DC-235484B10AB8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPF", "WPF\WPF.csproj", "{D98F74D3-D9B8-4984-ABAE-8E417AA06BB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPF", "src\WPF\WPF.csproj", "{D98F74D3-D9B8-4984-ABAE-8E417AA06BB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9A25F997-DEC7-4948-9A66-ED3A69072A5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "tests\IntegrationTests\IntegrationTests.csproj", "{FA135B76-F15B-473A-9B59-B5DD790595C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +40,12 @@ Global
 		{D98F74D3-D9B8-4984-ABAE-8E417AA06BB0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D98F74D3-D9B8-4984-ABAE-8E417AA06BB0}.Цифорки|Any CPU.ActiveCfg = Debug|Any CPU
 		{D98F74D3-D9B8-4984-ABAE-8E417AA06BB0}.Цифорки|Any CPU.Build.0 = Debug|Any CPU
+		{FA135B76-F15B-473A-9B59-B5DD790595C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA135B76-F15B-473A-9B59-B5DD790595C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA135B76-F15B-473A-9B59-B5DD790595C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA135B76-F15B-473A-9B59-B5DD790595C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA135B76-F15B-473A-9B59-B5DD790595C4}.Цифорки|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA135B76-F15B-473A-9B59-B5DD790595C4}.Цифорки|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +54,7 @@ Global
 		{5149BAEC-26C0-4A1A-B29F-250820775D9A} = {E92C799A-8F6C-4C8D-90DC-235484B10AB8}
 		{EF81F74D-D2AD-4E88-8D2E-3866EA760920} = {E92C799A-8F6C-4C8D-90DC-235484B10AB8}
 		{D98F74D3-D9B8-4984-ABAE-8E417AA06BB0} = {E92C799A-8F6C-4C8D-90DC-235484B10AB8}
+		{FA135B76-F15B-473A-9B59-B5DD790595C4} = {9A25F997-DEC7-4948-9A66-ED3A69072A5A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {59088E74-1035-4177-BEE8-651E0A633162}
