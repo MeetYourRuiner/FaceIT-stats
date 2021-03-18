@@ -4,31 +4,64 @@ using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.ViewModels.Abstractions;
 using FaceitStats.WPF.ViewModels.Commands;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FaceitStats.WPF.ViewModels
 {
     class MatchDetailsViewModel : LoadableViewModel
     {
-        private readonly IFaceitService _faceitRepository;
+        public class Player
+        {
+            public string Id { get => PlayerInfo.Id; }
+            public PlayerStats CurrentPlayerStats { get; set; }
+            public PlayerInfo PlayerInfo { get; set; }
+            public Player(PlayerInfo playerInfo)
+            {
+                PlayerInfo = playerInfo;
+            }
+        }
+
+        private readonly IFaceitService _faceitService;
         private readonly INavigator _navigator;
 
-        public MatchDetailsViewModel(IFaceitService faceitRepository, INavigator navigator, object parameter)
-        {
-            this._faceitRepository = faceitRepository;
-            this._navigator = navigator;
-            Match = (Match)parameter;
-        }
+        private int currentRoundNumber = 0;
 
         public Match Match { get; private set; }
+        public List<MatchStats> Rounds { get; private set; }
 
-        public Team TeamA
-        {
-            get => CurrentMatchStats?.Teams[0];
+        private MatchInfo _lobby;
+        public MatchInfo Lobby 
+        { 
+            get => _lobby;
+            set
+            { 
+                _lobby = value;
+                OnPropertyChanged();
+            }
         }
-        public Team TeamB
+
+        private List<Player> _teamAPlayers;
+        public List<Player> TeamAPlayers
         {
-            get => CurrentMatchStats?.Teams[1];
+            get => _teamAPlayers;
+            set
+            {
+                _teamAPlayers = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private List<Player> _teamBPlayers;
+        public List<Player> TeamBPlayers
+        {
+            get => _teamBPlayers;
+            set
+            {
+                _teamBPlayers = value;
+                OnPropertyChanged();
+            }
         }
 
         private int _plusElo;
@@ -53,23 +86,74 @@ namespace FaceitStats.WPF.ViewModels
             }
         }
 
-        private MatchStats _currentMatchStats;
-        public MatchStats CurrentMatchStats
+        private MatchStats _currentRound;
+        public MatchStats CurrentRound
         {
-            get => _currentMatchStats;
+            get => _currentRound;
             set
             {
-                _currentMatchStats = value;
+                _currentRound = value;
                 OnPropertyChanged();
-                OnPropertyChanged("TeamA");
-                OnPropertyChanged("TeamB");
             }
         }
-        public override async Task LoadedMethod(object obj)
+
+        private RelayCommand _backCommand;
+        public RelayCommand BackCommand
+        {
+            get => _backCommand ??= new RelayCommand((obj) =>
+            {
+                _navigator.GoBack();
+            });
+        }
+
+        private RelayCommand _openMatchFaceitCommand;
+        public RelayCommand OpenMatchFaceitCommand
+        {
+            get => _openMatchFaceitCommand ??= new RelayCommand((obj) =>
+            {
+                try
+                {
+                    var sInfo = new System.Diagnostics.ProcessStartInfo($"https://www.faceit.com/en/csgo/room/{Match.Id}")
+                    {
+                        UseShellExecute = true,
+                    };
+                    System.Diagnostics.Process.Start(sInfo);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to open link in browser", ex);
+                }
+            });
+        }
+        
+        private RelayCommand _openPlayerStatsCommand;
+        public RelayCommand OpenPlayerStatsCommand
+        {
+            get => _openPlayerStatsCommand ??= new RelayCommand((obj) =>
+            {
+                //PlayerDetails player = (PlayerDetails)obj;
+                //_navigator.Navigate(Views.Enums.ViewTypes.Data, player.Nickname);
+            });
+        }
+
+        public MatchDetailsViewModel(IFaceitService faceitService, INavigator navigator, object parameter)
+        {
+            _faceitService = faceitService;
+            _navigator = navigator;
+            Match = (Match)parameter;
+        }
+
+        public override async Task LoadMethod(object obj)
         {
             try
             {
-                CurrentMatchStats = await _faceitRepository.GetMatchStatsAsync(Match.Id);
+                Rounds = await _faceitService.GetMatchStatsAsync(Match.Id);
+                Lobby = await _faceitService.GetMatchInfoAsync(Match.Id);
+                CurrentRound = Rounds[0];
+
+                TeamAPlayers = Lobby.TeamA.Players.Select(p => new Player(p)).ToList();
+                TeamBPlayers = Lobby.TeamB.Players.Select(p => new Player(p)).ToList();
+                SetCurrentRoundNumber(1);
 
                 if (Match.ChangeELO > 0 && Match.ChangeELO < 50)
                 {
@@ -94,43 +178,25 @@ namespace FaceitStats.WPF.ViewModels
             }
         }
 
-        private RelayCommand _backCommand;
-        public RelayCommand BackCommand
+        private void SetCurrentRoundNumber(int number)
         {
-            get => _backCommand ?? (_backCommand = new RelayCommand((obj) =>
+            static void sortPlayers(List<Player> players)
             {
-                _navigator.GoBack();
-            }));
-        }
+                players.Sort((p1, p2) => p2.CurrentPlayerStats.Kills.CompareTo(p1.CurrentPlayerStats.Kills));
+            };
 
-        private RelayCommand _openMatchFaceitCommand;
-        public RelayCommand OpenMatchFaceitCommand
-        {
-            get => _openMatchFaceitCommand ?? (_openMatchFaceitCommand = new RelayCommand((obj) =>
+            currentRoundNumber = number;
+            CurrentRound = Rounds.FirstOrDefault(r => r.RoundStats.RoundNumber == currentRoundNumber);
+            foreach (var player in TeamAPlayers)
             {
-                try
-                {
-                    var sInfo = new System.Diagnostics.ProcessStartInfo($"https://www.faceit.com/en/csgo/room/{Match.Id}")
-                    {
-                        UseShellExecute = true,
-                    };
-                    System.Diagnostics.Process.Start(sInfo);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Failed to open link in browser", ex);
-                }
-            }));
-        }
-
-        private RelayCommand _openPlayerStatsCommand;
-        public RelayCommand OpenPlayerStatsCommand
-        {
-            get => _openPlayerStatsCommand ?? (_openPlayerStatsCommand = new RelayCommand((obj) =>
+                player.CurrentPlayerStats = CurrentRound.TeamA.Players.Find((p) => p.Id == player.Id);
+            }
+            foreach (var player in TeamBPlayers)
             {
-                PlayerDetails player = (PlayerDetails)obj;
-                _navigator.Navigate(Views.Enums.ViewTypes.Data, player.Nickname);
-            }));
+                player.CurrentPlayerStats = CurrentRound.TeamB.Players.Find((p) => p.Id == player.Id);
+            }
+            sortPlayers(TeamAPlayers);
+            sortPlayers(TeamBPlayers);
         }
     }
 }

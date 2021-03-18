@@ -1,4 +1,11 @@
-﻿using System.IO;
+﻿using FaceitStats.Core.Interfaces;
+using FaceitStats.Infrastructure.Data;
+using FaceitStats.WPF.Classes;
+using FaceitStats.WPF.Interfaces;
+using FaceitStats.WPF.Properties;
+using FaceitStats.WPF.Services;
+using FaceitStats.WPF.ViewModels;
+using System.IO;
 using System.Linq;
 using System.Windows;
 
@@ -19,7 +26,24 @@ namespace FaceitStats.WPF
                 }
                 catch { }
             }
+
+            var _vmFactory = new VMFactory();
+
+            _vmFactory.AddViewModel<MainWindowViewModel>();
+            _vmFactory.AddViewModel<SearchViewModel>();
+            _vmFactory.AddViewModel<DataViewModel>();
+            _vmFactory.AddViewModel<MatchDetailsViewModel>();
+            _vmFactory.AddViewModel<LobbyViewModel>();
+            _vmFactory.AddViewModel<TeamAnalyzeViewModel>();
+
+            _vmFactory.AddService<VMFactory>(_vmFactory);
+            _vmFactory.AddService<IFaceitService>(new FaceitService(Settings.Default.API_Key, Settings.Default.User_API_Key));
+            _vmFactory.AddService<IUpdateService>(new UpdateService());
+            _vmFactory.AddService<INavigator>(new Navigator(_vmFactory));
+            _vmFactory.AddService<INotifyService>(new NotifyService());
+
             MainWindow mainWindow = new MainWindow();
+            mainWindow.DataContext = _vmFactory.Create<MainWindowViewModel>();
             mainWindow.Show();
         }
     }

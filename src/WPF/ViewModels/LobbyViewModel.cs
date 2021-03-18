@@ -11,7 +11,7 @@ namespace FaceitStats.WPF.ViewModels
 {
     class LobbyViewModel : LoadableViewModel
     {
-        private readonly IFaceitService _faceitRepository;
+        private readonly IFaceitService _faceitService;
         private readonly INavigator _navigator;
 
         private string currentMatchId;
@@ -27,7 +27,7 @@ namespace FaceitStats.WPF.ViewModels
             }
         }
 
-        public override async Task LoadedMethod(object obj)
+        public override async Task LoadMethod(object obj)
         {
             try
             {
@@ -38,17 +38,17 @@ namespace FaceitStats.WPF.ViewModels
                 _navigator.GoBack(ex);
                 return;
             }
-            TeamAViewModel = new LobbyTeamInfoViewModel(_faceitRepository, _navigator, CurrentMatchInfo.TeamA);
-            TeamBViewModel = new LobbyTeamInfoViewModel(_faceitRepository, _navigator, CurrentMatchInfo.TeamB);
+            TeamAViewModel = new LobbyTeamInfoViewModel(_faceitService, _navigator, CurrentMatchInfo.TeamA);
+            TeamBViewModel = new LobbyTeamInfoViewModel(_faceitService, _navigator, CurrentMatchInfo.TeamB);
         }
 
         private RelayCommand _backCommand;
         public RelayCommand BackCommand
         {
-            get => _backCommand ?? (_backCommand = new RelayCommand((obj) =>
+            get => _backCommand ??= new RelayCommand((obj) =>
             {
                 _navigator.GoBack();
-            }));
+            });
         }
 
         private MatchInfo _currentMatchInfo;
@@ -87,7 +87,7 @@ namespace FaceitStats.WPF.ViewModels
         private RelayCommand _refreshCommand;
         public RelayCommand RefreshCommand
         {
-            get => _refreshCommand ?? (_refreshCommand = new RelayCommand(async (obj) =>
+            get => _refreshCommand ??= new RelayCommand(async (obj) =>
             {
                 IsRefreshing = true;
                 try
@@ -96,26 +96,26 @@ namespace FaceitStats.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    _navigator.DisplayError(ex);
+                    //_navigator.DisplayError(ex);
                 }
                 IsRefreshing = false;
-            }));
+            });
         }
 
         private RelayCommand _openPlayerStatsCommand;
         public RelayCommand OpenPlayerStatsCommand
         {
-            get => _openPlayerStatsCommand ?? (_openPlayerStatsCommand = new RelayCommand((obj) =>
+            get => _openPlayerStatsCommand ??= new RelayCommand((obj) =>
             {
                 PlayerInfo player = (PlayerInfo)obj;
                 _navigator.Navigate(Views.Enums.ViewTypes.Data, player.Nickname);
-            }));
+            });
         }
 
         private RelayCommand _openMatchFaceitCommand;
         public RelayCommand OpenMatchFaceitCommand
         {
-            get => _openMatchFaceitCommand ?? (_openMatchFaceitCommand = new RelayCommand((obj) =>
+            get => _openMatchFaceitCommand ??= new RelayCommand((obj) =>
             {
                 try
                 {
@@ -129,18 +129,18 @@ namespace FaceitStats.WPF.ViewModels
                 {
                     throw new Exception("Failed to open link in browser", ex);
                 }
-            }));
+            });
         }
-        public LobbyViewModel(IFaceitService faceitRepository, INavigator navigator, object parameter)
+        public LobbyViewModel(IFaceitService faceitService, INavigator navigator, object parameter)
         {
-            this._faceitRepository = faceitRepository;
+            this._faceitService = faceitService;
             this._navigator = navigator;
             currentMatchId = (string)parameter;
         }
 
         private async Task<MatchInfo> UpdateMatchInfo()
         {
-            return await _faceitRepository.GetMatchInfoAsync(currentMatchId);
+            return await _faceitService.GetMatchInfoAsync(currentMatchId);
         }
     }
 }

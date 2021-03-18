@@ -26,7 +26,7 @@ namespace FaceitStats.WPF.ViewModels
             "de_vertigo"
         };
 
-        private readonly IFaceitService _faceitRepository;
+        private readonly IFaceitService _faceitService;
         private readonly INavigator _navigator;
 
         private List<TeamAnalyzeObject> playersStats = new List<TeamAnalyzeObject>();
@@ -57,19 +57,19 @@ namespace FaceitStats.WPF.ViewModels
         private RelayCommand _backCommand;
         public RelayCommand BackCommand
         {
-            get => _backCommand ?? (_backCommand = new RelayCommand((obj) =>
+            get => _backCommand ??= new RelayCommand((obj) =>
             {
                 _navigator.GoBack();
-            }));
+            });
         }
 
-        public override async Task LoadedMethod(object obj)
+        public override async Task LoadMethod(object obj)
         {
             try
             {
                 foreach (var player in Players)
                 {
-                    List<Match> matches = await _faceitRepository.GetMatchesAsync(player.Id, MATCHES_TO_ANALYZE);
+                    List<Match> matches = await _faceitService.GetMatchesAsync(player.Id, MATCHES_TO_ANALYZE);
                     playersStats.Add(new TeamAnalyzeObject(player, matches));
                 }
             }
@@ -84,9 +84,9 @@ namespace FaceitStats.WPF.ViewModels
             DataTable = CreateDataTable(mapsStatistics);
         }
 
-        public TeamAnalyzeViewModel(IFaceitService faceitRepository, INavigator navigator, object parameter)
+        public TeamAnalyzeViewModel(IFaceitService faceitService, INavigator navigator, object parameter)
         {
-            this._faceitRepository = faceitRepository;
+            this._faceitService = faceitService;
             this._navigator = navigator;
             Players = (List<PlayerInfo>)parameter;
         }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FaceitStats.Infrastructure.Data
 {
-    class FaceitAPIClient
+    public class FaceitAPIClient
     {
         /// <summary>
         /// Faceit API v4 client
@@ -99,12 +99,12 @@ namespace FaceitStats.Infrastructure.Data
         {
             var response = await _client.GetAsync($"https://api.faceit.com/match/v2/match/{matchId}");
             if (response.StatusCode != HttpStatusCode.OK)
-                throw new System.Exception("Failed to get match overview info");
+                throw new Exception("Failed to get match overview info");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
             var payload = jObject["payload"];
             if (!payload.HasValues)
-                throw new System.Exception("No match");
+                throw new Exception("No match");
             var mi = payload.ToMatchInfo();
             return mi;
         }
@@ -115,7 +115,7 @@ namespace FaceitStats.Infrastructure.Data
             // V1 https://api.faceit.com/stats/v1/stats/matches/{matchId}
             var response = await _client.GetAsync($"https://api.faceit.com/stats/v1/stats/matches/{matchId}");
             if (response.StatusCode != HttpStatusCode.OK)
-                throw new System.Exception("Failed to get match details");
+                throw new Exception("Failed to get match details");
             string json = await response.Content.ReadAsStringAsync();
             JArray jArray = JArray.Parse(json);
             var ms = jArray.ToMatchStatsList();
@@ -126,7 +126,7 @@ namespace FaceitStats.Infrastructure.Data
         {
             var response = await _client.GetAsync($"https://api.faceit.com/match/v1/matches/groupByState?userId={playerId}");
             if (response.StatusCode != HttpStatusCode.OK)
-                throw new System.Exception("Failed to get ongoing match id");
+                throw new Exception("Failed to get ongoing match id");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
             var payload = jObject["payload"];

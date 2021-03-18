@@ -28,7 +28,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
         }
 
 
-        public override async Task LoadedMethod(object obj)
+        public override async Task LoadMethod(object obj)
         {
             UpdateSource(_matches);
         }

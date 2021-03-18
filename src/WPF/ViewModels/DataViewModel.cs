@@ -14,7 +14,7 @@ namespace FaceitStats.WPF.ViewModels
 {
     class DataViewModel : LoadableViewModel
     {
-        private readonly IFaceitService _faceitRepository;
+        private readonly IFaceitService _faceitService;
         private readonly INavigator _navigator;
 
         private const int MATCHES_ON_PAGE = 9;
@@ -187,80 +187,80 @@ namespace FaceitStats.WPF.ViewModels
         private RelayCommand _backCommand;
         public RelayCommand BackCommand
         {
-            get => _backCommand ?? (_backCommand = new RelayCommand((obj) =>
+            get => _backCommand ??= new RelayCommand((obj) =>
             {
                 _navigator.GoBack();
-            }));
+            });
         }
 
         private RelayCommand _nextPageCommand;
         public RelayCommand NextPageCommand
         {
-            get => _nextPageCommand ?? (_nextPageCommand = new RelayCommand((obj) =>
+            get => _nextPageCommand ??= new RelayCommand((obj) =>
             {
                 try
                 {
                     SliceOfHistory = GetPage(++Page);
                 }
                 catch { }
-            }));
+            });
         }
 
         private RelayCommand _prevPageCommand;
         public RelayCommand PrevPageCommand
         {
-            get => _prevPageCommand ?? (_prevPageCommand = new RelayCommand((obj) =>
+            get => _prevPageCommand ??= new RelayCommand((obj) =>
             {
                 try
                 {
                     SliceOfHistory = GetPage(--Page);
                 }
                 catch { }
-            }));
+            });
         }
 
         private RelayCommand _showMatchDetailsCommand;
         public RelayCommand ShowMatchDetailsCommand
         {
-            get => _showMatchDetailsCommand ?? (_showMatchDetailsCommand = new RelayCommand((obj) =>
+            get => _showMatchDetailsCommand ??= new RelayCommand((obj) =>
             {
                 int index = (int)obj;
                 Match match = Matches.FirstOrDefault((m) => m.Index == index);
                 _navigator.Navigate(ViewTypes.Match, match);
-            }));
+            });
         }
 
         private RelayCommand _showOngoingMatchCommand;
         public RelayCommand ShowOngoingMatchCommand
         {
-            get => _showOngoingMatchCommand ?? (_showOngoingMatchCommand = new RelayCommand((obj) =>
+            get => _showOngoingMatchCommand ??= new RelayCommand((obj) =>
             {
                 _navigator.Navigate(ViewTypes.Lobby, OngoingMatchId);
-            }));
+            });
         }
 
         private RelayCommand _refreshOngoingMatchCommand;
         public RelayCommand RefreshOngoingMatchCommand
         {
-            get => _refreshOngoingMatchCommand ?? (_refreshOngoingMatchCommand = new RelayCommand(async (obj) =>
+            get => _refreshOngoingMatchCommand ??= new RelayCommand(async (obj) =>
             {
                 IsRefreshButtonEnabled = false;
                 try
                 {
-                    OngoingMatchId = await _faceitRepository.GetOngoingMatchIdAsync(CurrentPlayerProfile.Id);
+                    OngoingMatchId = await _faceitService.GetOngoingMatchIdAsync(CurrentPlayerProfile.Id);
                 }
                 catch (Exception ex)
                 {
-                    _navigator.DisplayError(ex);
+                    //_navigator.DisplayError(ex);
                 }
                 IsRefreshButtonEnabled = true;
-            }));
+            });
         }
 
         private RelayCommand _changeDisplayablePerfomanceCommand;
         public RelayCommand ChangeDisplayablePerfomanceCommand
         {
-            get => _changeDisplayablePerfomanceCommand ?? (_changeDisplayablePerfomanceCommand = new RelayCommand((obj) =>
+            get => _changeDisplayablePerfomanceCommand ??= new RelayCommand((obj) =>
             {
                 if (DisplayablePerfomance == LastMatchesPerfomance)
                 {
@@ -270,20 +270,20 @@ namespace FaceitStats.WPF.ViewModels
                     }
                     else
                     {
-                        _navigator.DisplayError(new Exception("Overall perfomance is unavailable"));
+                        //_navigator.DisplayError(new Exception("Overall perfomance is unavailable"));
                     }
                 }
                 else
                 {
                     DisplayablePerfomance = LastMatchesPerfomance;
                 }
-            }));
+            });
         }
 
         private RelayCommand _openPlayerFaceitCommand;
         public RelayCommand OpenPlayerFaceitCommand
         {
-            get => _openPlayerFaceitCommand ?? (_openPlayerFaceitCommand = new RelayCommand((obj) =>
+            get => _openPlayerFaceitCommand ??= new RelayCommand((obj) =>
             {
                 try
                 {
@@ -297,13 +297,13 @@ namespace FaceitStats.WPF.ViewModels
                 {
                     throw new Exception("Failed to open link in browser", ex);
                 }
-            }));
+            });
         }
 
         private RelayCommand _openPlayerSteamCommand;
         public RelayCommand OpenPlayerSteamCommand
         {
-            get => _openPlayerSteamCommand ?? (_openPlayerSteamCommand = new RelayCommand((obj) =>
+            get => _openPlayerSteamCommand ??= new RelayCommand((obj) =>
             {
                 try
                 {
@@ -317,13 +317,13 @@ namespace FaceitStats.WPF.ViewModels
                 {
                     throw new Exception("Failed to open link in browser", ex);
                 }
-            }));
+            });
         }
 
         private RelayCommand _addToFavoritesCommand;
         public RelayCommand AddToFavoritesCommand
         {
-            get => _addToFavoritesCommand ?? (_addToFavoritesCommand = new RelayCommand((obj) =>
+            get => _addToFavoritesCommand ??= new RelayCommand((obj) =>
             {
                 System.Collections.Specialized.StringCollection favorites = Properties.Settings.Default.Favorites;
                 if (!IsFavoritePlayer)
@@ -341,15 +341,15 @@ namespace FaceitStats.WPF.ViewModels
                     IsFavoritePlayer = false;
                 }
                 OnPropertyChanged("IsFavoritePlayer");
-            }));
+            });
         }
         #endregion
 
-        public DataViewModel(IFaceitService faceitRepository, INavigator navigator, object parameter)
+        public DataViewModel(IFaceitService faceitService, INavigator navigator, object parameter)
         {
-            this._navigator = navigator;
+            _faceitService = faceitService;
+            _navigator = navigator;
             _playerName = (string)parameter;
-            this._faceitRepository = faceitRepository;
         }
 
         private List<Match> GetPage(int page)
@@ -366,7 +366,7 @@ namespace FaceitStats.WPF.ViewModels
                 else if (restOfMatches > 0)
                     return Matches.GetRange(Page * MATCHES_ON_PAGE, MATCHES_ON_PAGE);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 if (page != 0)
                     throw;
@@ -382,14 +382,12 @@ namespace FaceitStats.WPF.ViewModels
             return pagesCount;
         }
 
-        public override async Task LoadedMethod(object obj)
+        public override async Task LoadMethod(object obj)
         {
             try
             {
-                CurrentPlayerProfile = await _faceitRepository.GetProfileByNameAsync(_playerName);
-                Matches = await _faceitRepository.GetMatchesAsync(CurrentPlayerProfile.Id, MATCHES_ON_PAGE * 20);
-                //Matches = await statsRepository.GetMatchesAsync(CurrentPlayerProfile.Id, DateTimeOffset.Now, DateTimeOffset.Now);
-                OngoingMatchId = await _faceitRepository.GetOngoingMatchIdAsync(CurrentPlayerProfile.Id);
+                CurrentPlayerProfile = await _faceitService.GetProfileByNameAsync(_playerName);
+                Matches = await _faceitService.GetMatchesAsync(CurrentPlayerProfile.Id, MATCHES_ON_PAGE * 20);
             }
             catch (Exception ex)
             {
@@ -399,12 +397,16 @@ namespace FaceitStats.WPF.ViewModels
 
             try
             {
-                var playerOverallStats = await _faceitRepository.GetOverallStatsAsync(CurrentPlayerProfile.Id);
-                playerOverallStats.MapOverallStats
-                .Sort((m1, m2) =>
-                    (m2.WinrateDouble * m2.Matches / playerOverallStats.Matches)
-                        .CompareTo(m1.WinrateDouble * m1.Matches / playerOverallStats.Matches)
-                );
+                OngoingMatchId = await _faceitService.GetOngoingMatchIdAsync(CurrentPlayerProfile.Id);
+            }
+            catch
+            {
+                // Show error
+            }
+
+            try
+            {
+                var playerOverallStats = await _faceitService.GetOverallStatsAsync(CurrentPlayerProfile.Id);
                 PlayerMapsStatisticsViewModel = new PlayerMapsStatisticsViewModel(playerOverallStats);
                 OverallPerfomance = new AveragePerfomance(playerOverallStats);
             }
@@ -417,10 +419,7 @@ namespace FaceitStats.WPF.ViewModels
             SliceOfHistory = GetPage(Page);
             LastMatchesPerfomance = new AveragePerfomance(Matches, 20);
             EloChartViewModel = new EloChartViewModel(Matches);
-            if (OverallPerfomance != null)
-                DisplayablePerfomance = OverallPerfomance;
-            else
-                DisplayablePerfomance = LastMatchesPerfomance;
+            DisplayablePerfomance = OverallPerfomance ?? LastMatchesPerfomance;
 
             MatchesViewModel = new MatchesViewModel(SliceOfHistory);
             PropertyChanged += (s, args) =>

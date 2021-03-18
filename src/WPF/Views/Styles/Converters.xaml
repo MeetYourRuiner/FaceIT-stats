@@ -9,4 +9,6 @@
     <converters:ZeroToNullConverter x:Key="ZtNConverter"/>
     <converters:PartyColorConverter x:Key="PartyColorConverter"/>
     <converters:UpperCaseConverter x:Key="UpperCaseConverter"/>
+    <converters:MapToImageConverter x:Key="MapToImageConverter"/>
+    <converters:LevelToImageConverter x:Key="LevelToImageConverter"/>
 </ResourceDictionary>

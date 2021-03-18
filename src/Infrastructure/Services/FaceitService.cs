@@ -49,16 +49,16 @@ namespace FaceitStats.Infrastructure.Data
             //    {
             //        p.PlayerInfo = new PlayerInfo();
             //    });
+            ////}
+            //static void sortPlayers(TeamStats t)
+            //{
+            //    t.Players.Sort((p1, p2) => p2.Kills.CompareTo(p1.Kills));
+            ////};
+            //foreach (var match in matchStats)
+            //{
+            //    sortPlayers(match.TeamA);
+            //    sortPlayers(match.TeamB);
             //}
-            Action<TeamStats> sortPlayers = (t) =>
-            {
-                t.Players.Sort((p1, p2) => p2.Kills.CompareTo(p1.Kills));
-            };
-            foreach(var match in matchStats)
-            {
-                sortPlayers(match.TeamA);
-                sortPlayers(match.TeamB);
-            }
             return matchStats;
         }
 
@@ -157,6 +157,11 @@ namespace FaceitStats.Infrastructure.Data
             try
             {
                 playerStats = await _apiClient.FetchPlayerStatsAsync(playerId);
+                playerStats.MapOverallStats
+                .Sort((m1, m2) =>
+                    (m2.WinrateDouble * m2.Matches / playerStats.Matches)
+                        .CompareTo(m1.WinrateDouble * m1.Matches / playerStats.Matches)
+                );
             }
             catch
             {

@@ -6,4 +6,8 @@
     <AssemblyName>FaceitStats.Core</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
 </Project>

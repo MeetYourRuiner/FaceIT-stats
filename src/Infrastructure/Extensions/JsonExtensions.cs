@@ -1,6 +1,5 @@
 ﻿using FaceitStats.Core.Models;
 using FaceitStats.Infrastructure.Constants;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -47,7 +46,7 @@ namespace FaceitStats.Infrastructure.Extensions
                 JToken mapToken = map.First;
                 var mapStats = new MapOverallStats
                 {
-                    MapName = ((JProperty)map).Name,
+                    Map = ((JProperty)map).Name,
                     Matches = mapToken.Value<int>(OverallStatsConstants.Matches),
                     Winrate = mapToken.Value<int>(OverallStatsConstants.Winrate),
                     Kills = mapToken.Value<double>(OverallStatsConstants.Kills),
@@ -113,7 +112,7 @@ namespace FaceitStats.Infrastructure.Extensions
         public static List<Match> ToMatchList(this JToken jToken)
         {
             List<Match> matches = new List<Match>();
-            foreach(var matchToken in jToken)
+            foreach (var matchToken in jToken)
             {
                 var match = new Match
                 {
@@ -145,6 +144,7 @@ namespace FaceitStats.Infrastructure.Extensions
                IsPremade = jToken.Value<bool>("premade"),
                FirstHalfScore = jToken.Value<int>(MatchStatsConstants.FirstHalfScore),
                SecondHalfScore = jToken.Value<int>(MatchStatsConstants.SecondHalfScore),
+               TeamWin = jToken.Value<int>(MatchStatsConstants.TeamWin),
                FinalScore = jToken.Value<int>(MatchStatsConstants.FinalScore),
                Players = jToken["players"]?.Select(token => token.ToPlayerStats()).ToList()
            };

@@ -14,8 +14,7 @@ namespace FaceitStats.Core.Models
 
     public class MapOverallStats
     {
-        public string MapName { get; set; }
-        public string MapImage { get => $"/faceitwpf;component/Resources/{MapName}.jpeg"; }
+        public string Map { get; set; }
         public int Matches { get; set; }
         public int Winrate { get; set; }
         public double WinrateDouble { get => (double)Winrate / 100; }

@@ -27,7 +27,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
         }
 
         private readonly INavigator _navigator;
-        private readonly IFaceitService _faceitRepository;
+        private readonly IFaceitService _faceitService;
 
         private TeamInfo _lobbyTeamInfo;
         public TeamInfo LobbyTeamInfo
@@ -54,30 +54,30 @@ namespace FaceitStats.WPF.ViewModels.Controls
         private RelayCommand _openPlayerStatsCommand;
         public RelayCommand OpenPlayerStatsCommand
         {
-            get => _openPlayerStatsCommand ?? (_openPlayerStatsCommand = new RelayCommand((obj) =>
+            get => _openPlayerStatsCommand ??= new RelayCommand((obj) =>
             {
                 LobbyPlayer player = (LobbyPlayer)obj;
                 _navigator.Navigate(Views.Enums.ViewTypes.Data, player.PlayerInfo.Nickname);
-            }));
+            });
         }
 
         private RelayCommand _analyzeCommand;
         public RelayCommand AnalyzeCommand
         {
-            get => _analyzeCommand ?? (_analyzeCommand = new RelayCommand((obj) =>
+            get => _analyzeCommand ??= new RelayCommand((obj) =>
             {
                 _navigator.Navigate(Views.Enums.ViewTypes.TeamAnalyze, LobbyTeamInfo.Players);
-            }));
+            });
         }
 
-        public LobbyTeamInfoViewModel(IFaceitService faceitRepository, INavigator navigator, TeamInfo lobbyTeamInfo)
+        public LobbyTeamInfoViewModel(IFaceitService faceitService, INavigator navigator, TeamInfo lobbyTeamInfo)
         {
             this._navigator = navigator;
             LobbyTeamInfo = lobbyTeamInfo;
-            this._faceitRepository = faceitRepository;
+            this._faceitService = faceitService;
         }
 
-        public override async Task LoadedMethod(object obj)
+        public override async Task LoadMethod(object obj)
         {
             List<LobbyPlayer> lobbyPlayers = new List<LobbyPlayer>();
             foreach (var playerInfo in LobbyTeamInfo.Players)
@@ -98,7 +98,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
                             List<Match> playerLastMatches;
                             try
                             {
-                                playerProfile = await this._faceitRepository.GetProfileByIdAsync(playerInfo.Id);
+                                playerProfile = await this._faceitService.GetProfileByIdAsync(playerInfo.Id);
                             }
                             catch
                             {
@@ -107,7 +107,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
 
                             try
                             {
-                                playerStats = await this._faceitRepository.GetOverallStatsAsync(playerInfo.Id);
+                                playerStats = await this._faceitService.GetOverallStatsAsync(playerInfo.Id);
                             }
                             catch
                             {
@@ -116,7 +116,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
 
                             try
                             {
-                                playerLastMatches = await this._faceitRepository.GetMatchesAsync(playerInfo.Id, 20);
+                                playerLastMatches = await this._faceitService.GetMatchesAsync(playerInfo.Id, 20);
                             }
                             catch
                             {
@@ -137,7 +137,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
             }
             catch (Exception ex)
             {
-                _navigator.DisplayError(ex);
+                //_navigator.DisplayError(ex);
             }
             foreach (var playerInfo in lobbyPlayers)
             {

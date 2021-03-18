@@ -21,12 +21,12 @@ namespace FaceitStats.WPF.ViewModels.Abstractions
         protected LoadedCommand _loadedCommand;
         public LoadedCommand LoadedCommand
         {
-            get => _loadedCommand ?? (_loadedCommand = new LoadedCommand(async (obj) =>
+            get => _loadedCommand ??= new LoadedCommand(async (obj) =>
             {
-                await LoadedMethod(obj);
-            }, this));
+                await LoadMethod(obj);
+            }, this);
         }
 
-        public abstract Task LoadedMethod(object obj);
+        public abstract Task LoadMethod(object obj);
     }
 }

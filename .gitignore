@@ -264,3 +264,4 @@ __pycache__/
 faceitwpf/Properties/Settings.Designer.cs
 faceitwpf/Properties/Settings.settings
 faceitwpf/App.config
+/tests/IntegrationTests/APIKeys.cs

@@ -27,14 +27,13 @@ namespace FaceitStats.Core.Models
                 Winrate = winrate;
             }
         }
-        public string MapName { get; set; }
-        public string MapImage { get => $"/faceitwpf;component/Resources/{MapName}.jpeg"; }
+        public string Map { get; set; }
         public List<PlayerMapStatistics> Players { get; set; } = new List<PlayerMapStatistics>();
         public PlayerMapStatistics Average { get; set; }
 
         private MapStatistics(string mapName, List<TeamAnalyzeObject> playersStats)
         {
-            MapName = mapName;
+            Map = mapName;
             foreach (TeamAnalyzeObject player in playersStats)
             {
                 Players.Add(new PlayerMapStatistics(mapName, player));

@@ -9,7 +9,6 @@ namespace FaceitStats.Core.Models
         public List<PlayerInfo> Players { get; set; }
         public int AverageLevel { get; set; }
         public int Rating { get; set; }
-        public string AverageLevelImage { get => $"/faceitwpf;component/Resources/lvl{AverageLevel}.png"; }
         public double WinProbability { get; set; }
     }
 }

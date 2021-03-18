@@ -4,13 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:local="clr-namespace:FaceitStats.WPF.Views" 
     xmlns:controls="clr-namespace:FaceitStats.WPF.Views.Controls" 
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
-    xmlns:converters="clr-namespace:FaceitStats.WPF.Views.Converters" xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" 
     d:DesignHeight="{StaticResource AppHeight}" 
     d:DesignWidth="{StaticResource AppWidth}"
+    xmlns:viewmodels="clr-namespace:FaceitStats.WPF.ViewModels" 
+    d:DataContext="{d:DesignInstance Type=viewmodels:LobbyViewModel}"
 >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">

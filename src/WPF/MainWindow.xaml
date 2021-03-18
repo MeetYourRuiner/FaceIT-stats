@@ -1,10 +1,12 @@
-﻿<Window x:Class="FaceitStats.WPF.MainWindow"
+﻿<Window 
+    x:Class="FaceitStats.WPF.MainWindow"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:FaceitStats.WPF.ViewModels"
+    xmlns:vm="clr-namespace:FaceitStats.WPF.ViewModels" 
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
     mc:Ignorable="d"
     Title="Цифорки" 
     Height="{StaticResource AppHeight}" 
@@ -14,13 +16,15 @@
     ResizeMode="CanMinimize" 
     Loaded="Window_Loaded"
     Style="{StaticResource WindowStyle}"
+    d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
 >
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
-
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
         <ContentControl Content="{Binding CurrentViewModel}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-        <ContentControl Content="{Binding Error}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,5,5"/>
+        <ContentControl Content="{Binding Notification}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,5,5"/>
     </Grid>
 </Window>

@@ -7,7 +7,6 @@
         public string Nickname { get; set; }
         public int Level { get; set; }
         public int Elo { get; set; }
-        public string LevelImage { get => $"/faceitwpf;component/Resources/lvl{Level}.png"; }
         public int PartyIndex { get; set; } = -1;
     }
 }

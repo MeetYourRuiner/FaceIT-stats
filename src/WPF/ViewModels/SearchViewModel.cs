@@ -1,9 +1,9 @@
-﻿using FaceitStats.WPF.Interfaces;
+﻿using FaceitStats.WPF.Classes;
+using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.ViewModels.Abstractions;
 using FaceitStats.WPF.ViewModels.Commands;
 using FaceitStats.WPF.Views.Enums;
 using System;
-using System.Collections.Specialized;
 
 namespace FaceitStats.WPF.ViewModels
 {
@@ -11,8 +11,9 @@ namespace FaceitStats.WPF.ViewModels
     {
         private readonly IUpdateService _updateService;
         private readonly INavigator _navigator;
-        private string _playerName;
         private bool _isLoaded = false;
+
+        private string _playerName;
         public string PlayerName
         {
             get { return _playerName; }
@@ -103,7 +104,7 @@ namespace FaceitStats.WPF.ViewModels
         private RelayCommand _searchCommand;
         public RelayCommand SearchCommand
         {
-            get => _searchCommand ?? (_searchCommand = new RelayCommand((obj) =>
+            get => _searchCommand ??= new RelayCommand((obj) =>
             {
                 if (obj != null)
                 {
@@ -116,13 +117,13 @@ namespace FaceitStats.WPF.ViewModels
                     Properties.Settings.Default.Save();
                     _navigator.Navigate(ViewTypes.Data, PlayerName);
                 }
-            }));
+            });
         }
 
         private RelayCommand _updateCommand;
         public RelayCommand UpdateCommand
         {
-            get => _updateCommand ?? (_updateCommand = new RelayCommand(async (obj) =>
+            get => _updateCommand ??= new RelayCommand(async (obj) =>
             {
                 try
                 {
@@ -132,76 +133,66 @@ namespace FaceitStats.WPF.ViewModels
                 catch (Exception ex)
                 {
                     IsUpdating = false;
-                    _navigator.DisplayError(ex);
+                    //_navigator.DisplayError(ex);
                 }
                 finally
                 {
                     IsUpdating = false;
                 }
-            }));
+            });
         }
 
         private RelayCommand _loadedCommand;
         public RelayCommand LoadedCommand
         {
-            get => _loadedCommand ?? (_loadedCommand = new RelayCommand((obj) =>
+            get => _loadedCommand ??= new RelayCommand((obj) =>
             {
-                StringCollection favoritesCollection = Properties.Settings.Default.Favorites;
-                string[] favorites = new string[favoritesCollection.Count];
-                favoritesCollection.CopyTo(favorites, 0);
-                Favorites = favorites;
+                Favorites = FavoritesWrapper.ListAll();
 
                 if (_isLoaded)
                     return;
 
                 PlayerName = Properties.Settings.Default.LastNickname;
-
                 IsTextboxFocused = true;
                 _isLoaded = true;
-                _navigator.DisplayError(new Exception("Даже не дебажил)0)"));
+
                 CheckForUpdate();
-            }));
+            });
         }
 
         private RelayCommand _openFavoritesCommand;
         public RelayCommand OpenFavoritesCommand
         {
-            get => _openFavoritesCommand ?? (_openFavoritesCommand = new RelayCommand((obj) =>
+            get => _openFavoritesCommand ??= new RelayCommand((obj) =>
             {
                 IsFavoritesOpen = true;
-            }));
+            });
         }
 
         private RelayCommand _closeFavoritesCommand;
         public RelayCommand CloseFavoritesCommand
         {
-            get => _closeFavoritesCommand ?? (_closeFavoritesCommand = new RelayCommand((obj) =>
+            get => _closeFavoritesCommand ??= new RelayCommand((obj) =>
             {
                 IsFavoritesOpen = false;
-            }));
+            });
         }
 
         private RelayCommand _removeFromFavoritesCommand;
         public RelayCommand RemoveFromFavoritesCommand
         {
-            get => _removeFromFavoritesCommand ?? (_removeFromFavoritesCommand = new RelayCommand((obj) =>
+            get => _removeFromFavoritesCommand ??= new RelayCommand((obj) =>
             {
                 string playerName = (string)obj;
-                StringCollection favoritesCollection = Properties.Settings.Default.Favorites;
-                favoritesCollection.Remove(playerName);
-                Properties.Settings.Default.Favorites = favoritesCollection;
-                Properties.Settings.Default.Save();
-
-                string[] favorites = new string[favoritesCollection.Count];
-                favoritesCollection.CopyTo(favorites, 0);
-                Favorites = favorites;
-            }));
+                FavoritesWrapper.Remove(playerName);
+                Favorites = FavoritesWrapper.ListAll();
+            });
         }
 
-        public SearchViewModel(IUpdateService updateService, INavigator navigator, object parameter)
+        public SearchViewModel(IUpdateService updateService, INavigator navigator)
         {
-            this._updateService = updateService;
-            this._navigator = navigator;
+            _updateService = updateService;
+            _navigator = navigator;
         }
 
         private async void CheckForUpdate()

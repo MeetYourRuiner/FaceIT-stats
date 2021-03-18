@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace FaceitStats.Core.Extensions
+namespace FaceitStats.WPF.Interfaces
 {
-    public static class JsonExtensions
+    interface INotifyService
     {
     }
 }

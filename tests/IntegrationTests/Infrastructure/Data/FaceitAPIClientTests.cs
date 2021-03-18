@@ -102,7 +102,7 @@ namespace IntegrationTests.Infrastructure.Data
                 var playerStats = await _faceitAPIClient.FetchPlayerStatsAsync(playerProfile.Id);
                 foreach (var mapStats in playerStats.MapOverallStats)
                 {
-                    _output.WriteLine($"{mapStats.MapName}: {mapStats.Matches} matches");
+                    _output.WriteLine($"{mapStats.Map}: {mapStats.Matches} matches");
                 }
                 Assert.True(true);
             }
@@ -141,6 +141,20 @@ namespace IntegrationTests.Infrastructure.Data
                         _output.WriteLine($"{player.Nickname}: {player.Kills} / {player.Deaths}");
                     }
                 }
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.False(true, ex.Message);
+            }
+        }
+
+        [Fact]
+        public async void FetchMatchInfoAsyncBO3()
+        {
+            try
+            {
+                var matchStats = await _faceitAPIClient.FetchMatchInfoAsync("1-e9fb6ba4-b350-407e-8694-3e4f3d26d1dd");
                 Assert.True(true);
             }
             catch (Exception ex)
