@@ -72,9 +72,9 @@ namespace FaceitStats.WPF.ViewModels.Controls
 
         public LobbyTeamInfoViewModel(IFaceitService faceitService, INavigator navigator, TeamInfo lobbyTeamInfo)
         {
-            this._navigator = navigator;
+            _navigator = navigator;
             LobbyTeamInfo = lobbyTeamInfo;
-            this._faceitService = faceitService;
+            _faceitService = faceitService;
         }
 
         public override async Task LoadMethod(object obj)
@@ -98,7 +98,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
                             List<Match> playerLastMatches;
                             try
                             {
-                                playerProfile = await this._faceitService.GetProfileByIdAsync(playerInfo.Id);
+                                playerProfile = await _faceitService.GetProfileByIdAsync(playerInfo.Id);
                             }
                             catch
                             {
@@ -107,7 +107,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
 
                             try
                             {
-                                playerStats = await this._faceitService.GetOverallStatsAsync(playerInfo.Id);
+                                playerStats = await _faceitService.GetOverallStatsAsync(playerInfo.Id);
                             }
                             catch
                             {
@@ -116,7 +116,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
 
                             try
                             {
-                                playerLastMatches = await this._faceitService.GetMatchesAsync(playerInfo.Id, 20);
+                                playerLastMatches = await _faceitService.GetMatchesAsync(playerInfo.Id, 20);
                             }
                             catch
                             {

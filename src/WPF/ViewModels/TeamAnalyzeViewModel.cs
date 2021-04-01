@@ -105,7 +105,7 @@ namespace FaceitStats.WPF.ViewModels
             foreach (MapStatistics mapStats in mapsStats)
             {
                 DataRow row = dataTable.NewRow();
-                row["map"] = mapStats.MapImage;
+                row["map"] = mapStats.Map;
                 row["average_matches"] = mapStats.Average.Matches;
                 row["average_winrate"] = mapStats.Average.Winrate;
                 for (int j = 0; j < mapStats.Players.Count; j++)

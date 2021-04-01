@@ -1,4 +1,5 @@
 ﻿<Window 
+    Name="mainWindow"
     x:Class="FaceitStats.WPF.MainWindow"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -9,21 +10,20 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
     mc:Ignorable="d"
     Title="Цифорки" 
-    Height="{StaticResource AppHeight}" 
-    Width="{StaticResource AppWidth}"
     Background="{StaticResource AppWindowBackground}" 
     WindowStartupLocation="CenterScreen" 
     ResizeMode="CanMinimize" 
-    Loaded="Window_Loaded"
     Style="{StaticResource WindowStyle}"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
+    SizeToContent="WidthAndHeight" 
 >
+    <!--Bug: SizeToContent breaks EventTriggers -->
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+            <i:InvokeCommandAction Command="{Binding ElementName=mainWindow, Path=DataContext.LoadedCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Grid>
+    <Grid Height="{StaticResource AppHeight}" Width="{StaticResource AppWidth}">
         <ContentControl Content="{Binding CurrentViewModel}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         <ContentControl Content="{Binding Notification}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,5,5"/>
     </Grid>

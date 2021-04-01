@@ -57,7 +57,7 @@
                     <Label
                         Style="{StaticResource DGLabelHeader}"
                         Content="Avg Level:"/>
-                    <Image Source="{Binding LobbyTeamInfo.AverageLevelImage}" Height="32" Width="32"/>
+                    <Image Source="{Binding LobbyTeamInfo.AverageLevel, Converter={StaticResource LevelToImageConverter}}" Height="32" Width="32"/>
                 </StackPanel>
                 <StackPanel 
                     x:Name="spAverageElo"
@@ -68,11 +68,11 @@
                 >
                     <Label
                         Style="{StaticResource DGLabelHeader}"
-                        Content="Avg Elo:"
+                        Content="Rating:"
                     />
                     <Label
                         Style="{StaticResource DGLabelHeader}"
-                        Content="{Binding LobbyTeamInfo.AverageElo}"
+                        Content="{Binding LobbyTeamInfo.Rating}"
                      />
                 </StackPanel>
             </DockPanel>
@@ -136,7 +136,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <Image Source="{Binding PlayerInfo.LevelImage}" Height="32" Width="32"/>
+                                <Image Source="{Binding PlayerInfo.Level, Converter={StaticResource LevelToImageConverter}}" Height="32" Width="32"/>
                                 <Label Padding="0, 2, 0, 0" VerticalAlignment="Bottom" Height="14" Margin="0, 5, 0, 0" HorizontalAlignment="Center" Content="{Binding PlayerInfo.Elo}" Foreground="Gray" FontSize="10"/>
                             </StackPanel>
                         </DataTemplate>

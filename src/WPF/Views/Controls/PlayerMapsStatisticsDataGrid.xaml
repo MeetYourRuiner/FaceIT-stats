@@ -35,7 +35,7 @@
                             <Border BorderThickness="0" Background="{StaticResource AppControlBackground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Border.Style>
                                     <Style TargetType="{x:Type Border}">
-                                        <Setter Property="ToolTip" Value="{Binding Path=MapName}"/>
+                                        <Setter Property="ToolTip" Value="{Binding Path=Map}"/>
                                     </Style>
                                 </Border.Style>
                                 <Image Height="49" Stretch="Fill" Source="{Binding Map, Converter={StaticResource MapToImageConverter}, FallbackValue={StaticResource defaultMap}}"/>

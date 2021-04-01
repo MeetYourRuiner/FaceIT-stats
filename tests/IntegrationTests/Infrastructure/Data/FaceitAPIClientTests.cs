@@ -19,7 +19,7 @@ namespace IntegrationTests.Infrastructure.Data
             _faceitAPIClient = new FaceitAPIClient(APIKeys.FaceitAPIKey, APIKeys.UserAPIKey);
         }
 
-        #region Typical account
+        #region Common account
         [Fact]
         public async void FetchPlayerProfileAsync100ch()
         {

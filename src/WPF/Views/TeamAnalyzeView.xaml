@@ -139,7 +139,7 @@
                             <Label
                                 Style="{StaticResource DGLabelHeader}"
                                 Content="{Binding Players[0].Nickname}"/>
-                            <Image Source="{Binding Players[0].LevelImage}" Height="24" Width="24"/>
+                            <Image Source="{Binding Players[0].Level, Converter={StaticResource LevelToImageConverter}}" Height="24" Width="24"/>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -156,7 +156,7 @@
                             <Label
                                 Style="{StaticResource DGLabelHeader}"
                                 Content="{Binding Players[1].Nickname}"/>
-                            <Image Source="{Binding Players[1].LevelImage}" Height="24" Width="24"/>
+                            <Image Source="{Binding Players[1].Level, Converter={StaticResource LevelToImageConverter}}" Height="24" Width="24"/>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -172,7 +172,7 @@
                             <Label
                                 Style="{StaticResource DGLabelHeader}"
                                 Content="{Binding Players[2].Nickname}"/>
-                            <Image Source="{Binding Players[2].LevelImage}" Height="24" Width="24"/>
+                            <Image Source="{Binding Players[2].Level, Converter={StaticResource LevelToImageConverter}}" Height="24" Width="24"/>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -189,7 +189,7 @@
                             <Label
                                 Style="{StaticResource DGLabelHeader}"
                                 Content="{Binding Players[3].Nickname}"/>
-                            <Image Source="{Binding Players[3].LevelImage}" Height="24" Width="24"/>
+                            <Image Source="{Binding Players[3].Level, Converter={StaticResource LevelToImageConverter}}" Height="24" Width="24"/>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -205,7 +205,7 @@
                             <Label
                                 Style="{StaticResource DGLabelHeader}"
                                 Content="{Binding Players[4].Nickname}"/>
-                            <Image Source="{Binding Players[4].LevelImage}" Height="24" Width="24"/>
+                            <Image Source="{Binding Players[4].Level, Converter={StaticResource LevelToImageConverter}}" Height="24" Width="24"/>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -228,7 +228,7 @@
                         </DataGridTemplateColumn.HeaderStyle>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding map}" Stretch="Fill"/>
+                                <Image Source="{Binding map, Converter={StaticResource MapToImageConverter}}" Stretch="Fill"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

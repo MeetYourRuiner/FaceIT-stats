@@ -11,10 +11,5 @@ namespace FaceitStats.WPF
         {
             InitializeComponent();
         }
-
-        private void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            //Title = "Цифорки " + UpdateService.GetCurrentVersion();
-        }
     }
 }

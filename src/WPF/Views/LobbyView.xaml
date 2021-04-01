@@ -90,7 +90,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" Height="Auto" 
                 >
-                    <Image Stretch="Fill" Source="{Binding CurrentMatchInfo.MapImage}"/>
+                    <Image Stretch="Fill" Source="{Binding CurrentMatchInfo.Map, Converter={StaticResource MapToImageConverter}}"/>
                 </Label>
                 <StackPanel
                     Grid.ColumnSpan="2"

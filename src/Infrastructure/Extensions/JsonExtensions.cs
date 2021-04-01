@@ -13,17 +13,17 @@ namespace FaceitStats.Infrastructure.Extensions
         {
             var pp = new PlayerProfile
             {
-                Id = jToken.Value<string>("player_id") ?? jToken.Value<string>("guid"),
-                Nickname = jToken.Value<string>("nickname"),
-                Country = jToken.Value<string>("country"),
-                FaceitLanguage = jToken["settings"].Value<string>("language"),
-                SteamID64 = jToken.Value<string>("steam_id_64"),
-                Avatar = jToken.Value<string>("avatar"),
-                Level = jToken["games"]["csgo"].Value<int>("skill_level"),
-                Elo = jToken["games"]["csgo"].Value<int>("faceit_elo")
+                Id = (string)jToken.SelectToken("player_id") ?? (string)jToken.SelectToken("guid"),
+                Nickname = (string)jToken.SelectToken("nickname"),
+                Country = (string)jToken.SelectToken("country"),
+                FaceitLanguage = (string)jToken.SelectToken("settings.language"),
+                SteamID64 = (string)jToken.SelectToken("steam_id_64"),
+                Avatar = (string)jToken.SelectToken("avatar"),
+                Level = (int)(jToken.SelectToken("games.csgo.skill_level") ?? 0),
+                Elo = (int)(jToken.SelectToken("games.csgo.faceit_elo") ?? 0)
             };
-            pp.FaceitURL = jToken.Value<string>("faceit_url") ?? $"https://www.faceit.com/en/players/{pp.Nickname}";
-            pp.CoverImage = jToken.Value<string>("cover_image") ?? jToken.Value<string>("cover_image_url");
+            pp.FaceitURL = (string)jToken.SelectToken("faceit_url") ?? $"https://www.faceit.com/en/players/{pp.Nickname}";
+            pp.CoverImage = (string)jToken.SelectToken("cover_image") ?? (string)jToken.SelectToken("cover_image_url");
             return pp;
         }
 
@@ -32,11 +32,11 @@ namespace FaceitStats.Infrastructure.Extensions
             var lifetimeToken = jToken["lifetime"];
             var playerStats = new PlayerOverallStats
             {
-                Id = lifetimeToken["_id"].Value<string>("playerId"),
-                Matches = lifetimeToken.Value<int>(OverallStatsConstants.Matches),
-                Winrate = lifetimeToken.Value<int>(OverallStatsConstants.Winrate),
-                KDRatio = lifetimeToken.Value<double>(OverallStatsConstants.KDRatio),
-                HSPercentage = lifetimeToken.Value<int>(OverallStatsConstants.HSPercentage),
+                Id =(string)lifetimeToken.SelectToken("_id.playerId"),
+                Matches =(int)(lifetimeToken.SelectToken(OverallStatsConstants.Matches) ?? 0),
+                Winrate =(int)(lifetimeToken.SelectToken(OverallStatsConstants.Winrate) ?? 0),
+                KDRatio =(double)(lifetimeToken.SelectToken(OverallStatsConstants.KDRatio) ?? 0),
+                HSPercentage =(int)(lifetimeToken.SelectToken(OverallStatsConstants.HSPercentage) ?? 0),
                 MapOverallStats = new List<MapOverallStats>()
             };
 
@@ -47,18 +47,18 @@ namespace FaceitStats.Infrastructure.Extensions
                 var mapStats = new MapOverallStats
                 {
                     Map = ((JProperty)map).Name,
-                    Matches = mapToken.Value<int>(OverallStatsConstants.Matches),
-                    Winrate = mapToken.Value<int>(OverallStatsConstants.Winrate),
-                    Kills = mapToken.Value<double>(OverallStatsConstants.Kills),
-                    Deaths = mapToken.Value<double>(OverallStatsConstants.Deaths),
-                    Assists = mapToken.Value<double>(OverallStatsConstants.Assists),
-                    KDRatio = mapToken.Value<double>(OverallStatsConstants.KDRatio),
-                    KRRatio = mapToken.Value<double>(OverallStatsConstants.KRRatio),
-                    HSPerMatch = mapToken.Value<double>(OverallStatsConstants.HSPerMatch),
-                    HSPercentage = mapToken.Value<int>(OverallStatsConstants.HSPercentage),
-                    TriplePerMatch = mapToken.Value<double>(OverallStatsConstants.TriplePerMatch),
-                    QuadroPerMatch = mapToken.Value<double>(OverallStatsConstants.QuadroPerMatch),
-                    AcePerMatch = mapToken.Value<double>(OverallStatsConstants.AcePerMatch)
+                    Matches = (int)(mapToken.SelectToken(OverallStatsConstants.Matches) ?? 0),
+                    Winrate = (int)(mapToken.SelectToken(OverallStatsConstants.Winrate) ?? 0),
+                    Kills = (double)(mapToken.SelectToken(OverallStatsConstants.Kills) ?? 0),
+                    Deaths = (double)(mapToken.SelectToken(OverallStatsConstants.Deaths) ?? 0),
+                    Assists = (double)(mapToken.SelectToken(OverallStatsConstants.Assists) ?? 0),
+                    KDRatio = (double)(mapToken.SelectToken(OverallStatsConstants.KDRatio) ?? 0),
+                    KRRatio = (double)(mapToken.SelectToken(OverallStatsConstants.KRRatio) ?? 0),
+                    HSPerMatch = (double)(mapToken.SelectToken(OverallStatsConstants.HSPerMatch) ?? 0),
+                    HSPercentage = (int)(mapToken.SelectToken(OverallStatsConstants.HSPercentage) ?? 0),
+                    TriplePerMatch = (double)(mapToken.SelectToken(OverallStatsConstants.TriplePerMatch) ?? 0),
+                    QuadroPerMatch = (double)(mapToken.SelectToken(OverallStatsConstants.QuadroPerMatch) ?? 0),
+                    AcePerMatch = (double)(mapToken.SelectToken(OverallStatsConstants.AcePerMatch) ?? 0)
                 };
                 playerStats.MapOverallStats.Add(mapStats);
             }
@@ -69,24 +69,29 @@ namespace FaceitStats.Infrastructure.Extensions
         {
             static TeamInfo ToTeamInfo(JToken jToken)
             {
+                JToken statsToken = jToken["stats"];
+                bool isStatsNull = statsToken == null;
                 var teamInfo = new TeamInfo
                 {
-                    Name = jToken.Value<string>("name"),
-                    AverageLevel = jToken["stats"]["skillLevel"]["average"].Value<int>(),
-                    Rating = jToken["stats"]["rating"].Value<int>(),
-                    WinProbability = jToken["stats"]["winProbability"].Value<double>(),
+                    Name = (string)jToken.SelectToken("name"),
                     Players = new List<PlayerInfo>()
                 };
+                if (!isStatsNull)
+                {
+                    teamInfo.AverageLevel = (int)(statsToken.SelectToken("skillLevel.average") ?? 0);
+                    teamInfo.Rating = (int)(statsToken.SelectToken("rating") ?? 0);
+                    teamInfo.WinProbability = (double)(statsToken.SelectToken("winProbability") ?? 0);
+                }
                 JToken playersToken = jToken["roster"];
                 foreach (var player in playersToken)
                 {
                     var playerInfo = new PlayerInfo
                     {
-                        Id = player.Value<string>("id"),
-                        Avatar = player.Value<string>("avatar"),
-                        Nickname = player.Value<string>("nickname"),
-                        Level = player.Value<int>("gameSkillLevel"),
-                        Elo = player.Value<int>("elo"),
+                        Id = (string)player.SelectToken("id"),
+                        Avatar = (string)player.SelectToken("avatar"),
+                        Nickname = (string)player.SelectToken("nickname"),
+                        Level = (int)(player.SelectToken("gameSkillLevel") ?? 0),
+                        Elo = (int)(player.SelectToken("elo") ?? 0),
                     };
                     teamInfo.Players.Add(playerInfo);
                 }
@@ -95,17 +100,21 @@ namespace FaceitStats.Infrastructure.Extensions
 
             var matchInfo = new MatchInfo
             {
-                Id = jToken.Value<string>("id"),
-                CompetitionName = jToken["entity"]["name"].Value<string>(),
+                Id = (string)jToken.SelectToken("id"),
+                CompetitionName = (string)jToken.SelectToken("entity.name"),
                 TeamA = ToTeamInfo(jToken["teams"]["faction1"]),
                 TeamB = ToTeamInfo(jToken["teams"]["faction2"]),
-                TeamAScore = jToken["results"][0]["factions"]["faction1"]["score"].Value<int>(),
-                TeamBScore = jToken["results"][0]["factions"]["faction2"]["score"].Value<int>(),
-                State = jToken.Value<string>("state"),
-                Map = jToken["voting"]["map"]["pick"][0].Value<string>(),
-                Date = jToken["createdAt"].Value<DateTime>(),
+                State = (string)jToken.SelectToken("state"),
+                Map = (string)jToken.SelectToken("voting.map.pick[0]"),
+                Date = (DateTime)jToken.SelectToken("createdAt"),
                 Parties = jToken["entityCustom"]["parties"].ToObject<Dictionary<string, string[]>>(),
             };
+            JToken resultsToken = jToken["results"];
+            if (resultsToken != null)
+            {
+                matchInfo.TeamAScore = (int)(resultsToken[0].SelectToken("factions.faction1.score") ?? 0);
+                matchInfo.TeamBScore = (int)(resultsToken[0].SelectToken("factions.faction2.score") ?? 0);
+            }
             return matchInfo;
         }
 
@@ -116,9 +125,9 @@ namespace FaceitStats.Infrastructure.Extensions
             {
                 var match = new Match
                 {
-                    Id = matchToken.Value<string>("matchId"),
-                    _Date = matchToken.Value<long>("date"),
-                    ELO = matchToken.Value<int>("elo"),
+                    Id = (string)matchToken.SelectToken("matchId"),
+                    _Date = (long)matchToken.SelectToken("date"),
+                    ELO = (int)(matchToken.SelectToken("elo") ?? 0),
                     RoundStats = matchToken.ToRoundStats(),
                     PlayerStats = matchToken.ToPlayerStats(),
                     TeamStats = matchToken.ToTeamStats()
@@ -131,49 +140,49 @@ namespace FaceitStats.Infrastructure.Extensions
         public static RoundStats ToRoundStats(this JToken jToken) =>
             new RoundStats
             {
-                Score = jToken.Value<string>(MatchStatsConstants.Score),
-                Map = jToken.Value<string>(MatchStatsConstants.Map),
-                RoundNumber = jToken.Value<int>("matchRound")
+                Score = (string)jToken.SelectToken(MatchStatsConstants.Score),
+                Map = (string)jToken.SelectToken(MatchStatsConstants.Map),
+                RoundNumber = (int)(jToken.SelectToken("matchRound") ?? 0)
             };
 
         public static TeamStats ToTeamStats(this JToken jToken) =>
            new TeamStats
            {
-               Id = jToken.Value<string>("teamId"),
-               Name = jToken.Value<string>(MatchStatsConstants.TeamName),
-               IsPremade = jToken.Value<bool>("premade"),
-               FirstHalfScore = jToken.Value<int>(MatchStatsConstants.FirstHalfScore),
-               SecondHalfScore = jToken.Value<int>(MatchStatsConstants.SecondHalfScore),
-               TeamWin = jToken.Value<int>(MatchStatsConstants.TeamWin),
-               FinalScore = jToken.Value<int>(MatchStatsConstants.FinalScore),
+               Id = (string)jToken.SelectToken("teamId"),
+               Name = (string)jToken.SelectToken(MatchStatsConstants.TeamName),
+               IsPremade = (bool)jToken.SelectToken("premade"),
+               FirstHalfScore = (int)(jToken.SelectToken(MatchStatsConstants.FirstHalfScore) ?? 0),
+               SecondHalfScore = (int)(jToken.SelectToken(MatchStatsConstants.SecondHalfScore) ?? 0),
+               TeamWin = (int)(jToken.SelectToken(MatchStatsConstants.TeamWin) ?? 0),
+               FinalScore = (int)(jToken.SelectToken(MatchStatsConstants.FinalScore) ?? 0),
                Players = jToken["players"]?.Select(token => token.ToPlayerStats()).ToList()
            };
 
         public static PlayerStats ToPlayerStats(this JToken jToken) =>
             new PlayerStats
             {
-                Id = jToken.Value<string>("playerId"),
-                Nickname = jToken.Value<string>("nickname"),
-                TripleKills = jToken.Value<int>(MatchStatsConstants.TripleKills),
-                QuadroKills = jToken.Value<int>(MatchStatsConstants.QuadroKills),
-                PentaKills = jToken.Value<int>(MatchStatsConstants.PentaKills),
-                KDRatio = jToken.Value<double>(MatchStatsConstants.KDRatio),
-                KRRatio = jToken.Value<double>(MatchStatsConstants.KRRatio),
-                MVPs = jToken.Value<int>(MatchStatsConstants.MVPs),
-                Kills = jToken.Value<int>(MatchStatsConstants.Kills),
-                Assists = jToken.Value<int>(MatchStatsConstants.Assists),
-                Deaths = jToken.Value<int>(MatchStatsConstants.Deaths),
-                Headshots = jToken.Value<int>(MatchStatsConstants.Headshots),
-                HSPercentage = jToken.Value<int>(MatchStatsConstants.HSPercentage),
-                _Result = jToken.Value<int>(MatchStatsConstants.Result)
+                Id = (string)jToken.SelectToken("playerId"),
+                Nickname = (string)jToken.SelectToken("nickname"),
+                TripleKills = (int)(jToken.SelectToken(MatchStatsConstants.TripleKills) ?? 0),
+                QuadroKills = (int)(jToken.SelectToken(MatchStatsConstants.QuadroKills) ?? 0),
+                PentaKills = (int)(jToken.SelectToken(MatchStatsConstants.PentaKills) ?? 0),
+                KDRatio = (double)(jToken.SelectToken(MatchStatsConstants.KDRatio) ?? 0),
+                KRRatio = (double)(jToken.SelectToken(MatchStatsConstants.KRRatio) ?? 0),
+                MVPs = (int)(jToken.SelectToken(MatchStatsConstants.MVPs) ?? 0),
+                Kills = (int)(jToken.SelectToken(MatchStatsConstants.Kills) ?? 0),
+                Assists = (int)(jToken.SelectToken(MatchStatsConstants.Assists) ?? 0),
+                Deaths = (int)(jToken.SelectToken(MatchStatsConstants.Deaths) ?? 0),
+                Headshots = (int)(jToken.SelectToken(MatchStatsConstants.Headshots) ?? 0),
+                HSPercentage = (int)(jToken.SelectToken(MatchStatsConstants.HSPercentage) ?? 0),
+                _Result = (int)(jToken.SelectToken(MatchStatsConstants.Result) ?? 0)
             };
 
         public static List<MatchStats> ToMatchStatsList(this JToken jToken) =>
             jToken.Children().Select(token => new MatchStats()
             {
-                Id = token.Value<string>("matchId"),
+                Id = (string)token.SelectToken("matchId"),
                 RoundStats = token.ToRoundStats(),
-                _Date = token.Value<long>("date"),
+                _Date = (long)(token.SelectToken("date") ?? 0),
                 TeamA = token["teams"][0].ToTeamStats(),
                 TeamB = token["teams"][1].ToTeamStats(),
             }).ToList();
