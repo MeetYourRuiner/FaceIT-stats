@@ -20,10 +20,10 @@
     </i:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="320*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="83*"/>
-            <RowDefinition Height="307*"/>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -35,6 +35,7 @@
             Grid.ColumnSpan="3" 
             Grid.RowSpan="4" 
             Panel.ZIndex="1"
+            d:IsHidden="True"
         />
         <!--Update-->
         <Button
@@ -71,8 +72,7 @@
         <!--Logo-->
         <Rectangle 
             HorizontalAlignment="Center" 
-            Height="94" 
-            Margin="140,108,140,105" 
+            Height="94"
             Width="100" 
             VerticalAlignment="Center"
             Grid.Row="3" 

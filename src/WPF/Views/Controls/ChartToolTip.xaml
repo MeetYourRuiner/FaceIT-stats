@@ -5,9 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:local="clr-namespace:FaceitStats.WPF.Views.Controls"
-             xmlns:models="clr-namespace:FaceitStats.Core.Models"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" 
+             xmlns:models="clr-namespace:FaceitStats.Core.Models;assembly=FaceitStats.Core"
+             mc:Ignorable="d"
              d:DataContext="{d:DesignInstance local:ChartToolTip}"
              Background="#E4555555" Padding="5" BorderThickness="1" >
     <ItemsControl ItemsSource="{Binding Data.Points}" Grid.IsSharedSizeScope="True">
