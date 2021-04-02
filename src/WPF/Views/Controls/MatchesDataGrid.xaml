@@ -8,7 +8,7 @@
     mc:Ignorable="d" 
     d:DesignHeight="450"
     d:DesignWidth="800" 
-    x:Name="matchesDataGrid"
+    x:Name="control"
     xmlns:controlsVm="clr-namespace:FaceitStats.WPF.ViewModels.Controls" 
     d:DataContext="{d:DesignInstance Type=controlsVm:MatchesViewModel}"
 >
@@ -17,11 +17,12 @@
         <BitmapImage x:Key='defaultMap' UriSource='/FaceitStats.WPF;component/Resources/icon-pheasant-preview-2-268x151.png'/>
     </UserControl.Resources>
     <DataGrid
+        x:Name="dataGrid"
         ItemsSource="{Binding Matches}"
         Style="{StaticResource DGStyle}"
         ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
         RowStyle="{StaticResource DGRowStyle}"
-        RowHeight="49"
+        Loaded="DataGrid_Loaded"
     >
         <DataGrid.Columns>
             <DataGridTemplateColumn 

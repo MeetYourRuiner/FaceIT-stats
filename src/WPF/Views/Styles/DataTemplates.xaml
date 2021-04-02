@@ -38,7 +38,7 @@
         <controls:PlayerMapsStatisticsDataGrid/>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type classes:Error}">
+    <DataTemplate DataType="{x:Type classes:Notification}">
         <controls:ErrorMessage/>
     </DataTemplate>
 </ResourceDictionary>

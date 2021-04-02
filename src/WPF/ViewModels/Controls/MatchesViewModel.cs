@@ -17,9 +17,21 @@ namespace FaceitStats.WPF.ViewModels.Controls
             }
         }
 
-        public MatchesViewModel(List<Match> matches)
+        private int _matchesOnPage;
+        public int MatchesOnPage
+        {
+            get { return _matchesOnPage; }
+            set
+            {
+                _matchesOnPage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public MatchesViewModel(List<Match> matches, int matchesOnPage)
         {
             Matches = matches;
+            MatchesOnPage = matchesOnPage;
         }
     }
 }

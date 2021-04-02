@@ -3,22 +3,22 @@ using System.Timers;
 
 namespace FaceitStats.WPF.Classes
 {
-    class Error
+    class Notification
     {
-        private Timer timer;
+        private Timer _timer;
 
         public string Message { get; set; }
 
-        public Error(string message, int timerSeconds)
+        public Notification(string message, int timerSeconds)
         {
             Message = message;
-            timer = new Timer(timerSeconds * 1000);
-            timer.Elapsed += (sender, e) =>
+            _timer = new Timer(timerSeconds * 1000);
+            _timer.Elapsed += (sender, e) =>
             {
                 TimerElapsed?.Invoke(this, e);
-                timer.Stop();
+                _timer.Stop();
             };
-            timer.Start();
+            _timer.Start();
         }
 
         public event EventHandler TimerElapsed;

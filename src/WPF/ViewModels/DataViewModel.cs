@@ -17,7 +17,7 @@ namespace FaceitStats.WPF.ViewModels
         private readonly IFaceitService _faceitService;
         private readonly INavigator _navigator;
 
-        private const int MATCHES_ON_PAGE = 9;
+        private int MatchesOnPage { get; set; } = 9;
 
         private readonly string _playerName;
         private AveragePerfomance LastMatchesPerfomance { get; set; }
@@ -360,11 +360,11 @@ namespace FaceitStats.WPF.ViewModels
                 {
                     return Matches;
                 }
-                int restOfMatches = Matches.Count - Page * MATCHES_ON_PAGE;
-                if (restOfMatches < MATCHES_ON_PAGE && restOfMatches > 0)
-                    return Matches.GetRange(Page * MATCHES_ON_PAGE, restOfMatches);
+                int restOfMatches = Matches.Count - Page * MatchesOnPage;
+                if (restOfMatches < MatchesOnPage && restOfMatches > 0)
+                    return Matches.GetRange(Page * MatchesOnPage, restOfMatches);
                 else if (restOfMatches > 0)
-                    return Matches.GetRange(Page * MATCHES_ON_PAGE, MATCHES_ON_PAGE);
+                    return Matches.GetRange(Page * MatchesOnPage, MatchesOnPage);
             }
             catch (Exception)
             {
@@ -376,8 +376,8 @@ namespace FaceitStats.WPF.ViewModels
 
         private int CountPages(List<Match> matches)
         {
-            int pagesCount = matches.Count / MATCHES_ON_PAGE;
-            if (matches.Count % MATCHES_ON_PAGE > 0)
+            int pagesCount = matches.Count / MatchesOnPage;
+            if (matches.Count % MatchesOnPage > 0)
                 ++pagesCount;
             return pagesCount;
         }
@@ -387,7 +387,7 @@ namespace FaceitStats.WPF.ViewModels
             try
             {
                 CurrentPlayerProfile = await _faceitService.GetProfileByNameAsync(_playerName);
-                Matches = await _faceitService.GetMatchesAsync(CurrentPlayerProfile.Id, MATCHES_ON_PAGE * 20);
+                Matches = await _faceitService.GetMatchesAsync(CurrentPlayerProfile.Id, MatchesOnPage * 20);
             }
             catch (Exception ex)
             {
@@ -421,7 +421,7 @@ namespace FaceitStats.WPF.ViewModels
             EloChartViewModel = new EloChartViewModel(Matches);
             DisplayablePerfomance = OverallPerfomance ?? LastMatchesPerfomance;
 
-            MatchesViewModel = new MatchesViewModel(SliceOfHistory);
+            MatchesViewModel = new MatchesViewModel(SliceOfHistory, MatchesOnPage);
             PropertyChanged += (s, args) =>
             {
                 if (args.PropertyName == "SliceOfHistory")

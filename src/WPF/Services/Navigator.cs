@@ -11,6 +11,8 @@ namespace FaceitStats.WPF.Services
     class Navigator : INavigator
     {
         private readonly VMFactory _vmFactory;
+        private readonly INotifyService _notifyService;
+
         public event EventHandler<NavigatedEventArgs> Navigated;
 
         public Stack<BaseViewModel> History { get; } = new Stack<BaseViewModel>();
@@ -26,9 +28,10 @@ namespace FaceitStats.WPF.Services
             }
         }
 
-        public Navigator(VMFactory vmFactory)
+        public Navigator(VMFactory vmFactory, INotifyService notifyService)
         {
             _vmFactory = vmFactory;
+            this._notifyService = notifyService;
         }
 
         protected virtual void OnNavigated(NavigatedEventArgs e)
@@ -43,6 +46,10 @@ namespace FaceitStats.WPF.Services
 
         public void GoBack(Exception exception)
         {
+            if (exception != null)
+            {
+                _notifyService.DisplayError(exception);
+            }
             if (History.Peek() != null)
                 CurrentViewModel = History.Pop();
         }

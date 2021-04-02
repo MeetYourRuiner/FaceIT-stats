@@ -131,8 +131,8 @@ namespace FaceitStats.WPF.ViewModels
         {
             get => _openPlayerStatsCommand ??= new RelayCommand((obj) =>
             {
-                //PlayerDetails player = (PlayerDetails)obj;
-                //_navigator.Navigate(Views.Enums.ViewTypes.Data, player.Nickname);
+                Player player = (Player)obj;
+                _navigator.Navigate(Views.Enums.ViewTypes.Data, player.PlayerInfo.Nickname);
             });
         }
 

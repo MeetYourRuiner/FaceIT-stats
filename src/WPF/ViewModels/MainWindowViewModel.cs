@@ -11,8 +11,8 @@ namespace FaceitStats.WPF.ViewModels
         private readonly INavigator _navigator;
         private readonly INotifyService _notifyService;
 
-        private Error _notification;
-        public Error Notification
+        private Notification _notification;
+        public Notification Notification
         {
             get { return _notification; }
             private set
@@ -41,6 +41,14 @@ namespace FaceitStats.WPF.ViewModels
                 _navigator.Navigated += (sender, args) =>
                 {
                     CurrentViewModel = args.DestinationViewModel;
+                };
+                _notifyService.NotificationCreated += (sender, args) =>
+                {
+                    Notification = args.Notification;
+                };
+                _notifyService.NotificationRemoved += (sender, args) =>
+                {
+                    Notification = null;
                 };
                 _navigator.Navigate(ViewTypes.Search);
             });

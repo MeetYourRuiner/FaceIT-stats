@@ -39,8 +39,8 @@ namespace FaceitStats.WPF
             _vmFactory.AddService<VMFactory>(_vmFactory);
             _vmFactory.AddService<IFaceitService>(new FaceitService(Settings.Default.API_Key, Settings.Default.User_API_Key));
             _vmFactory.AddService<IUpdateService>(new UpdateService());
-            _vmFactory.AddService<INavigator>(new Navigator(_vmFactory));
             _vmFactory.AddService<INotifyService>(new NotifyService());
+            _vmFactory.AddService<INavigator, Navigator>();
 
             MainWindow mainWindow = new MainWindow();
             mainWindow.DataContext = _vmFactory.Create<MainWindowViewModel>();

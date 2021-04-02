@@ -14,6 +14,8 @@ namespace FaceitStats.WPF.Classes
 
         private object ResolveType(Type serviceType)
         {
+            if (serviceType == this.GetType())
+                return this;
             if (!serviceType.IsInterface)
                 return null;
             var service = _services.FirstOrDefault(s => s.Key == serviceType).Value;
@@ -30,6 +32,22 @@ namespace FaceitStats.WPF.Classes
         public void AddService<T>(object implementation)
         {
             _services.Add(typeof(T), implementation);
+        }
+        public void AddService<TInterface, TImplementation>()
+        {
+            var serviceType = typeof(TImplementation);
+            var ctor = serviceType.GetConstructors().FirstOrDefault();
+            var ctorParams = ctor.GetParameters();
+            object[] args = new object[ctorParams.Length];
+            int i = 0;
+            foreach (var param in ctorParams)
+            {
+                var service = ResolveType(param.ParameterType);
+                if (service != null)
+                    args[i++] = service;
+            }
+            TImplementation implementation = (TImplementation)ctor.Invoke(args);
+            _services.Add(typeof(TInterface), implementation);
         }
 
         public T Create<T>(object parameter = null) where T : BaseViewModel

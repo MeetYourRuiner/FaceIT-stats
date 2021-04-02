@@ -194,6 +194,88 @@ namespace IntegrationTests.Infrastructure.Data
                 Assert.False(true, ex.Message);
             }
         }
+
+        [Fact]
+        public async void FetchMatchInfoAsync1v1()
+        {
+            try
+            {
+                var matchStats = await _faceitAPIClient.FetchMatchInfoAsync("1-7d3478a8-8b01-44a2-bb5f-3b656a5579aa");
+                Assert.True(true);
+                _output.WriteLine($"{matchStats.TeamA.Players[0].Nickname} vs {matchStats.TeamB.Players[0].Nickname}");
+            }
+            catch (Exception ex)
+            {
+                Assert.False(true, ex.Message);
+            }
+        }
+
+        [Fact]
+        public async void FetchMatchStatsAsync1v1()
+        {
+            try
+            {
+                var matchStats = await _faceitAPIClient.FetchMatchStatsAsync("1-7d3478a8-8b01-44a2-bb5f-3b656a5579aa");
+                foreach (var match in matchStats)
+                {
+                    _output.WriteLine($"{match.RoundStats.RoundNumber} match");
+                    foreach (var player in match.TeamA.Players)
+                    {
+                        _output.WriteLine($"{player.Nickname}: {player.Kills} / {player.Deaths}");
+                    }
+                    foreach (var player in match.TeamB.Players)
+                    {
+                        _output.WriteLine($"{player.Nickname}: {player.Kills} / {player.Deaths}");
+                    }
+                }
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.False(true, ex.Message);
+            }
+        }
+
+        [Fact]
+        public async void FetchMatchInfoAsync2v2()
+        {
+            try
+            {
+                var matchStats = await _faceitAPIClient.FetchMatchInfoAsync("1-253cffd3-9c8c-431b-9612-818458346a5c");
+                Assert.True(true);
+                _output.WriteLine($"{matchStats.TeamA.Players[0].Nickname} vs {matchStats.TeamB.Players[0].Nickname}");
+            }
+            catch (Exception ex)
+            {
+                Assert.False(true, ex.Message);
+            }
+        }
+
+        [Fact]
+        public async void FetchMatchStatsAsync2v2()
+        {
+            try
+            {
+                var matchStats = await _faceitAPIClient.FetchMatchStatsAsync("1-253cffd3-9c8c-431b-9612-818458346a5c");
+                foreach (var match in matchStats)
+                {
+                    _output.WriteLine($"{match.RoundStats.RoundNumber} match");
+                    foreach (var player in match.TeamA.Players)
+                    {
+                        _output.WriteLine($"{player.Nickname}: {player.Kills} / {player.Deaths}");
+                    }
+                    foreach (var player in match.TeamB.Players)
+                    {
+                        _output.WriteLine($"{player.Nickname}: {player.Kills} / {player.Deaths}");
+                    }
+                }
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.False(true, ex.Message);
+            }
+        }
         #endregion
     }
 }

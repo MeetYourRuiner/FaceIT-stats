@@ -113,8 +113,7 @@ namespace FaceitStats.WPF.ViewModels
                 }
                 else if (PlayerName.Length > 0 && PlayerName.Length < 30)
                 {
-                    Properties.Settings.Default.LastNickname = PlayerName;
-                    Properties.Settings.Default.Save();
+                     SettingsWrapper.LastNickname.Set(PlayerName);
                     _navigator.Navigate(ViewTypes.Data, PlayerName);
                 }
             });
@@ -147,12 +146,12 @@ namespace FaceitStats.WPF.ViewModels
         {
             get => _loadedCommand ??= new RelayCommand((obj) =>
             {
-                Favorites = FavoritesWrapper.ListAll();
+                Favorites = SettingsWrapper.Favorites.ListAll();
 
                 if (_isLoaded)
                     return;
 
-                PlayerName = Properties.Settings.Default.LastNickname;
+                PlayerName = SettingsWrapper.LastNickname.Get();
                 IsTextboxFocused = true;
                 _isLoaded = true;
 
@@ -184,8 +183,8 @@ namespace FaceitStats.WPF.ViewModels
             get => _removeFromFavoritesCommand ??= new RelayCommand((obj) =>
             {
                 string playerName = (string)obj;
-                FavoritesWrapper.Remove(playerName);
-                Favorites = FavoritesWrapper.ListAll();
+                SettingsWrapper.Favorites.Remove(playerName);
+                Favorites = SettingsWrapper.Favorites.ListAll();
             });
         }
 
