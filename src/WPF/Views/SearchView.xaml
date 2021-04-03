@@ -78,7 +78,7 @@
             Grid.Row="3" 
             Grid.Column="1">
             <Rectangle.Fill>
-                <ImageBrush ImageSource="/FaceitStats.WPF;component/Resources/icon-pheasant-preview-2-268x151.png" Stretch="None"/>
+                <ImageBrush ImageSource="{StaticResource faceitImage}" Stretch="None"/>
             </Rectangle.Fill>
         </Rectangle>
         <!--Favorites-->
@@ -101,12 +101,12 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="border" Background="Transparent" CornerRadius="4" BorderBrush="Gray" BorderThickness="1" >
-                                    <Image x:Name="image" Width="24" Source="/FaceitStats.WPF;component/Resources/emptyheart.png"/>
+                                    <Image x:Name="image" Width="24" Source="{StaticResource emptyHeartImage}"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AppOrange}"/>
-                                        <Setter TargetName="image" Property="Source" Value="/FaceitStats.WPF;component/Resources/heart.png"/>
+                                        <Setter TargetName="image" Property="Source" Value="{StaticResource filledHeartImage}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>

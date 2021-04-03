@@ -133,7 +133,7 @@
                     Focusable="False"
                     Style="{StaticResource TransparentButton}"
                 >
-                    <Image Width="20" Height="20" Source="/FaceitStats.WPF;component/Resources/refresh.png"/>
+                    <Image Width="20" Height="20" Source="{StaticResource refreshImage}"/>
                 </Button>
                 <Button
                     Width="45"
@@ -144,7 +144,7 @@
                     Command="{Binding OpenMatchFaceitCommand}" 
                     Grid.Column="5"
                 >
-                    <Image Width="32" Source="/FaceitStats.WPF;component/Resources/faceit.png"/>
+                    <Image Width="32" Source="{StaticResource smallFaceitImage}"/>
                 </Button>
             </Grid>
             <!--Back-->
@@ -158,8 +158,6 @@
                 HorizontalAlignment="Left" 
                 Grid.Column="1"
             />
-            <ContentControl Content="{Binding TeamAViewModel}" Grid.Row="2" Grid.ColumnSpan="2"/>
-            <ContentControl Content="{Binding TeamBViewModel}" HorizontalContentAlignment="Right" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="3"/>
             <Label
                 Style="{StaticResource InfoLabel}" 
                 Content="{Binding CurrentMatchInfo.State}" 
@@ -174,6 +172,8 @@
                 Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5"
                 Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
             />
+            <ContentControl Content="{Binding TeamAViewModel}" Grid.Row="2" Grid.ColumnSpan="2"/>
+            <ContentControl Content="{Binding TeamBViewModel}" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="3"/>
             <controls:SmallLoadingAnimation
                 Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5"
                 Visibility="{Binding IsRefreshing, Converter={StaticResource BtVConverter}}" 

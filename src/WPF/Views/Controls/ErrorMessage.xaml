@@ -25,7 +25,7 @@
                                     <ColumnDefinition Width="33"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Image Height="32" Width="32" Source="/FaceitStats.WPF;component/Resources/error.png" Grid.Column="0"/>
+                                <Image Height="32" Width="32" Source="{StaticResource errorImage}" Grid.Column="0"/>
                                 <ContentPresenter
                                     Margin="5,0,0,0"
                                     Grid.Column="1" 

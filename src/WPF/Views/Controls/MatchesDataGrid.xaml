@@ -12,22 +12,24 @@
     xmlns:controlsVm="clr-namespace:FaceitStats.WPF.ViewModels.Controls" 
     d:DataContext="{d:DesignInstance Type=controlsVm:MatchesViewModel}"
 >
-    <UserControl.Resources>
-        <BitmapImage x:Key='defaultAvatar' UriSource='/FaceitStats.WPF;component/Resources/defaultAvatar.png'/>
-        <BitmapImage x:Key='defaultMap' UriSource='/FaceitStats.WPF;component/Resources/icon-pheasant-preview-2-268x151.png'/>
-    </UserControl.Resources>
     <DataGrid
         x:Name="dataGrid"
         ItemsSource="{Binding Matches}"
-        Style="{StaticResource DGStyle}"
         ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
         RowStyle="{StaticResource DGRowStyle}"
         Loaded="DataGrid_Loaded"
     >
+        <DataGrid.Style>
+            <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
+                <Setter Property="RowHeight" Value="{DynamicResource DataViewRowHeight}"/>
+                <Setter Property="ColumnHeaderHeight" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=RowHeight}"/>
+            </Style>
+        </DataGrid.Style>
         <DataGrid.Columns>
-            <DataGridTemplateColumn 
+            <DataGridTemplateColumn
+                x:Name="mapColumn"
                 Header="Map" 
-                Width="100"
+                MinWidth="100"
             >
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
@@ -37,7 +39,7 @@
                                     <Setter Property="ToolTip" Value="{Binding Path=RoundStats.Map}"/>
                                 </Style>
                             </Border.Style>
-                            <Image Height="49" Stretch="Fill" Source="{Binding RoundStats.Map, Converter={StaticResource MapToImageConverter}, FallbackValue={StaticResource defaultMap}}"/>
+                            <Image Height="49" Stretch="Fill" Source="{Binding RoundStats.Map, Converter={StaticResource MapToImageConverter}, FallbackValue={StaticResource faceitImage}}"/>
                         </Border>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
@@ -140,7 +142,7 @@
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
                                                 <Border x:Name="border" Background="Transparent" CornerRadius="4" BorderBrush="White" BorderThickness="1" >
-                                                    <Image Width="20" Height="20" Source="/FaceitStats.WPF;component/Resources/details.png"/>
+                                                    <Image Width="20" Height="20" Source="{StaticResource detailsImage}"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">

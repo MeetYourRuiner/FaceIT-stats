@@ -11,9 +11,6 @@
     xmlns:controlsVm="clr-namespace:FaceitStats.WPF.ViewModels.Controls" 
     d:DataContext="{d:DesignInstance Type=controlsVm:PlayerMapsStatisticsViewModel}"
 >
-    <UserControl.Resources>
-        <BitmapImage x:Key='defaultMap' UriSource='/FaceitStats.WPF;component/Resources/icon-pheasant-preview-2-268x151.png'/>
-    </UserControl.Resources>
     <Grid>
         <DataGrid
             ColumnHeaderStyle="{StaticResource DGColumnHeaderStyle}"
@@ -22,7 +19,9 @@
         >
             <DataGrid.Style>
                 <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
-                    <Setter Property="RowHeight" Value="49"/>
+                    <Setter Property="RowHeight" Value="{DynamicResource DataViewRowHeight}"/>
+                    <Setter Property="ColumnHeaderHeight" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=RowHeight}"/>
+                    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
                 </Style>
             </DataGrid.Style>
             <DataGrid.Columns>
@@ -38,7 +37,7 @@
                                         <Setter Property="ToolTip" Value="{Binding Path=Map}"/>
                                     </Style>
                                 </Border.Style>
-                                <Image Height="49" Stretch="Fill" Source="{Binding Map, Converter={StaticResource MapToImageConverter}, FallbackValue={StaticResource defaultMap}}"/>
+                                <Image Height="49" Stretch="Fill" Source="{Binding Map, Converter={StaticResource MapToImageConverter}, FallbackValue={StaticResource faceitImage}}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

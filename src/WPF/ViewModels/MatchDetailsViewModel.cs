@@ -182,7 +182,14 @@ namespace FaceitStats.WPF.ViewModels
         {
             static void sortPlayers(List<Player> players)
             {
-                players.Sort((p1, p2) => p2.CurrentPlayerStats.Kills.CompareTo(p1.CurrentPlayerStats.Kills));
+                players.Sort((p1, p2) =>
+                {
+                    if (p2.CurrentPlayerStats == null)
+                        return -1;
+                    if (p1.CurrentPlayerStats == null)
+                        return 1;
+                    return p2.CurrentPlayerStats.Kills.CompareTo(p1.CurrentPlayerStats.Kills);
+                });
             };
 
             currentRoundNumber = number;

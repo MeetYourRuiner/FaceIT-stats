@@ -15,7 +15,7 @@
     ResizeMode="CanMinimize" 
     Style="{StaticResource WindowStyle}"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
-    SizeToContent="WidthAndHeight" 
+    SizeToContent="WidthAndHeight"
 >
     <!--Bug: SizeToContent breaks EventTriggers -->
     <i:Interaction.Triggers>

@@ -7,21 +7,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:controls = "clr-namespace:FaceitStats.WPF.Views.Controls"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+    xmlns:viewmodels="clr-namespace:FaceitStats.WPF.ViewModels"
     mc:Ignorable="d" 
     d:DesignHeight="{StaticResource AppHeight}" 
-    d:DesignWidth="{StaticResource AppWidth}"
-    xmlns:viewmodels="clr-namespace:FaceitStats.WPF.ViewModels" 
+    d:DesignWidth="{StaticResource AppWidth}" 
     d:DataContext="{d:DesignInstance Type=viewmodels:DataViewModel}"
+    d:Background="{StaticResource AppWindowBackground}"
 >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <UserControl.Resources>
-        <BitmapImage x:Key='defaultAvatar' UriSource='/FaceitStats.WPF;component/Resources/defaultAvatar.png'/>
-        <BitmapImage x:Key='defaultMap' UriSource='/FaceitStats.WPF;component/Resources/icon-pheasant-preview-2-268x151.png'/>
-    </UserControl.Resources>
     <Grid>
         <controls:LoadingAnimation
             Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}}" 
@@ -98,6 +95,7 @@
                     VerticalAlignment="Stretch"
                     VerticalContentAlignment="Center"
                     Opacity="0.95"
+                    d:Content="Nickname"
                 />
                 <!--Level label-->
                 <StackPanel 
@@ -164,7 +162,7 @@
                     <Image 
                         Width="16" 
                         Height="16" 
-                        Source="/FaceitStats.WPF;component/Resources/refresh.png"
+                        Source="{StaticResource refreshImage}"
                         RenderTransformOrigin="0.5, 0.5"
                         IsEnabled="{Binding IsRefreshButtonEnabled}"
                     >
@@ -338,19 +336,19 @@
                     Width="141"
                 >
                     <Button Width="45" Height="45" Style="{StaticResource LinkButton}" Margin="0,0,3,0" Command="{Binding OpenPlayerSteamCommand}">
-                        <Image Width="32" Source="/FaceitStats.WPF;component/Resources/steam.png"/>
+                        <Image Width="32" Source="{StaticResource steamImage}"/>
                     </Button>
                     <Button Width="45" Height="45" Style="{StaticResource LinkButton}" Margin="0,0,3,0" Command="{Binding OpenPlayerFaceitCommand}">
-                        <Image Width="32" Source="/FaceitStats.WPF;component/Resources/faceit.png"/>
+                        <Image Width="32" Source="{StaticResource smallFaceitImage}"/>
                     </Button>
                     <Button Width="45" Height="45" Style="{StaticResource LinkButton}" Command="{Binding AddToFavoritesCommand}">
                         <Image Width="32">
                             <Image.Style>
                                 <Style TargetType="{x:Type Image}">
-                                    <Setter Property="Source" Value="/FaceitStats.WPF;component/Resources/emptyheart.png"/>
+                                    <Setter Property="Source" Value="{StaticResource emptyHeartImage}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsFavoritePlayer}" Value="True">
-                                            <Setter Property="Source" Value="/FaceitStats.WPF;component/Resources/heart.png"/>
+                                            <Setter Property="Source" Value="{StaticResource filledHeartImage}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

@@ -71,7 +71,7 @@
                                                                         </Setter>
                                                                     </Style>
                                                                 </Button.Style>
-                                                                <Image SnapsToDevicePixels="True" Width="24" Source="/FaceitStats.WPF;component/Resources/remove.png"/>
+                                                                <Image SnapsToDevicePixels="True" Width="24" Source="{StaticResource trashImage}"/>
                                                             </Button>
                                                             <TextBlock VerticalAlignment="Center" FontSize="18" Foreground="{StaticResource AppFont}" DockPanel.Dock="Left" Text="{Binding}"/>
                                                         </DockPanel>

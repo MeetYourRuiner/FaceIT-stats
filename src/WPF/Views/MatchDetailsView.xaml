@@ -5,13 +5,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:local="clr-namespace:FaceitStats.WPF.Views" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:FaceitStats.WPF.Views" 
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:controls="clr-namespace:FaceitStats.WPF.Views.Controls"
+    xmlns:viewmodels="clr-namespace:FaceitStats.WPF.ViewModels"
+    xmlns:classes="clr-namespace:FaceitStats.WPF.Classes"
     mc:Ignorable="d" 
+    d:DataContext="{d:DesignInstance Type=viewmodels:MatchDetailsViewModel}" 
     d:DesignHeight="{StaticResource AppHeight}" 
     d:DesignWidth="{StaticResource AppWidth}"
-    xmlns:viewmodels="clr-namespace:FaceitStats.WPF.ViewModels" xmlns:classes="clr-namespace:FaceitStats.WPF.Classes"
-    d:DataContext="{d:DesignInstance Type=viewmodels:MatchDetailsViewModel}"
+    Loaded="control_Loaded"
 >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -20,24 +23,23 @@
     </i:Interaction.Triggers>
     <UserControl.Resources>
         <classes:BindingProxy x:Key="Proxy" Data="{Binding}"/>
-        <BitmapImage x:Key='defaultAvatar' UriSource='/FaceitStats.WPF;component/Resources/defaultAvatar.png'/>
 
-        <Style x:Key="MatchDetailsDGStyle" TargetType="DataGrid" BasedOn="{StaticResource DGStyle}">
-            <Setter Property="RowHeight" Value="49"/>
+        <Style x:Key="MatchDetailsDGRowStyle" BasedOn="{StaticResource DGRowStyle}" TargetType="{x:Type DataGridRow}">
+            <Setter Property="Height" Value="30"/>
         </Style>
-        <Style x:Key="MatchDetailsDGColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}">
-            <Setter Property="Height" Value="51"/>
+        <Style x:Key="MatchDetailsDGColumnHeaderStyle" BasedOn="{StaticResource DGColumnHeaderStyle}" TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="Height" Value="30"/>
         </Style>
-
+        
         <Style x:Key="PlayersDataGrid"
            TargetType="ContentControl">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContentControl">
                         <DataGrid 
-                            Style="{StaticResource MatchDetailsDGStyle}"
-                            ColumnHeaderStyle="{StaticResource MatchDetailsDGColumnHeaderStyle}"
-                            RowStyle="{StaticResource DGRowStyle}"
+                            Style="{StaticResource DGStyle}"
+                            ColumnHeaderStyle="{DynamicResource MatchDetailsDGColumnHeaderStyle}"
+                            RowStyle="{DynamicResource MatchDetailsDGRowStyle}"
                             ItemsSource="{Binding}"
                         >
                             <DataGrid.ContextMenu>
@@ -52,11 +54,11 @@
                             </DataGrid.ContextMenu>
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn 
-                                    Width="45"
+                                    Width="Auto"
                                 >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Border BorderBrush="{StaticResource AppLightOrange}" Height="45" Width="45" BorderThickness="1" Background="{StaticResource AppControlBackground}">
+                                            <Border Margin="2" BorderBrush="{StaticResource AppLightOrange}" Height="45" Width="45" BorderThickness="1" Background="{StaticResource AppControlBackground}">
                                                 <Image Source="{Binding PlayerInfo.Avatar, FallbackValue={StaticResource defaultAvatar}, TargetNullValue={StaticResource defaultAvatar}}" Stretch="Fill"/>
                                             </Border>
                                         </DataTemplate>
@@ -216,12 +218,9 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="85"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="0"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="26"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
@@ -357,44 +356,58 @@
                     Command="{Binding OpenMatchFaceitCommand}" 
                     Grid.Column="5"
                 >
-                    <Image Width="32" Source="/FaceitStats.WPF;component/Resources/faceit.png"/>
+                    <Image Width="32" Source="{StaticResource smallFaceitImage}"/>
                 </Button>
             </Grid>
-            <ContentControl 
-                Style="{StaticResource PlayersDataGrid}"
-                DataContext="{Binding TeamAPlayers}"
-                Grid.Row="1"
-                Grid.ColumnSpan="3"/>
+            <Grid x:Name="dataGrids" Grid.Row="3" Grid.ColumnSpan="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ContentControl 
+                    x:Name="teamADataGrid"
+                    Grid.Row="0"
+                    Style="{StaticResource PlayersDataGrid}"
+                    DataContext="{Binding TeamAPlayers}"/>
 
-            <ContentControl 
-                Style="{StaticResource PlayersDataGrid}"
-                DataContext="{Binding TeamBPlayers}"
-                Grid.Row="3"
-                Grid.ColumnSpan="3"/>
+                <ContentControl 
+                    x:Name="teamBDataGrid"
+                    Grid.Row="1"
+                    Style="{StaticResource PlayersDataGrid}"
+                    DataContext="{Binding TeamBPlayers}"/>
+            </Grid>
 
-            <!--Back-->
-            <Button
-                Content="BACK"
-                Style="{StaticResource ButtonStyle}"
-                Command="{Binding BackCommand}"
-                Grid.Row="6" 
-                Width="280" 
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Left" 
-                Grid.Column="1"
-            />
-            <TextBlock 
-                Grid.Column="1" 
-                HorizontalAlignment="Right"
-                Grid.Row="6"
-                TextWrapping="NoWrap" 
-                Text="RMB: Context menu" 
-                VerticalAlignment="Center"
-                Width="Auto"
-                Foreground="{StaticResource AppFont}"
-                Opacity="0.1"
-                FontSize="12"
-            />
+            <Grid Grid.Column="1" Grid.Row="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="26"/>
+                </Grid.RowDefinitions>
+                <!--Back-->
+                <Button
+                    Content="BACK"
+                    Style="{StaticResource ButtonStyle}"
+                    Command="{Binding BackCommand}"
+                    Grid.Row="1" 
+                    Width="280" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Left" 
+                    Grid.Column="1"
+                />
+                <TextBlock 
+                    Grid.Column="1" 
+                    HorizontalAlignment="Right"
+                    Grid.Row="1"
+                    TextWrapping="NoWrap" 
+                    Text="RMB: Context menu" 
+                    VerticalAlignment="Center"
+                    Width="Auto"
+                    Foreground="{StaticResource AppFont}"
+                    Opacity="0.1"
+                    FontSize="12"
+                />
+            </Grid>
+
         </Grid>
     </Grid>
 </UserControl>

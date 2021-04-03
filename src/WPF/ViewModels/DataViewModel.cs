@@ -1,5 +1,6 @@
 ﻿using FaceitStats.Core.Interfaces;
 using FaceitStats.Core.Models;
+using FaceitStats.WPF.Classes;
 using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.ViewModels.Abstractions;
 using FaceitStats.WPF.ViewModels.Commands;
@@ -325,19 +326,14 @@ namespace FaceitStats.WPF.ViewModels
         {
             get => _addToFavoritesCommand ??= new RelayCommand((obj) =>
             {
-                System.Collections.Specialized.StringCollection favorites = Properties.Settings.Default.Favorites;
                 if (!IsFavoritePlayer)
                 {
-                    favorites.Add(CurrentPlayerProfile.Nickname);
-                    Properties.Settings.Default.Favorites = favorites;
-                    Properties.Settings.Default.Save();
+                    SettingsWrapper.Favorites.Add(CurrentPlayerProfile.Nickname);
                     IsFavoritePlayer = true;
                 }
                 else
                 {
-                    favorites.Remove(CurrentPlayerProfile.Nickname);
-                    Properties.Settings.Default.Favorites = favorites;
-                    Properties.Settings.Default.Save();
+                    SettingsWrapper.Favorites.Remove(CurrentPlayerProfile.Nickname);
                     IsFavoritePlayer = false;
                 }
                 OnPropertyChanged("IsFavoritePlayer");
@@ -415,7 +411,7 @@ namespace FaceitStats.WPF.ViewModels
                 PlayerMapsStatisticsViewModel = new PlayerMapsStatisticsViewModel(new PlayerOverallStats());
             }
 
-            IsFavoritePlayer = Properties.Settings.Default.Favorites.Contains(CurrentPlayerProfile.Nickname);
+            IsFavoritePlayer = SettingsWrapper.Favorites.Contains(CurrentPlayerProfile.Nickname);
             SliceOfHistory = GetPage(Page);
             LastMatchesPerfomance = new AveragePerfomance(Matches, 20);
             EloChartViewModel = new EloChartViewModel(Matches);

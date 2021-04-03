@@ -10,6 +10,8 @@
                 <ResourceDictionary Source="/Views/Styles/Controls.xaml"/>
                 <ResourceDictionary Source="/Views/Styles/DataTemplates.xaml"/>
                 <ResourceDictionary Source="/Views/Styles/Converters.xaml"/>
+                <ResourceDictionary Source="/Views/Styles/DynamicResources.xaml"/>
+                <ResourceDictionary Source="/Views/Styles/Images.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
