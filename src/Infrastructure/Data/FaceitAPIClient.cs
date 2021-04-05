@@ -136,7 +136,7 @@ namespace FaceitStats.Infrastructure.Data
             var ongoingMatch = jObject.SelectToken("payload").Where(j =>
                 {
                     var tokenName = ((JProperty)j).Name;
-                    return tokenName != "CANCELLED" && tokenName != "ABORTED";
+                    return tokenName != "CANCELLED" && tokenName != "ABORTED" && tokenName != "SCHEDULED";
                 }).FirstOrDefault();
             return ongoingMatch?.First.First.Value<string>("id");
         }
