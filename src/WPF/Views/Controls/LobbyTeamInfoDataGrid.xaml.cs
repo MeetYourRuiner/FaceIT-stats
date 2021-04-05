@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace FaceitStats.WPF.Views.Controls
 {
@@ -9,9 +11,14 @@ namespace FaceitStats.WPF.Views.Controls
             InitializeComponent();
         }
 
-        private void control_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void control_Loaded(object sender, RoutedEventArgs e)
         {
-            var temp = this;
+            double controlHeight = control.ActualHeight;
+            Setter marginSetter = (Setter)dgTeam.RowStyle.Setters.Where(s => ((Setter)s).Property == MarginProperty).FirstOrDefault();
+            double bottomMargin = ((Thickness)marginSetter.Value).Bottom;
+            int players = 5;
+            double rowHeight = (controlHeight - players * bottomMargin) / (players + 1);
+            this.Resources["RowHeight"] = rowHeight;
         }
     }
 }

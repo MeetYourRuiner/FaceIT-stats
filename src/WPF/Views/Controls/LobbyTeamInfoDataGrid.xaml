@@ -12,7 +12,9 @@
     mc:Ignorable="d" 
     d:DesignHeight="450" 
     d:DesignWidth="429" 
-    d:DataContext="{d:DesignInstance Type=controlsVm:LobbyTeamInfoViewModel}" Loaded="control_Loaded"
+    d:DataContext="{d:DesignInstance Type=controlsVm:LobbyTeamInfoViewModel}"
+    Loaded="control_Loaded"
+    SnapsToDevicePixels="True"
 >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -30,7 +32,7 @@
             <Setter Property="FontSize" Value="16"/>
         </Style>
         <Style x:Key="MatchDetailsDGStyle" TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
-            <Setter Property="RowHeight" Value="{StaticResource RowHeight}"/>
+            <Setter Property="RowHeight" Value="{DynamicResource RowHeight}"/>
         </Style>
         <Style x:Key="MatchDetailsDGColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}">
             <Setter Property="Height" Value="45"/>
@@ -38,12 +40,13 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="{Binding Source={StaticResource RowHeight}}"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <DockPanel 
             x:Name="dpHeader"
             Background="{StaticResource AppControlBackground}"
+            Height="{DynamicResource RowHeight}"
         >
             <DockPanel LastChildFill="False" DockPanel.Dock="Right">
                 <StackPanel 
@@ -100,7 +103,7 @@
             </Button>
         </DockPanel>
         <DataGrid 
-            x:Name="TeamDG"
+            x:Name="dgTeam"
             Style="{StaticResource MatchDetailsDGStyle}"
             HeadersVisibility="None"
             RowStyle="{StaticResource DGRowStyle}"
