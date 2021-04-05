@@ -6,16 +6,16 @@ namespace FaceitStats.Core.Models
 {
     public class MatchInfo
     {
+        private DateTime _date;
+
         public string Id { get; set; }
         public string CompetitionName { get; set; }
         public TeamInfo TeamA { get; set; }
         public TeamInfo TeamB { get; set; }
-        public int TeamAScore { get; set; }
-        public int TeamBScore { get; set; }
         public string State { get; set; }
         public string Map { get; set; }
-        private DateTime date;
-        public DateTime Date { get => date; set => date = value.ToLocalTime(); }
+        public int BestOf { get; set; }
+        public DateTime Date { get => _date; set => _date = value.ToLocalTime(); }
         public Dictionary<string, string[]> Parties { get; set; }
 
         public void FillPartiesIndices()

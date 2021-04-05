@@ -14,17 +14,6 @@ namespace FaceitStats.WPF.ViewModels
     class TeamAnalyzeViewModel : LoadableViewModel
     {
         private const int MATCHES_TO_ANALYZE = 200;
-        private readonly string[] _maps = new string[]
-        {
-            "de_mirage",
-            "de_cache",
-            "de_dust2",
-            "de_inferno",
-            "de_nuke",
-            "de_train",
-            "de_overpass",
-            "de_vertigo"
-        };
 
         private readonly IFaceitService _faceitService;
         private readonly INavigator _navigator;
@@ -78,7 +67,7 @@ namespace FaceitStats.WPF.ViewModels
                 _navigator.GoBack(ex);
                 return;
             }
-            mapsStatistics = MapStatistics.CreateList(_maps, playersStats);
+            mapsStatistics = MapStatistics.CreateList(FaceitStats.Core.Constants.FaceitConstants.Maps, playersStats);
             double matchesCount = mapsStatistics.Select(m => m.Average.Matches).Sum();
             mapsStatistics.Sort((m1, m2) => (m2.Average.Winrate * m2.Average.Matches / matchesCount).CompareTo(m1.Average.Winrate * m1.Average.Matches / matchesCount));
             DataTable = CreateDataTable(mapsStatistics);

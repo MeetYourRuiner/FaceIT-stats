@@ -8,5 +8,10 @@ namespace FaceitStats.WPF.Views.Controls
         {
             InitializeComponent();
         }
+
+        private void control_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var temp = this;
+        }
     }
 }

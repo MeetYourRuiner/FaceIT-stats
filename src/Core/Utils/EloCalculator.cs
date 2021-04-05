@@ -2,13 +2,22 @@
 
 namespace FaceitStats.Core.Utils
 {
-    class EloCalculator
+    public static class EloCalculator
     {
-        public static int CalculateElo(int diff, double winProbability)
+        //public static int CalculateElo(int diff)
+        //{
+        //    double percentage = 1 / (1 + Math.Pow(10, (double)diff / 400));
+        //    int winPoints = (int)(50 * (1 - percentage));
+        //    return winPoints;
+        //}
+
+        public static (int gain, int loss) CalculateEloChange(double winProbability)
         {
-            double percentage = 1 / (1 + Math.Pow(10, (double)diff / 400));
-            int winPoints = (int)(50 * (1 - percentage));
-            return winPoints;
+            int gain = Convert.ToInt32(Math.Round(50 - winProbability * 50));
+            return (
+                gain,
+                -(50 - gain)
+            );
         }
     }
 }

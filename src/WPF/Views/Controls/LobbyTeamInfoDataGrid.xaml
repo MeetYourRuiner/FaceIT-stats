@@ -12,7 +12,7 @@
     mc:Ignorable="d" 
     d:DesignHeight="450" 
     d:DesignWidth="429" 
-    d:DataContext="{d:DesignInstance Type=controlsVm:LobbyTeamInfoViewModel}"
+    d:DataContext="{d:DesignInstance Type=controlsVm:LobbyTeamInfoViewModel}" Loaded="control_Loaded"
 >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -20,7 +20,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <UserControl.Resources>
-        <sys:Double x:Key="RowHeight">90</sys:Double>
+        <sys:Double x:Key="RowHeight">94</sys:Double>
 
         <Style x:Key="DGLabelHeader" TargetType="{x:Type Label}" BasedOn="{StaticResource InfoLabel}">
             <Setter Property="HorizontalContentAlignment" Value="Left"/>

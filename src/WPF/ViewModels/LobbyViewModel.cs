@@ -14,7 +14,7 @@ namespace FaceitStats.WPF.ViewModels
         private readonly IFaceitService _faceitService;
         private readonly INavigator _navigator;
 
-        private string currentMatchId;
+        private readonly string currentMatchId;
 
         public bool _isRefreshing = false;
         public bool IsRefreshing
@@ -25,30 +25,6 @@ namespace FaceitStats.WPF.ViewModels
                 _isRefreshing = value;
                 OnPropertyChanged();
             }
-        }
-
-        public override async Task LoadMethod(object obj)
-        {
-            try
-            {
-                CurrentMatchInfo = await UpdateMatchInfo();
-            }
-            catch (Exception ex)
-            {
-                _navigator.GoBack(ex);
-                return;
-            }
-            TeamAViewModel = new LobbyTeamInfoViewModel(_faceitService, _navigator, CurrentMatchInfo.TeamA);
-            TeamBViewModel = new LobbyTeamInfoViewModel(_faceitService, _navigator, CurrentMatchInfo.TeamB);
-        }
-
-        private RelayCommand _backCommand;
-        public RelayCommand BackCommand
-        {
-            get => _backCommand ??= new RelayCommand((obj) =>
-            {
-                _navigator.GoBack();
-            });
         }
 
         private MatchInfo _currentMatchInfo;
@@ -82,6 +58,15 @@ namespace FaceitStats.WPF.ViewModels
                 _teamBViewModel = value;
                 OnPropertyChanged();
             }
+        }
+
+        private RelayCommand _backCommand;
+        public RelayCommand BackCommand
+        {
+            get => _backCommand ??= new RelayCommand((obj) =>
+            {
+                _navigator.GoBack();
+            });
         }
 
         private RelayCommand _refreshCommand;
@@ -131,11 +116,27 @@ namespace FaceitStats.WPF.ViewModels
                 }
             });
         }
+        
         public LobbyViewModel(IFaceitService faceitService, INavigator navigator, object parameter)
         {
             this._faceitService = faceitService;
             this._navigator = navigator;
             currentMatchId = (string)parameter;
+        }
+
+        public override async Task LoadMethod(object obj)
+        {
+            try
+            {
+                CurrentMatchInfo = await UpdateMatchInfo();
+            }
+            catch (Exception ex)
+            {
+                _navigator.GoBack(ex);
+                return;
+            }
+            TeamAViewModel = new LobbyTeamInfoViewModel(_faceitService, _navigator, CurrentMatchInfo.TeamA);
+            TeamBViewModel = new LobbyTeamInfoViewModel(_faceitService, _navigator, CurrentMatchInfo.TeamB);
         }
 
         private async Task<MatchInfo> UpdateMatchInfo()

@@ -13,52 +13,12 @@ namespace FaceitStats.Infrastructure.Data
 
         public FaceitService(string apikey, string userApikey)
         {
-            this._apiClient = new FaceitAPIClient(apikey, userApikey);
+            _apiClient = new FaceitAPIClient(apikey, userApikey);
         }
 
         public async Task<List<MatchStats>> GetMatchStatsAsync(string matchId)
         {
             List<MatchStats> matchStats = await _apiClient.FetchMatchStatsAsync(matchId);
-            //MatchInfo matchInfo = null;
-            //try
-            //{
-            //    matchInfo = await GetMatchInfoAsync(matchId);
-            //}
-            //catch { }
-            //if (matchInfo != null)
-            //{
-            //    matchStats.CompetitionName = matchInfo.CompetitionName;
-            //    matchStats.TeamA.ForEach(p =>
-            //    {
-            //        p.PlayerInfo = matchInfo.TeamA.Players
-            //            .FirstOrDefault((po) => po.Id == p.Id);
-            //    });
-            //    matchStats.TeamB.ForEach(p =>
-            //    {
-            //        p.PlayerInfo = matchInfo.TeamB.Players
-            //            .FirstOrDefault((po) => po.Id == p.Id);
-            //    });
-            //}
-            //else
-            //{
-            //    matchStats.TeamA.ForEach(p =>
-            //    {
-            //        p.PlayerInfo = new PlayerInfo();
-            //    });
-            //    matchStats.TeamB.ForEach(p =>
-            //    {
-            //        p.PlayerInfo = new PlayerInfo();
-            //    });
-            ////}
-            //static void sortPlayers(TeamStats t)
-            //{
-            //    t.Players.Sort((p1, p2) => p2.Kills.CompareTo(p1.Kills));
-            ////};
-            //foreach (var match in matchStats)
-            //{
-            //    sortPlayers(match.TeamA);
-            //    sortPlayers(match.TeamB);
-            //}
             return matchStats;
         }
 

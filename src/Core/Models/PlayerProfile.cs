@@ -34,8 +34,8 @@ namespace FaceitStats.Core.Models
         public int Level { get; set; }
         public int Elo { get; set; }
 
-        public string ToDemote { get => Level == 1 ? "∞" : (Elo - FaceitConstants.LEVELS[Level] + 1).ToString(); }
+        public string ToDemote { get => Level == 1 ? "∞" : (Elo - FaceitConstants.Levels[Level] + 1).ToString(); }
 
-        public string ToPromote { get => Level == 10 ? "∞" : (FaceitConstants.LEVELS[Level + 1] - Elo).ToString(); }
+        public string ToPromote { get => Level == 10 ? "∞" : (FaceitConstants.Levels[Level + 1] - Elo).ToString(); }
     }
 }

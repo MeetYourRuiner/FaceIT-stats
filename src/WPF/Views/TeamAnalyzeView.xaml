@@ -11,18 +11,17 @@
     d:DesignHeight="{StaticResource AppHeight}" 
     d:DesignWidth="{StaticResource AppWidth}"
     xmlns:viewmodels="clr-namespace:FaceitStats.WPF.ViewModels"
-    d:DataContext="{d:DesignInstance Type=viewmodels:TeamAnalyzeViewModel}"
+    d:DataContext="{d:DesignInstance Type=viewmodels:TeamAnalyzeViewModel}" Loaded="UserControl_Loaded"
 >
     <UserControl.Resources>
         <sys:Double x:Key="RowHeight">68</sys:Double>
-        <!-- RowHeight * (Maps.Length(8) + 1) + Maps.Length(8) * 2 -->
-        <sys:Double x:Key="ColumnWidth">63.8</sys:Double>
-        <sys:Double x:Key="MegaHeaderWidth">127.6</sys:Double>
+        <sys:Double x:Key="ColumnWidth">64.28</sys:Double>
+        <sys:Double x:Key="MegaHeaderWidth">128.57</sys:Double>
         <Style x:Key="DGColumnHeaderSmallFontStyle" BasedOn="{StaticResource DGColumnHeaderStyle}" TargetType="{x:Type DataGridColumnHeader}">
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="Height" Value="{StaticResource RowHeight}" />
+            <Setter Property="Height" Value="{DynamicResource RowHeight}" />
         </Style>
         <Style x:Key="DGColumnHeaderSmallFontStyleB" BasedOn="{StaticResource DGColumnHeaderSmallFontStyle}" TargetType="{x:Type DataGridColumnHeader}">
             <Setter Property="Background" Value="{StaticResource AppControlBackgroundB}" />
@@ -110,7 +109,7 @@
                 Background="{StaticResource AppControlBackground}" 
                 Grid.ColumnSpan="3"
                 Orientation="Horizontal"
-                Height="{StaticResource RowHeight}"
+                Height="{DynamicResource RowHeight}"
             >
                 <Border 
                     BorderBrush="{StaticResource AppOrange}"
@@ -211,6 +210,7 @@
                 </Grid>
             </StackPanel>
             <DataGrid
+                x:Name="dgMaps"
                 ColumnHeaderStyle="{StaticResource DGColumnHeaderSmallFontStyle}"
                 RowStyle="{StaticResource DGRowStyle}"
                 Grid.Row="1" Grid.ColumnSpan="3"
@@ -355,7 +355,7 @@
                 </DataGrid.Columns>
                 <DataGrid.Style>
                     <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
-                        <Setter Property="RowHeight" Value="{StaticResource RowHeight}"/>
+                        <Setter Property="RowHeight" Value="{DynamicResource RowHeight}"/>
                     </Style>
                 </DataGrid.Style>
             </DataGrid>
