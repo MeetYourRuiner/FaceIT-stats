@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:extensions="clr-namespace:FaceitStats.WPF.Views.XAMLExtensions"
+    xmlns:attached="clr-namespace:FaceitStats.WPF.Views.AttachedProperties"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:Controls="clr-namespace:FaceitStats.WPF.Views.Controls" 
     x:Class="FaceitStats.WPF.Views.SearchView"
@@ -137,7 +137,7 @@
                 Padding="0,4" 
                 VerticalContentAlignment="Center"
                 GotFocus="nameTextBox_GotFocus"
-                extensions:FocusExtension.IsFocused="{Binding IsTextboxFocused}"
+                attached:FocusExtension.IsFocused="{Binding IsTextboxFocused}"
                 Text="{Binding PlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Visibility="{Binding IsLoading, ConverterParameter=true, Converter={StaticResource BtVConverter}}"
             >

@@ -12,15 +12,33 @@ namespace FaceitStats.WPF.ViewModels
 {
     class MatchDetailsViewModel : LoadableViewModel
     {
-        public class Player
+        public class Team : BaseViewModel
         {
-            public string Id { get => PlayerInfo.Id; }
-            public PlayerStats CurrentPlayerStats { get; set; }
-            public PlayerInfo PlayerInfo { get; set; }
-            public Player(PlayerInfo playerInfo)
+            public class Player
             {
-                PlayerInfo = playerInfo;
+                public string Id { get => PlayerInfo.Id; }
+                public PlayerStats CurrentPlayerStats { get; set; }
+                public PlayerInfo PlayerInfo { get; set; }
+                public Player(PlayerInfo playerInfo)
+                {
+                    PlayerInfo = playerInfo;
+                }
             }
+
+            public List<Player> Players { get; set; }
+
+            private TeamStats _currentTeamStats;
+            public TeamStats CurrentTeamStats
+            { 
+
+                get => _currentTeamStats;
+                set
+                {
+                    _currentTeamStats = value;
+                    OnPropertyChanged();
+                }
+            }
+            public TeamInfo TeamInfo { get; set; }
         }
 
         private readonly IFaceitService _faceitService;
@@ -42,24 +60,24 @@ namespace FaceitStats.WPF.ViewModels
             }
         }
 
-        private List<Player> _teamAPlayers;
-        public List<Player> TeamAPlayers
+        private Team _teamA;
+        public Team TeamA
         {
-            get => _teamAPlayers;
+            get => _teamA;
             set
             {
-                _teamAPlayers = value;
+                _teamA = value;
                 OnPropertyChanged();
             }
         }
 
-        private List<Player> _teamBPlayers;
-        public List<Player> TeamBPlayers
+        private Team _teamB;
+        public Team TeamB
         {
-            get => _teamBPlayers;
+            get => _teamB;
             set
             {
-                _teamBPlayers = value;
+                _teamB = value;
                 OnPropertyChanged();
             }
         }
@@ -131,7 +149,7 @@ namespace FaceitStats.WPF.ViewModels
         {
             get => _openPlayerStatsCommand ??= new RelayCommand((obj) =>
             {
-                Player player = (Player)obj;
+                Team.Player player = (Team.Player)obj;
                 _navigator.Navigate(Views.Enums.ViewTypes.Data, player.PlayerInfo.Nickname);
             });
         }
@@ -151,8 +169,17 @@ namespace FaceitStats.WPF.ViewModels
                 Lobby = await _faceitService.GetMatchInfoAsync(Match.Id);
                 CurrentRound = Rounds[0];
 
-                TeamAPlayers = Lobby.TeamA.Players.Select(p => new Player(p)).ToList();
-                TeamBPlayers = Lobby.TeamB.Players.Select(p => new Player(p)).ToList();
+                TeamA = new Team
+                {
+                    Players = Lobby.TeamA.Players.Select(p => new Team.Player(p)).ToList(),
+                    TeamInfo = Lobby.TeamA
+                };
+                TeamB = new Team
+                {
+                    Players = Lobby.TeamB.Players.Select(p => new Team.Player(p)).ToList(),
+                    TeamInfo = Lobby.TeamB
+                };
+
                 SetCurrentRoundNumber(1);
 
                 if (Match.ChangeELO > 0 && Match.ChangeELO < 50)
@@ -180,7 +207,7 @@ namespace FaceitStats.WPF.ViewModels
 
         private void SetCurrentRoundNumber(int number)
         {
-            static void sortPlayers(List<Player> players)
+            static void sortPlayers(List<Team.Player> players)
             {
                 players.Sort((p1, p2) =>
                 {
@@ -194,16 +221,18 @@ namespace FaceitStats.WPF.ViewModels
 
             currentRoundNumber = number;
             CurrentRound = Rounds.FirstOrDefault(r => r.RoundStats.RoundNumber == currentRoundNumber);
-            foreach (var player in TeamAPlayers)
+            TeamA.CurrentTeamStats = CurrentRound.TeamA;
+            foreach (var player in TeamA.Players)
             {
                 player.CurrentPlayerStats = CurrentRound.TeamA.Players.Find((p) => p.Id == player.Id);
             }
-            foreach (var player in TeamBPlayers)
+            TeamB.CurrentTeamStats = CurrentRound.TeamB;
+            foreach (var player in TeamB.Players)
             {
                 player.CurrentPlayerStats = CurrentRound.TeamB.Players.Find((p) => p.Id == player.Id);
             }
-            sortPlayers(TeamAPlayers);
-            sortPlayers(TeamBPlayers);
+            sortPlayers(TeamA.Players);
+            sortPlayers(TeamB.Players);
         }
     }
 }

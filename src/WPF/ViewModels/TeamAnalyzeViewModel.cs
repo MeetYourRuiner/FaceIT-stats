@@ -1,4 +1,5 @@
-﻿using FaceitStats.Core.Interfaces;
+﻿using FaceitStats.Core.DTOs;
+using FaceitStats.Core.Interfaces;
 using FaceitStats.Core.Models;
 using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.ViewModels.Abstractions;

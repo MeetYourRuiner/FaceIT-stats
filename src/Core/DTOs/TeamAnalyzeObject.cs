@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using FaceitStats.Core.Models;
+using System.Collections.Generic;
 
-namespace FaceitStats.Core.Models
+namespace FaceitStats.Core.DTOs
 {
     public class TeamAnalyzeObject
     {

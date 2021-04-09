@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using FaceitStats.Core.Models;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace FaceitStats.Core.Models
+namespace FaceitStats.Core.DTOs
 {
     public class AveragePerfomance
     {

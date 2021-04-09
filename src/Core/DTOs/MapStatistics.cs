@@ -1,8 +1,9 @@
-﻿using System;
+﻿using FaceitStats.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FaceitStats.Core.Models
+namespace FaceitStats.Core.DTOs
 {
     public class MapStatistics
     {

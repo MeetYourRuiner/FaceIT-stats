@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace FaceitStats.WPF.Views.XAMLExtensions
+namespace FaceitStats.WPF.Views.AttachedProperties
 {
     public static class FocusExtension
     {
