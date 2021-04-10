@@ -116,7 +116,7 @@ namespace FaceitStats.WPF.ViewModels
                 }
             });
         }
-        
+
         public LobbyViewModel(IFaceitService faceitService, INavigator navigator, object parameter)
         {
             this._faceitService = faceitService;

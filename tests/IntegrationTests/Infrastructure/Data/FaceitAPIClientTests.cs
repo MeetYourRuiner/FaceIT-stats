@@ -133,7 +133,7 @@ namespace IntegrationTests.Infrastructure.Data
             try
             {
                 var matchStats = await _faceitAPIClient.FetchMatchStatsAsync("1-e9fb6ba4-b350-407e-8694-3e4f3d26d1dd");
-                foreach(var match in matchStats)
+                foreach (var match in matchStats)
                 {
                     _output.WriteLine($"{match.RoundStats.RoundNumber} match");
                     foreach (var player in match.TeamA.Players)

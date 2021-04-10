@@ -29,7 +29,7 @@ namespace FaceitStats.WPF.ViewModels
 
             private TeamStats _currentTeamStats;
             public TeamStats CurrentTeamStats
-            { 
+            {
 
                 get => _currentTeamStats;
                 set
@@ -50,11 +50,11 @@ namespace FaceitStats.WPF.ViewModels
         public List<MatchStats> Rounds { get; private set; }
 
         private MatchInfo _lobby;
-        public MatchInfo Lobby 
-        { 
+        public MatchInfo Lobby
+        {
             get => _lobby;
             set
-            { 
+            {
                 _lobby = value;
                 OnPropertyChanged();
             }
@@ -143,7 +143,7 @@ namespace FaceitStats.WPF.ViewModels
                 }
             });
         }
-        
+
         private RelayCommand _openPlayerStatsCommand;
         public RelayCommand OpenPlayerStatsCommand
         {

@@ -113,7 +113,7 @@ namespace FaceitStats.WPF.ViewModels
                 }
                 else if (PlayerName.Length > 0 && PlayerName.Length < 30)
                 {
-                     SettingsWrapper.LastNickname.Set(PlayerName);
+                    SettingsWrapper.LastNickname.Set(PlayerName);
                     _navigator.Navigate(ViewTypes.Data, PlayerName);
                 }
             });
