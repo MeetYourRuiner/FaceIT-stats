@@ -13,7 +13,7 @@ namespace FaceitStats.WPF.ViewModels
     {
         private readonly IFaceitService _faceitService;
         private readonly INavigator _navigator;
-
+        private readonly INotifyService _notifyService;
         private readonly string currentMatchId;
 
         public bool _isRefreshing = false;
@@ -81,7 +81,7 @@ namespace FaceitStats.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    //_navigator.DisplayError(ex);
+                    _notifyService.DisplayError(ex);
                 }
                 IsRefreshing = false;
             });
@@ -117,10 +117,11 @@ namespace FaceitStats.WPF.ViewModels
             });
         }
 
-        public LobbyViewModel(IFaceitService faceitService, INavigator navigator, object parameter)
+        public LobbyViewModel(IFaceitService faceitService, INavigator navigator, INotifyService notifyService, object parameter)
         {
-            this._faceitService = faceitService;
-            this._navigator = navigator;
+            _faceitService = faceitService;
+            _navigator = navigator;
+            _notifyService = notifyService;
             currentMatchId = (string)parameter;
         }
 
@@ -135,8 +136,8 @@ namespace FaceitStats.WPF.ViewModels
                 _navigator.GoBack(ex);
                 return;
             }
-            TeamAViewModel = new LobbyTeamInfoViewModel(_faceitService, _navigator, CurrentMatchInfo.TeamA);
-            TeamBViewModel = new LobbyTeamInfoViewModel(_faceitService, _navigator, CurrentMatchInfo.TeamB);
+            TeamAViewModel = new LobbyTeamInfoViewModel(_faceitService, _navigator, _notifyService, CurrentMatchInfo.TeamA);
+            TeamBViewModel = new LobbyTeamInfoViewModel(_faceitService, _navigator, _notifyService, CurrentMatchInfo.TeamB);
         }
 
         private async Task<MatchInfo> UpdateMatchInfo()

@@ -18,6 +18,7 @@ namespace FaceitStats.WPF.ViewModels
     {
         private readonly IFaceitService _faceitService;
         private readonly INavigator _navigator;
+        private readonly INotifyService _notifyService;
 
         private int MatchesOnPage { get; set; } = 9;
 
@@ -253,7 +254,7 @@ namespace FaceitStats.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    //_navigator.DisplayError(ex);
+                    _notifyService.DisplayError(ex);
                 }
                 IsRefreshButtonEnabled = true;
             });
@@ -272,7 +273,7 @@ namespace FaceitStats.WPF.ViewModels
                     }
                     else
                     {
-                        //_navigator.DisplayError(new Exception("Overall perfomance is unavailable"));
+                        _notifyService.DisplayError(new Exception("Overall perfomance is unavailable"));
                     }
                 }
                 else
@@ -297,7 +298,7 @@ namespace FaceitStats.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to open link in browser", ex);
+                    _notifyService.DisplayError(new Exception("Failed to open link in browser", ex));
                 }
             });
         }
@@ -317,7 +318,7 @@ namespace FaceitStats.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to open link in browser", ex);
+                    _notifyService.DisplayError(new Exception("Failed to open link in browser", ex));
                 }
             });
         }
@@ -342,10 +343,11 @@ namespace FaceitStats.WPF.ViewModels
         }
         #endregion
 
-        public DataViewModel(IFaceitService faceitService, INavigator navigator, object parameter)
+        public DataViewModel(IFaceitService faceitService, INavigator navigator, INotifyService notifyService, object parameter)
         {
             _faceitService = faceitService;
             _navigator = navigator;
+            _notifyService = notifyService;
             _playerName = (string)parameter;
         }
 
@@ -398,7 +400,7 @@ namespace FaceitStats.WPF.ViewModels
             }
             catch
             {
-                // Show error
+                _notifyService.DisplayError(new Exception("Failed to get ongoing match"));
             }
 
             try

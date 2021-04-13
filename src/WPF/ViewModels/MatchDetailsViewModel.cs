@@ -43,7 +43,7 @@ namespace FaceitStats.WPF.ViewModels
 
         private readonly IFaceitService _faceitService;
         private readonly INavigator _navigator;
-
+        private readonly INotifyService _notifyService;
         private int currentRoundNumber = 0;
 
         public Match Match { get; private set; }
@@ -139,7 +139,7 @@ namespace FaceitStats.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to open link in browser", ex);
+                    _notifyService.DisplayError(new Exception("Failed to open link in browser", ex));
                 }
             });
         }
@@ -154,10 +154,11 @@ namespace FaceitStats.WPF.ViewModels
             });
         }
 
-        public MatchDetailsViewModel(IFaceitService faceitService, INavigator navigator, object parameter)
+        public MatchDetailsViewModel(IFaceitService faceitService, INavigator navigator, INotifyService notifyService, object parameter)
         {
             _faceitService = faceitService;
             _navigator = navigator;
+            _notifyService = notifyService;
             Match = (Match)parameter;
         }
 

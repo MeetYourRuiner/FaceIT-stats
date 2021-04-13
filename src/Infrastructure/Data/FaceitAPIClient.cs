@@ -1,5 +1,6 @@
 ﻿using FaceitStats.Core.Models;
-using FaceitStats.Infrastructure.Extensions;
+using FaceitStats.Infrastructure.JSON;
+using FaceitStats.Infrastructure.JSON.Strategies;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,8 @@ namespace FaceitStats.Infrastructure.Data
                 throw new Exception($"Player \"{playerName}\" is not found");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
-            var playerProfile = jObject.ToPlayerProfile();
+            var jsonParser = new JsonParser(new PlayerProfileParseStrategy());
+            var playerProfile = (PlayerProfile)jsonParser.Parse(jObject);
             return playerProfile;
         }
 
@@ -48,7 +50,8 @@ namespace FaceitStats.Infrastructure.Data
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
             var payload = jObject["payload"];
-            var playerProfile = payload.ToPlayerProfile();
+            var jsonParser = new JsonParser(new PlayerProfileParseStrategy());
+            var playerProfile = (PlayerProfile)jsonParser.Parse(payload);
             return playerProfile;
         }
 
@@ -59,7 +62,8 @@ namespace FaceitStats.Infrastructure.Data
                 throw new Exception("Failed to get player stats");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
-            var pos = jObject.ToPlayerOverallStats();
+            var jsonParser = new JsonParser(new PlayerOverallStatsParseStrategy());
+            var pos = (PlayerOverallStats)jsonParser.Parse(jObject);
             return pos;
         }
 
@@ -70,7 +74,8 @@ namespace FaceitStats.Infrastructure.Data
                 throw new Exception("Failed to get match history");
             string json = await response.Content.ReadAsStringAsync();
             JArray jArray = JArray.Parse(json);
-            var matchList = jArray.ToMatchList();
+            var jsonParser = new JsonParser(new MatchListParseStrategy());
+            List<Match> matchList = (List<Match>)jsonParser.Parse(jArray);
             for (int i = 0; i < matchList.Count; ++i)
             {
                 matchList[i].Index = i;
@@ -85,7 +90,8 @@ namespace FaceitStats.Infrastructure.Data
                 throw new Exception("Failed to get match history");
             string json = await response.Content.ReadAsStringAsync();
             JObject jObject = JObject.Parse(json);
-            var matchList = jObject.ToMatchList();
+            var jsonParser = new JsonParser(new MatchListParseStrategy());
+            List<Match> matchList = (List<Match>)jsonParser.Parse(jObject);
             //var matchList = JsonConvert.DeserializeObject<List<Match>>(json);
 
             //for (int i = 0; i < matchList.Count; ++i)
@@ -105,7 +111,8 @@ namespace FaceitStats.Infrastructure.Data
             var payload = jObject["payload"];
             if (!payload.HasValues)
                 throw new Exception("No match");
-            var mi = payload.ToMatchInfo();
+            var jsonParser = new JsonParser(new MatchInfoParseStrategy());
+            var mi = (MatchInfo)jsonParser.Parse(payload);
             return mi;
         }
 
@@ -118,7 +125,8 @@ namespace FaceitStats.Infrastructure.Data
                 throw new Exception("Failed to get match details");
             string json = await response.Content.ReadAsStringAsync();
             JArray jArray = JArray.Parse(json);
-            var ms = jArray.ToMatchStatsList();
+            var jsonParser = new JsonParser(new MatchStatsParseStrategy());
+            List<MatchStats> ms = (List<MatchStats>)jsonParser.Parse(jArray);
             return ms;
         }
 

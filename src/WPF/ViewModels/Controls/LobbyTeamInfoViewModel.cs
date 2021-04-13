@@ -28,6 +28,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
         }
 
         private readonly INavigator _navigator;
+        private readonly INotifyService _notifyService;
         private readonly IFaceitService _faceitService;
 
         private TeamInfo _lobbyTeamInfo;
@@ -71,9 +72,10 @@ namespace FaceitStats.WPF.ViewModels.Controls
             });
         }
 
-        public LobbyTeamInfoViewModel(IFaceitService faceitService, INavigator navigator, TeamInfo lobbyTeamInfo)
+        public LobbyTeamInfoViewModel(IFaceitService faceitService, INavigator navigator, INotifyService notifyService, TeamInfo lobbyTeamInfo)
         {
             _navigator = navigator;
+            _notifyService = notifyService;
             LobbyTeamInfo = lobbyTeamInfo;
             _faceitService = faceitService;
         }
@@ -138,7 +140,7 @@ namespace FaceitStats.WPF.ViewModels.Controls
             }
             catch (Exception ex)
             {
-                //_navigator.DisplayError(ex);
+                _notifyService.DisplayError(ex);
             }
             foreach (var playerInfo in lobbyPlayers)
             {

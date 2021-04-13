@@ -1,5 +1,6 @@
 ﻿using FaceitStats.Core.Models;
 using FaceitStats.WPF.ViewModels.Abstractions;
+using FaceitStats.WPF.ViewModels.Commands;
 using LiveCharts;
 using LiveCharts.Configurations;
 using LiveCharts.Helpers;
@@ -7,12 +8,11 @@ using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace FaceitStats.WPF.ViewModels.Controls
 {
-    class EloChartViewModel : LoadableViewModel
+    class EloChartViewModel : BaseViewModel
     {
         private readonly List<Match> _matches;
 
@@ -27,22 +27,25 @@ namespace FaceitStats.WPF.ViewModels.Controls
             }
         }
 
-
-        public override async Task LoadMethod(object obj)
+        private RelayCommand _loadedCommand;
+        public RelayCommand LoadedCommand
         {
-            UpdateSource(_matches);
+            get => _loadedCommand ??= new RelayCommand((obj) =>
+            {
+                UpdateSource(_matches);
+            });
         }
 
         public EloChartViewModel(List<Match> matches)
         {
-            this._matches = matches;
+            _matches = matches;
         }
 
         private void UpdateSource(List<Match> matches)
         {
             var WinBrush = new SolidColorBrush(Colors.Green);
             var LossBrush = new SolidColorBrush(Colors.Red);
-            var mapper = Mappers.Xy<Match>() //in this case value is of type <ObservablePoint>
+            var mapper = Mappers.Xy<Match>()
                 .X((value, index) => index) //use the X property as X
                 .Y((value, index) => value.ELO) //use the Y property as Y
                 .Fill(value => value.PlayerStats.Result == 'W' ? WinBrush : LossBrush);

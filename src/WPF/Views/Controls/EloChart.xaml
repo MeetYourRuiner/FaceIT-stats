@@ -22,15 +22,10 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <local:SmallLoadingAnimation
-            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}}"
-            d:IsHidden="True"
-        />
         <lvc:CartesianChart
             DisableAnimations="True"
             Hoverable="False"
             Series="{Binding MatchSeries}"
-            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}, ConverterParameter=true}"
         >
             <lvc:CartesianChart.Resources>
                 <Style TargetType="lvc:LineSeries">

@@ -10,6 +10,7 @@ namespace FaceitStats.WPF.ViewModels
     class SearchViewModel : BaseViewModel
     {
         private readonly IUpdateService _updateService;
+        private readonly INotifyService _notifyService;
         private readonly INavigator _navigator;
         private bool _isLoaded = false;
 
@@ -132,7 +133,7 @@ namespace FaceitStats.WPF.ViewModels
                 catch (Exception ex)
                 {
                     IsUpdating = false;
-                    //_navigator.DisplayError(ex);
+                    _notifyService.DisplayError(ex);
                 }
                 finally
                 {
@@ -188,10 +189,11 @@ namespace FaceitStats.WPF.ViewModels
             });
         }
 
-        public SearchViewModel(IUpdateService updateService, INavigator navigator)
+        public SearchViewModel(IUpdateService updateService, INavigator navigator, INotifyService notifyService)
         {
             _updateService = updateService;
             _navigator = navigator;
+            _notifyService = notifyService;
         }
 
         private async void CheckForUpdate()

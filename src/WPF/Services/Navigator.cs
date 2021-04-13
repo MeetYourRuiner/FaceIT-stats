@@ -31,7 +31,7 @@ namespace FaceitStats.WPF.Services
         public Navigator(VMFactory vmFactory, INotifyService notifyService)
         {
             _vmFactory = vmFactory;
-            this._notifyService = notifyService;
+            _notifyService = notifyService;
         }
 
         protected virtual void OnNavigated(NavigatedEventArgs e)
