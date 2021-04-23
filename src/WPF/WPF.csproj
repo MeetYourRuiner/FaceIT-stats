@@ -1,0 +1,261 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>FaceitStats.WPF</AssemblyName>
+    <RootNamespace>FaceitStats.WPF</RootNamespace>
+    <StartupObject>FaceitStats.WPF.App</StartupObject>
+    <ApplicationIcon>Resources\Faceit_Logo_64x64.ico</ApplicationIcon>
+    <FileVersion>1.1.0.6</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\defaultAvatar.png" />
+    <None Remove="Resources\details.png" />
+    <None Remove="Resources\de_cache.jpeg" />
+    <None Remove="Resources\de_cbble.jpeg" />
+    <None Remove="Resources\de_dust2.jpeg" />
+    <None Remove="Resources\de_inferno.jpeg" />
+    <None Remove="Resources\de_mirage.jpeg" />
+    <None Remove="Resources\de_nuke.jpeg" />
+    <None Remove="Resources\de_overpass.jpeg" />
+    <None Remove="Resources\de_train.jpeg" />
+    <None Remove="Resources\de_vertigo.jpeg" />
+    <None Remove="Resources\emptyheart.png" />
+    <None Remove="Resources\error.png" />
+    <None Remove="Resources\faceit.png" />
+    <None Remove="Resources\heart.png" />
+    <None Remove="Resources\icon-pheasant-preview-2-268x151.png" />
+    <None Remove="Resources\lvl0.png" />
+    <None Remove="Resources\lvl1.png" />
+    <None Remove="Resources\lvl10.png" />
+    <None Remove="Resources\lvl2.png" />
+    <None Remove="Resources\lvl3.png" />
+    <None Remove="Resources\lvl4.png" />
+    <None Remove="Resources\lvl5.png" />
+    <None Remove="Resources\lvl6.png" />
+    <None Remove="Resources\lvl7.png" />
+    <None Remove="Resources\lvl8.png" />
+    <None Remove="Resources\lvl9.png" />
+    <None Remove="Resources\Play-Bold.ttf" />
+    <None Remove="Resources\Play-Regular.ttf" />
+    <None Remove="Resources\refresh.png" />
+    <None Remove="Resources\remove.png" />
+    <None Remove="Resources\steam.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\defaultAvatar.png" />
+    <Resource Include="Resources\details.png" />
+    <Resource Include="Resources\de_cache.jpeg" />
+    <Resource Include="Resources\de_cbble.jpeg" />
+    <Resource Include="Resources\de_dust2.jpeg" />
+    <Resource Include="Resources\de_inferno.jpeg" />
+    <Resource Include="Resources\de_mirage.jpeg" />
+    <Resource Include="Resources\de_nuke.jpeg" />
+    <Resource Include="Resources\de_overpass.jpeg" />
+    <Resource Include="Resources\de_train.jpeg" />
+    <Resource Include="Resources\de_vertigo.jpeg" />
+    <Resource Include="Resources\emptyheart.png" />
+    <Resource Include="Resources\error.png" />
+    <Resource Include="Resources\faceit.png" />
+    <Resource Include="Resources\heart.png" />
+    <Resource Include="Resources\icon-pheasant-preview-2-268x151.png" />
+    <Resource Include="Resources\lvl0.png" />
+    <Resource Include="Resources\lvl1.png" />
+    <Resource Include="Resources\lvl10.png" />
+    <Resource Include="Resources\lvl2.png" />
+    <Resource Include="Resources\lvl3.png" />
+    <Resource Include="Resources\lvl4.png" />
+    <Resource Include="Resources\lvl5.png" />
+    <Resource Include="Resources\lvl6.png" />
+    <Resource Include="Resources\lvl7.png" />
+    <Resource Include="Resources\lvl8.png" />
+    <Resource Include="Resources\lvl9.png" />
+    <Resource Include="Resources\Play-Bold.ttf" />
+    <Resource Include="Resources\Play-Regular.ttf" />
+    <Resource Include="Resources\refresh.png" />
+    <Resource Include="Resources\remove.png" />
+    <Resource Include="Resources\steam.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Update="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="App.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="MainWindow.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Controls\ChartToolTip.xaml.cs">
+      <DependentUpon>ChartToolTip.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Controls\EloChart.xaml.cs">
+      <DependentUpon>EloChart.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Controls\ErrorMessage.xaml.cs">
+      <DependentUpon>ErrorMessage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Controls\FavoritesOverlay.xaml.cs">
+      <DependentUpon>FavoritesOverlay.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Controls\LoadingAnimation.xaml.cs">
+      <DependentUpon>LoadingAnimation.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Controls\LobbyTeamInfoDataGrid.xaml.cs">
+      <DependentUpon>LobbyTeamInfoDataGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Controls\MatchesDataGrid.xaml.cs">
+      <DependentUpon>MatchesDataGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Controls\PlayerMapsStatisticsDataGrid.xaml.cs">
+      <DependentUpon>PlayerMapsStatisticsDataGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Controls\SmallLoadingAnimation.xaml.cs">
+      <DependentUpon>SmallLoadingAnimation.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DataView.xaml.cs">
+      <DependentUpon>DataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\LobbyView.xaml.cs">
+      <DependentUpon>LobbyView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MatchDetailsView.xaml.cs">
+      <DependentUpon>MatchDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\TeamAnalyzeView.xaml.cs">
+      <DependentUpon>TeamAnalyzeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ViewTypes.cs">
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\ChartToolTip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\EloChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\ErrorMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\FavoritesOverlay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\LoadingAnimation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\LobbyTeamInfoDataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\MatchesDataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\PlayerMapsStatisticsDataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\SmallLoadingAnimation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\DataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\LobbyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\MatchDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SearchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Styles\Colors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Styles\Controls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Styles\Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Styles\DataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\TeamAnalyzeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+</Project>

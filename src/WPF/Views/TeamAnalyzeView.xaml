@@ -1,0 +1,376 @@
+﻿<UserControl 
+    x:Class="FaceitStats.WPF.Views.TeamAnalyzeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:controls="clr-namespace:FaceitStats.WPF.Views.Controls"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+    mc:Ignorable="d" 
+    d:DesignHeight="{StaticResource AppHeight}" 
+    d:DesignWidth="{StaticResource AppWidth}"
+    xmlns:viewmodels="clr-namespace:FaceitStats.WPF.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:TeamAnalyzeViewModel}" Loaded="UserControl_Loaded"
+>
+    <UserControl.Resources>
+        <sys:Double x:Key="RowHeight">68</sys:Double>
+        <sys:Double x:Key="ColumnWidth">64.28</sys:Double>
+        <sys:Double x:Key="MegaHeaderWidth">128.57</sys:Double>
+        <Style x:Key="DGColumnHeaderSmallFontStyle" BasedOn="{StaticResource DGColumnHeaderStyle}" TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Height" Value="{DynamicResource RowHeight}" />
+        </Style>
+        <Style x:Key="DGColumnHeaderSmallFontStyleB" BasedOn="{StaticResource DGColumnHeaderSmallFontStyle}" TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="Background" Value="{StaticResource AppControlBackgroundB}" />
+        </Style>
+        <Style x:Key="DGLabelHeader" TargetType="{x:Type Label}" BasedOn="{StaticResource InfoLabel}">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style x:Key="DGCellBackgroundA" BasedOn="{StaticResource DGCellStyle}" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Background" Value="{StaticResource DGRowBackground}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DGRowBackgroundB}"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DGCellBackgroundB" BasedOn="{StaticResource DGCellStyle}" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Background" Value="{StaticResource DGRowBackgroundB}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DGRowBackground}"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DGCellBackgroundAWhiteFont" BasedOn="{StaticResource DGCellStyleWhiteFont}" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Background" Value="{StaticResource DGRowBackground}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DGRowBackgroundB}"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DGCellBackgroundBWhiteFont" BasedOn="{StaticResource DGCellStyleWhiteFont}" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Background" Value="{StaticResource DGRowBackgroundB}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DGRowBackground}"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CenteredColumnElementStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <controls:LoadingAnimation
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}}" 
+            Height="300" 
+            Width="300"
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center" 
+            d:IsHidden="True"
+        />
+        <Grid
+            x:Name="mainGrid"
+            Visibility="{Binding IsLoading, Converter={StaticResource BtVConverter}, ConverterParameter=true}" 
+        >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="860"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="26"/>
+            </Grid.RowDefinitions>
+            <StackPanel
+                Background="{StaticResource AppControlBackground}" 
+                Grid.ColumnSpan="3"
+                Orientation="Horizontal"
+                Height="{DynamicResource RowHeight}"
+            >
+                <Border 
+                    BorderBrush="{StaticResource AppOrange}"
+                    BorderThickness="0, 0, 1, 0" 
+                    Width="{StaticResource MegaHeaderWidth}" SnapsToDevicePixels="True"
+                />
+
+                <Label
+                    Width="{StaticResource MegaHeaderWidth}"
+                    Style="{StaticResource DGLabelHeader}"
+                    Content="Average"
+                    HorizontalContentAlignment="Center"
+                    BorderBrush="{StaticResource AppOrange}"
+                    BorderThickness="0, 0, 0, 1"
+                    Background="{StaticResource AppControlBackgroundB}"
+                />
+                <Grid Width="{StaticResource MegaHeaderWidth}">
+                    <Border 
+                        BorderBrush="{StaticResource AppLightOrange}"
+                        BorderThickness="0, 0, 0, 1"
+                    >
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                        >
+                            <Label
+                                Style="{StaticResource DGLabelHeader}"
+                                Content="{Binding Players[0].Nickname}"/>
+                            <Image Source="{Binding Players[0].Level, Converter={StaticResource LevelToImageConverter}}" Height="24" Width="24"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <Grid Width="{StaticResource MegaHeaderWidth}" 
+                    Background="{StaticResource AppControlBackgroundB}">
+                    <Border 
+                        BorderBrush="{StaticResource AppOrange}"
+                        BorderThickness="0, 0, 0, 1"
+                    >
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                        >
+                            <Label
+                                Style="{StaticResource DGLabelHeader}"
+                                Content="{Binding Players[1].Nickname}"/>
+                            <Image Source="{Binding Players[1].Level, Converter={StaticResource LevelToImageConverter}}" Height="24" Width="24"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <Grid Width="{StaticResource MegaHeaderWidth}">
+                    <Border 
+                        BorderBrush="{StaticResource AppLightOrange}"
+                        BorderThickness="0, 0, 0, 1"
+                    >
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                        >
+                            <Label
+                                Style="{StaticResource DGLabelHeader}"
+                                Content="{Binding Players[2].Nickname}"/>
+                            <Image Source="{Binding Players[2].Level, Converter={StaticResource LevelToImageConverter}}" Height="24" Width="24"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <Grid Width="{StaticResource MegaHeaderWidth}" 
+                    Background="{StaticResource AppControlBackgroundB}">
+                    <Border 
+                        BorderBrush="{StaticResource AppOrange}"
+                        BorderThickness="0, 0, 0, 1"
+                    >
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                        >
+                            <Label
+                                Style="{StaticResource DGLabelHeader}"
+                                Content="{Binding Players[3].Nickname}"/>
+                            <Image Source="{Binding Players[3].Level, Converter={StaticResource LevelToImageConverter}}" Height="24" Width="24"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <Grid Width="{StaticResource MegaHeaderWidth}">
+                    <Border 
+                        BorderBrush="{StaticResource AppLightOrange}"
+                        BorderThickness="0, 0, 0, 1"
+                    >
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                        >
+                            <Label
+                                Style="{StaticResource DGLabelHeader}"
+                                Content="{Binding Players[4].Nickname}"/>
+                            <Image Source="{Binding Players[4].Level, Converter={StaticResource LevelToImageConverter}}" Height="24" Width="24"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+            <DataGrid
+                x:Name="dgMaps"
+                ColumnHeaderStyle="{StaticResource DGColumnHeaderSmallFontStyle}"
+                RowStyle="{StaticResource DGRowStyle}"
+                Grid.Row="1" Grid.ColumnSpan="3"
+                ItemsSource="{Binding DataTable.DefaultView}"
+            >
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn
+                        Width="{Binding Source={StaticResource MegaHeaderWidth}}"
+                    >
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderSmallFontStyle}">
+                                <Setter Property="BorderThickness" Value="0, 0, 1, 0"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource AppOrange}"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding map, Converter={StaticResource MapToImageConverter}}" Stretch="Fill"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn 
+                        Header="Matches"
+                        Binding="{Binding average_matches}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                        CellStyle="{StaticResource DGCellBackgroundAWhiteFont}"
+                        HeaderStyle="{StaticResource DGColumnHeaderSmallFontStyleB}"
+                    />
+                    <DataGridTextColumn 
+                        Header="Winrate"
+                        Binding="{Binding average_winrate, StringFormat={}{0:0%}}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                        HeaderStyle="{StaticResource DGColumnHeaderSmallFontStyleB}"
+                    >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellBackgroundA}">
+                                <Setter Property="Foreground" Value="{Binding average_winrate, Converter={StaticResource WRtCConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn  
+                        Header="Matches"
+                        Binding="{Binding matches_0}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                        CellStyle="{StaticResource DGCellBackgroundBWhiteFont}"
+                    />
+                    <DataGridTextColumn 
+                        Header="Winrate"
+                        Binding="{Binding winrate_0, StringFormat={}{0:0%}}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                    >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellBackgroundB}">
+                                <Setter Property="Foreground" Value="{Binding winrate_0, Converter={StaticResource WRtCConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn  
+                        Header="Matches"
+                        Binding="{Binding matches_1}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                        CellStyle="{StaticResource DGCellBackgroundAWhiteFont}"
+                        HeaderStyle="{StaticResource DGColumnHeaderSmallFontStyleB}"
+                    />
+                    <DataGridTextColumn 
+                        Header="Winrate"
+                        Binding="{Binding winrate_1, StringFormat={}{0:0%}}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                        HeaderStyle="{StaticResource DGColumnHeaderSmallFontStyleB}"
+                    >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellBackgroundA}">
+                                <Setter Property="Foreground" Value="{Binding winrate_1, Converter={StaticResource WRtCConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn  
+                        Header="Matches"
+                        Binding="{Binding matches_2}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                        CellStyle="{StaticResource DGCellBackgroundBWhiteFont}"
+                    />
+                    <DataGridTextColumn 
+                        Header="Winrate"
+                        Binding="{Binding winrate_2, StringFormat={}{0:0%}}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                    >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellBackgroundB}">
+                                <Setter Property="Foreground" Value="{Binding winrate_2, Converter={StaticResource WRtCConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn  
+                        Header="Matches"
+                        Binding="{Binding matches_3}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                        CellStyle="{StaticResource DGCellBackgroundAWhiteFont}"
+                        HeaderStyle="{StaticResource DGColumnHeaderSmallFontStyleB}"
+                    />
+                    <DataGridTextColumn 
+                        Header="Winrate"
+                        Binding="{Binding winrate_3, StringFormat={}{0:0%}}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                        HeaderStyle="{StaticResource DGColumnHeaderSmallFontStyleB}"
+                    >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellBackgroundA}">
+                                <Setter Property="Foreground" Value="{Binding winrate_3, Converter={StaticResource WRtCConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn  
+                        Header="Matches"
+                        Binding="{Binding matches_4}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                        CellStyle="{StaticResource DGCellBackgroundBWhiteFont}"
+                    />
+                    <DataGridTextColumn 
+                        Header="Winrate"
+                        Binding="{Binding winrate_4, StringFormat={}{0:0%}}"
+                        Width="{Binding Source={StaticResource ColumnWidth}}"
+                        ElementStyle="{StaticResource CenteredColumnElementStyle}"
+                    >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DGCellBackgroundB}">
+                                <Setter Property="Foreground" Value="{Binding winrate_4, Converter={StaticResource WRtCConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+                <DataGrid.Style>
+                    <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DGStyle}">
+                        <Setter Property="RowHeight" Value="{DynamicResource RowHeight}"/>
+                    </Style>
+                </DataGrid.Style>
+            </DataGrid>
+
+            <!--Back-->
+            <Button
+                Content="BACK"
+                Style="{StaticResource ButtonStyle}"
+                Command="{Binding BackCommand}"
+                Grid.Row="4" 
+                Width="280" 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Left" 
+                Grid.Column="1"
+            />
+        </Grid>
+    </Grid>
+</UserControl>

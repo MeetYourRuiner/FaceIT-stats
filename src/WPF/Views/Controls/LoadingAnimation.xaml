@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="FaceitStats.WPF.Views.Controls.LoadingAnimation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FaceitStats.WPF.Views.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="450">
+    <UserControl.Resources>
+        <Color x:Key="FilledColor" A="255" B="155" R="155" G="155"/>
+        <Color x:Key="UnfilledColor" A="0" B="155" R="155" G="155"/>
+
+        <Style x:Key="BusyAnimationStyle" TargetType="Control">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Control">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="Animation0" BeginTime="00:00:00.0" RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetProperty="Width" Storyboard.TargetName="rectangle"
+                                    From="25" To="150"  AutoReverse="True" RepeatBehavior="Forever" Duration="0:0:0.5" 
+                                />
+                                <DoubleAnimation Storyboard.TargetProperty="Height" Storyboard.TargetName="rectangle"
+                                    From="10" To="5"  AutoReverse="True" RepeatBehavior="Forever" Duration="0:0:0.5" 
+                                />
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsVisible" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource Animation0}" x:Name="Storyboard0" />
+                                </Trigger.EnterActions>
+
+                                <Trigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="Storyboard0"/>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="10"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Canvas x:Name="myCanvas" Grid.Row="1">
+                                    <Grid Width="{Binding ActualWidth, ElementName=myCanvas}" 
+                                          Height="{Binding ActualHeight, ElementName=myCanvas}">
+                                        <Rectangle 
+                                        x:Name="rectangle"
+                                        Canvas.Left="60" 
+                                        Canvas.Top="100" 
+                                        Width="25" 
+                                        Height="10" 
+                                        Fill="{DynamicResource AppOrange}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                    />
+                                    </Grid>
+                                </Canvas>
+                                <Label 
+                                    Grid.Row="0" 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Bottom"
+                                    Content="Loading..."
+                                    Foreground="{StaticResource AppFont}"
+                                    Margin="0,0,0,3"
+                                    FontSize="18"
+                                />
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Control Style="{StaticResource BusyAnimationStyle}"/>
+</UserControl>
