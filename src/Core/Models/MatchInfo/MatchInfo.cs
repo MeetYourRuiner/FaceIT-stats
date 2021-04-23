@@ -7,7 +7,6 @@ namespace FaceitStats.Core.Models
     public class MatchInfo
     {
         private DateTime _date;
-
         public string Id { get; set; }
         public string CompetitionName { get; set; }
         public TeamInfo TeamA { get; set; }

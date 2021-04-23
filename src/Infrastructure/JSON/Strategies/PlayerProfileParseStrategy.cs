@@ -21,7 +21,7 @@ namespace FaceitStats.Infrastructure.JSON.Strategies
                     Elo = (int)(jToken.SelectToken("games.csgo.faceit_elo") ?? 0)
                 };
                 pp.FaceitURL = (string)jToken.SelectToken("faceit_url") ?? $"https://www.faceit.com/en/players/{pp.Nickname}";
-                pp.CoverImage = (string)jToken.SelectToken("cover_image") ?? (string)jToken.SelectToken("cover_image_url");
+                pp.CoverImageURI = (string)jToken.SelectToken("cover_image") ?? (string)jToken.SelectToken("cover_image_url");
                 return pp;
             }
             catch

@@ -1,5 +1,5 @@
 ﻿using FaceitStats.Core.Interfaces;
-using FaceitStats.Infrastructure.Data;
+using FaceitStats.Infrastructure.Services;
 using FaceitStats.WPF.Classes;
 using FaceitStats.WPF.Interfaces;
 using FaceitStats.WPF.Properties;

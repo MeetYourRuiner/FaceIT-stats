@@ -160,7 +160,7 @@
                                 />
                                 </StackPanel>
                                 <StackPanel Height="14" Margin="0, 5, 0, 0" Orientation="Horizontal">
-                                    <Image Width="20" Height="14" Stretch="Fill" Source="{Binding PlayerProfile.CountryImage}">
+                                    <Image Width="20" Height="14" Stretch="Fill" Source="{Binding PlayerProfile.Country, Converter={StaticResource CountryCodeToImageConverter}}">
                                         <Image.ToolTip>
                                             <ToolTip 
                                                 Content="{Binding PlayerProfile.Country}"
@@ -168,7 +168,7 @@
                                             />
                                         </Image.ToolTip>
                                     </Image>
-                                    <Image Margin="5, 0, 0, 0" Width="20"  Stretch="Fill" Source="{Binding PlayerProfile.FaceitLanguageImage}">
+                                    <Image Margin="5, 0, 0, 0" Width="20"  Stretch="Fill" Source="{Binding PlayerProfile.FaceitLanguage, Converter={StaticResource CountryCodeToImageConverter}}">
                                         <Image.ToolTip>
                                             <ToolTip 
                                                 Content="{Binding PlayerProfile.FaceitLanguage}"

@@ -1,11 +1,12 @@
 ﻿using FaceitStats.Core.Interfaces;
 using FaceitStats.Core.Models;
+using FaceitStats.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FaceitStats.Infrastructure.Data
+namespace FaceitStats.Infrastructure.Services
 {
     public class FaceitService : IFaceitService
     {

@@ -52,7 +52,7 @@
                 Grid.RowSpan="3" 
                 StrokeThickness="0">
                 <Rectangle.Fill>
-                    <ImageBrush Stretch="UniformToFill" ImageSource="{Binding CurrentPlayerProfile.CoverImage, FallbackValue={x:Null}}"/>
+                    <ImageBrush Stretch="UniformToFill" ImageSource="{Binding CurrentPlayerProfile.CoverImageURI, FallbackValue={x:Null}}"/>
                 </Rectangle.Fill>
             </Rectangle>
             <Grid Name="topGrid" Grid.Column="1" Grid.Row="1">

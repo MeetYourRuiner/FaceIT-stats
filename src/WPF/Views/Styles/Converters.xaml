@@ -11,4 +11,5 @@
     <converters:UpperCaseConverter x:Key="UpperCaseConverter"/>
     <converters:MapToImageConverter x:Key="MapToImageConverter"/>
     <converters:LevelToImageConverter x:Key="LevelToImageConverter"/>
+    <converters:CountryCodeToImageConverter x:Key="CountryCodeToImageConverter"/>
 </ResourceDictionary>
